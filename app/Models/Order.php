@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Collection;
 
 class Order extends Model
@@ -25,14 +26,15 @@ class Order extends Model
         'item' => 'array',
     ];
 
-    public function customer()
+    public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customer_id');
     }
 
     /**
      * อ่าน item JSON แล้วดึง Product แต่ละชิ้นมาผูกให้
-     * คืนค่าเป็น Collection ของ ['product_id', 'size', 'product']
+     *
+     * @return Collection<int, array{product_id: string|null, size: string|null, product: Product|null}>
      */
     public function orderItems(): Collection
     {
