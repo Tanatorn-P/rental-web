@@ -27,7 +27,7 @@ class Order extends Model
     ];
 
     /**
-     * @return BelongsTo<Customer, Order>
+     * @return BelongsTo<Customer, static>
      */
     public function customer(): BelongsTo
     {
