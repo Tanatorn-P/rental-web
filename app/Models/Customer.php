@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Customer extends Model
+class Customer extends Authenticatable
 {
-    protected $primaryKey = 'customer_id';
+    protected $table = 'customers';
 
-    public $incrementing = false;
+    protected $fillable = [
+        'username', 'password', 'phone', 'customer_id', 'fullname',
+        'address', 'bank_account', 'bust', 'shoulder', 'waist', 'hips',
+    ];
 
-    protected $keyType = 'string';
+    protected $hidden = ['password'];
 }
