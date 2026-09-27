@@ -48,7 +48,7 @@ class StaffLoginTest extends TestCase
             'password' => 'wrong-password',
         ]);
 
-        $response->assertSessionHasErrors();
+        $response->assertSessionHas('error');
         $this->assertGuest('web');
     }
 }
