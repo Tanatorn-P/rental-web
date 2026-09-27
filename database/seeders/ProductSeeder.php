@@ -406,10 +406,12 @@ class ProductSeeder extends Seeder
         DB::table('products')->insert($products);
     }
 
-    /**
-     * ค้นหาไฟล์รูปภาพของสินค้าแบบอัตโนมัติ 
-     * รองรับนามสกุล .jpg, .jpeg, .png, .JPG, .JPEG, .PNG
-     */
+    //  ค้นหาไฟล์รูปภาพของสินค้าแบบอัตโนมัติ
+    //  รองรับนามสกุล .jpg, .jpeg, .png, .JPG, .JPEG, .PNG
+
+    //  ค้นหาไฟล์รูปภาพของสินค้าแบบอัตโนมัติ
+    //  รองรับนามสกุล .jpg, .jpeg, .png, .JPG, .JPEG, .PNG
+
     private function getProductImages(string $productId): array
     {
         $images = [];
@@ -420,7 +422,7 @@ class ProductSeeder extends Seeder
             foreach ($extensions as $ext) {
                 // กำหนด Path สัมพัทธ์สำหรับบันทึกลงใน DB
                 $relativePath = "images/{$productId}-{$i}.{$ext}";
-                
+
                 // ตรวจสอบว่าไฟล์มีอยู่จริงในโฟลเดอร์ public/images/ หรือไม่
                 if (File::exists(public_path($relativePath))) {
                     $foundPath = $relativePath;
