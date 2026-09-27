@@ -26,6 +26,9 @@ class Order extends Model
         'item' => 'array',
     ];
 
+    /**
+     * @return BelongsTo<Customer, Order>
+     */
     public function customer(): BelongsTo
     {
         return $this->belongsTo(Customer::class, 'customer_id');
@@ -42,10 +45,16 @@ class Order extends Model
         $productIds = $entries->pluck('product_id')->filter()->all();
         $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
 
-        return $entries->map(fn ($entry) => [
-            'product_id' => $entry['product_id'] ?? null,
-            'size' => $entry['size'] ?? null,
-            'product' => $products->get($entry['product_id'] ?? null),
-        ]);
+        return $entries
+            ->values()
+            ->map(function (array $entry) use ($products): array {
+                $productId = $entry['product_id'] ?? null;
+
+                return [
+                    'product_id' => is_string($productId) ? $productId : null,
+                    'size' => is_string($entry['size'] ?? null) ? $entry['size'] : null,
+                    'product' => $productId !== null ? $products->get($productId) : null,
+                ];
+            });
     }
 }
