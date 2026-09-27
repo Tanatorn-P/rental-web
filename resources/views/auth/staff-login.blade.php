@@ -17,6 +17,6 @@
             <input type="password" id="password" name="password" required>
         </div>
 
-        <button type="submit" class="btn">เข้าสู่ระบบ</button>
+        <button type="submit" class="btn btn-primary btn-block">เข้าสู่ระบบ</button>
     </form>
 @endsection

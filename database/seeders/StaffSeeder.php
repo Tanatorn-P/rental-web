@@ -11,13 +11,13 @@ class StaffSeeder extends Seeder
     public function run(): void
     {
         Staff::create([
-            'fullname' => 'สมหญิง พนักงาน',
+            'fullname' => 'Staff',
             'password' => Hash::make('staff1234'),
             'role' => 'staff',
         ]);
 
         Staff::create([
-            'fullname' => 'สมชาย แอดมิน',
+            'fullname' => 'Admin',
             'password' => Hash::make('admin1234'),
             'role' => 'admin',
         ]);

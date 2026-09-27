@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <button type="submit" class="btn" style="margin-top:6px">สมัครสมาชิก</button>
+        <button type="submit" class="btn btn-primary btn-block">เข้าสู่ระบบ</button>
     </form>
 
     <p class="switch-link">มีบัญชีอยู่แล้ว? <a href="{{ route('customer.login') }}">เข้าสู่ระบบ</a></p>

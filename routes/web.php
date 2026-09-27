@@ -13,7 +13,7 @@ use App\Http\Controllers\StaffMaintenanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return redirect()->route('customer.login');
+    return view('auth.role-select');
 });
 
 // ---------- Auth: Staff/Admin (guard: web) ----------
