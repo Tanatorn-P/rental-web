@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Customer;
+use App\Models\Staff;
 use App\Models\User;
 
 return [
@@ -38,15 +40,15 @@ return [
     */
 
     'guards' => [
-    'web' => [
-        'driver' => 'session',
-        'provider' => 'staffs',
+        'web' => [
+            'driver' => 'session',
+            'provider' => 'staffs',
+        ],
+        'customer' => [
+            'driver' => 'session',
+            'provider' => 'customers',
+        ],
     ],
-    'customer' => [
-        'driver' => 'session',
-        'provider' => 'customers',
-    ],
-],
 
     /*
     |--------------------------------------------------------------------------
@@ -66,15 +68,15 @@ return [
     */
 
     'providers' => [
-    'staffs' => [
-        'driver' => 'eloquent',
-        'model' => App\Models\Staff::class,
+        'staffs' => [
+            'driver' => 'eloquent',
+            'model' => Staff::class,
+        ],
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => Customer::class,
+        ],
     ],
-    'customers' => [
-        'driver' => 'eloquent',
-        'model' => App\Models\Customer::class,
-    ],
-],
 
     /*
     |--------------------------------------------------------------------------

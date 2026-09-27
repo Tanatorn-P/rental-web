@@ -16,7 +16,7 @@ class StaffMaintenanceController extends Controller
             ->get()
             ->map(function (Product $product) {
                 $order = Order::where('order_status', false)
-                    ->where('item', 'like', '%"product_id":"' . $product->id . '"%')
+                    ->where('item', 'like', '%"product_id":"'.$product->id.'"%')
                     ->latest('id')
                     ->first();
 
@@ -33,6 +33,6 @@ class StaffMaintenanceController extends Controller
     {
         $product->update(['status' => 'available']);
 
-        return redirect()->route('staff.maintenance.index')->with('success', 'ปิดงานสำหรับชุด ' . $product->product_name . ' แล้ว');
+        return redirect()->route('staff.maintenance.index')->with('success', 'ปิดงานสำหรับชุด '.$product->product_name.' แล้ว');
     }
 }

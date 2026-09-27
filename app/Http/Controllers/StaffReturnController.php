@@ -42,6 +42,6 @@ class StaffReturnController extends Controller
             $item['product']?->update(['status' => 'inspection']);
         }
 
-        return redirect()->route('staff.return.index')->with('success', 'รับคืนสินค้า #' . $order->id . ' แล้ว');
+        return redirect()->route('staff.return.index')->with('success', 'รับคืนสินค้า #'.$order->id.' แล้ว');
     }
 }

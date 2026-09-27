@@ -28,7 +28,7 @@ class StaffQueueController extends Controller
             $item['product']?->update(['status' => 'preparing']);
         }
 
-        return redirect()->route('staff.queue.index')->with('success', 'อนุมัติคำขอ #' . $order->id . ' แล้ว');
+        return redirect()->route('staff.queue.index')->with('success', 'อนุมัติคำขอ #'.$order->id.' แล้ว');
     }
 
     public function reject(Request $request, Order $order): RedirectResponse
@@ -43,6 +43,6 @@ class StaffQueueController extends Controller
 
         $order->update(['status' => 'rejected', 'reject_reason' => $validated['reject_reason']]);
 
-        return redirect()->route('staff.queue.index')->with('success', 'ปฏิเสธคำขอ #' . $order->id . ' แล้ว');
+        return redirect()->route('staff.queue.index')->with('success', 'ปฏิเสธคำขอ #'.$order->id.' แล้ว');
     }
 }

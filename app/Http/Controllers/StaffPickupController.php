@@ -33,6 +33,6 @@ class StaffPickupController extends Controller
             $item['product']?->update(['status' => 'rented']);
         }
 
-        return redirect()->route('staff.pickup.index')->with('success', 'ยืนยันการส่งมอบ #' . $order->id . ' แล้ว');
+        return redirect()->route('staff.pickup.index')->with('success', 'ยืนยันการส่งมอบ #'.$order->id.' แล้ว');
     }
 }

@@ -34,7 +34,7 @@ class CustomerRegisterController extends Controller
         $validated['password'] = Hash::make($validated['password']);
 
         $customer = Customer::create($validated);
-        $customer->update(['customer_id' => 'CUS' . str_pad($customer->id, 4, '0', STR_PAD_LEFT)]);
+        $customer->update(['customer_id' => 'CUS'.str_pad($customer->id, 4, '0', STR_PAD_LEFT)]);
 
         return redirect()
             ->route('customer.login')

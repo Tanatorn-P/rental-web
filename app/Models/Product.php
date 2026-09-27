@@ -9,6 +9,7 @@ class Product extends Model
     protected $table = 'products';
 
     protected $keyType = 'string';
+
     public $incrementing = false;
 
     protected $fillable = [

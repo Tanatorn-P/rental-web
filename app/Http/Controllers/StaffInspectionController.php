@@ -36,6 +36,6 @@ class StaffInspectionController extends Controller
             ]);
         }
 
-        return redirect()->route('staff.inspection.index')->with('success', 'บันทึกผลตรวจสภาพ #' . $order->id . ' แล้ว');
+        return redirect()->route('staff.inspection.index')->with('success', 'บันทึกผลตรวจสภาพ #'.$order->id.' แล้ว');
     }
 }

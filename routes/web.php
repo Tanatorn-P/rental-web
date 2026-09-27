@@ -1,15 +1,15 @@
 <?php
 
-use App\Http\Controllers\Auth\StaffLoginController;
 use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\CustomerLoginController;
 use App\Http\Controllers\Auth\CustomerRegisterController;
+use App\Http\Controllers\Auth\StaffLoginController;
 use App\Http\Controllers\StaffDashboardController;
-use App\Http\Controllers\StaffQueueController;
-use App\Http\Controllers\StaffPickupController;
-use App\Http\Controllers\StaffReturnController;
 use App\Http\Controllers\StaffInspectionController;
 use App\Http\Controllers\StaffMaintenanceController;
+use App\Http\Controllers\StaffPickupController;
+use App\Http\Controllers\StaffQueueController;
+use App\Http\Controllers\StaffReturnController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
