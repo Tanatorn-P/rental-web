@@ -411,7 +411,7 @@ class ProductSeeder extends Seeder
 
     //  ค้นหาไฟล์รูปภาพของสินค้าแบบอัตโนมัติ
     //  รองรับนามสกุล .jpg, .jpeg, .png, .JPG, .JPEG, .PNG
-    // @return array<int, string>
+    /** @return array<int, string> */
     private function getProductImages(string $productId): array
     {
         $images = [];
