@@ -4,12 +4,16 @@
 @section('nav-return', 'active')
 
 @section('content')
-    <div class="page-head"><div><p class="eyebrow">Return management</p><h2 class="page-title">รับคืนชุด</h2></div></div>
+    <div class="page-head">
+        <div><p class="eyebrow">Return management</p><h2 class="page-title">รับคืนชุด</h2></div>
+    </div>
 
     <div class="card card-pad" style="margin-bottom:18px">
         <form action="{{ route('staff.return.index') }}" method="GET" class="field" style="display:flex;gap:10px;align-items:end">
-            <div style="flex:1"><label for="order_id">ค้นหาด้วย Order ID</label>
-                <input type="text" id="order_id" name="order_id" value="<?= htmlspecialchars($orderId ?? '', ENT_QUOTES, 'UTF-8') ?>"></div>
+            <div style="flex:1">
+                <label for="order_id">ค้นหาด้วย Order ID</label>
+                <input type="text" id="order_id" name="order_id" value="<?= htmlspecialchars($orderId ?? '', ENT_QUOTES, 'UTF-8') ?>">
+            </div>
             <button type="submit" class="btn btn-secondary">ค้นหา</button>
         </form>
     </div>
@@ -20,8 +24,8 @@
 
     <?php if ($order !== null) { ?>
         <div class="card card-pad" style="max-width:520px">
-            <span class="status rented">Rented</span>
-            <h3 style="margin:10px 0 2px">Order #<?= $order->id ?></h3>
+            <span class="status rented"><?= $order->order_status ?></span>
+            <h3 style="margin:10px 0 2px">Order #<?= $order->order_id ?></h3>
             <p class="muted" style="font-size:13px"><?= htmlspecialchars($order->customer->fullname ?? '-', ENT_QUOTES, 'UTF-8') ?></p>
 
             <?php foreach ($order->orderItems() as $item) { ?>

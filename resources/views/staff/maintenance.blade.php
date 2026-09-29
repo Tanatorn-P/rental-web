@@ -4,7 +4,9 @@
 @section('nav-maintenance', 'active')
 
 @section('content')
-    <div class="page-head"><div><p class="eyebrow">Maintenance</p><h2 class="page-title">รายการที่ไม่พร้อมใช้งาน</h2></div></div>
+    <div class="page-head">
+        <div><p class="eyebrow">Maintenance</p><h2 class="page-title">รายการที่ไม่พร้อมใช้งาน</h2></div>
+    </div>
 
     <?php if ($products->isNotEmpty()) { ?>
         <div class="card table-wrap">
@@ -13,7 +15,7 @@
                 <tbody>
                     <?php foreach ($products as $row) { ?>
                         <tr>
-                            <td><strong><?= htmlspecialchars($row['product']->product_name ?? $row['product']->id, ENT_QUOTES, 'UTF-8') ?></strong></td>
+                            <td><strong><?= htmlspecialchars($row['product']->product_name, ENT_QUOTES, 'UTF-8') ?></strong></td>
                             <td><?= htmlspecialchars($row['reject_reason'], ENT_QUOTES, 'UTF-8') ?></td>
                             <td>
                                 <form action="{{ route('staff.maintenance.complete', $row['product']) }}" method="POST">

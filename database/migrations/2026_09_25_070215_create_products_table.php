@@ -9,16 +9,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->json('image')->nullable();
-            $table->string('category')->nullable();
+            $table->string('product_id')->primary();
+            $table->string('product_name');
+            $table->string('category');
+            $table->string('size');
             $table->text('description')->nullable();
-            $table->decimal('rental_fee', 8, 2)->nullable();
-            $table->decimal('deposit', 8, 2)->nullable();
-            $table->integer('rental_duration_days')->nullable();
+            $table->decimal('rental_fee', 8, 2);
+            $table->decimal('deposit', 8, 2);
+            $table->integer('rental_duration_days');
             $table->enum('status', ['available', 'preparing', 'rented', 'inspection', 'not_ready'])
                 ->default('available');
-            $table->string('product_name')->nullable();
+            $table->json('image')->nullable();
+            $table->json('review')->nullable();
             $table->timestamps();
         });
     }

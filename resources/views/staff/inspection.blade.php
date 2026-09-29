@@ -4,14 +4,16 @@
 @section('nav-inspection', 'active')
 
 @section('content')
-    <div class="page-head"><div><p class="eyebrow">Inspection</p><h2 class="page-title">ตรวจสภาพชุด</h2></div></div>
+    <div class="page-head">
+        <div><p class="eyebrow">Inspection</p><h2 class="page-title">ตรวจสภาพชุด</h2></div>
+    </div>
 
     <?php if ($orders->isNotEmpty()) { ?>
         <div class="grid" style="grid-template-columns:1fr 1fr">
             <?php foreach ($orders as $order) { ?>
                 <div class="card card-pad">
-                    <span class="status preparing">รอตรวจสภาพ</span>
-                    <h3 style="margin:10px 0 2px">Order #<?= $order->id ?></h3>
+                    <span class="status preparing"><?= $order->order_status ?></span>
+                    <h3 style="margin:10px 0 2px">Order #<?= $order->order_id ?></h3>
                     <p class="muted" style="font-size:13px"><?= htmlspecialchars($order->customer->fullname ?? '-', ENT_QUOTES, 'UTF-8') ?></p>
 
                     <?php foreach ($order->orderItems() as $item) { ?>
@@ -20,11 +22,11 @@
 
                     <form action="{{ route('staff.inspection.store', $order) }}" method="POST" style="margin-top:12px">
                         @csrf
-                        <label style="font-size:13px"><input type="radio" name="order_status" value="1" required> พร้อมใช้งานทั้งหมด</label>
-                        <label style="font-size:13px;margin-left:12px"><input type="radio" name="order_status" value="0" required> มีบางชิ้นไม่พร้อม</label>
+                        <label style="font-size:13px"><input type="radio" name="is_ready" value="1" required> พร้อมใช้งานทั้งหมด</label>
+                        <label style="font-size:13px;margin-left:12px"><input type="radio" name="is_ready" value="0" required> มีบางชิ้นเสียหาย</label>
                         <div class="field" style="margin-top:10px">
-                            <label for="reject_reason_<?= $order->id ?>">รายงานเหตุผล (บังคับถ้าไม่พร้อม)</label>
-                            <textarea id="reject_reason_<?= $order->id ?>" name="reject_reason" placeholder="ระบุว่าชุดไหนมีปัญหาอะไร"></textarea>
+                            <label for="reject_reason_<?= $order->order_id ?>">รายงานเหตุผล (บังคับถ้าเสียหาย)</label>
+                            <textarea id="reject_reason_<?= $order->order_id ?>" name="reject_reason" placeholder="ระบุปัญหาที่พบ"></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary btn-sm" style="margin-top:8px">บันทึกผลตรวจ</button>
                     </form>

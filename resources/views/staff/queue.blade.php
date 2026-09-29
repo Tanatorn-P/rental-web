@@ -11,11 +11,13 @@
     <?php if ($orders->isNotEmpty()) { ?>
         <div class="card table-wrap">
             <table class="data-table">
-                <thead><tr><th>Order ID</th><th>ลูกค้า</th><th>ชุด</th><th>วันงาน</th><th>สถานะ</th><th>จัดการ</th></tr></thead>
+                <thead>
+                    <tr><th>Order ID</th><th>ลูกค้า</th><th>ชุด</th><th>วันงาน</th><th>สถานะ</th><th>จัดการ</th></tr>
+                </thead>
                 <tbody>
                     <?php foreach ($orders as $order) { ?>
                         <tr>
-                            <td><strong>#<?= $order->id ?></strong></td>
+                            <td><strong>#<?= $order->order_id ?></strong></td>
                             <td><?= htmlspecialchars($order->customer->fullname ?? '-', ENT_QUOTES, 'UTF-8') ?></td>
                             <td>
                                 <?php foreach ($order->orderItems() as $item) { ?>
@@ -23,7 +25,7 @@
                                 <?php } ?>
                             </td>
                             <td><?= $order->event_date->format('d M Y') ?></td>
-                            <td><span class="status pending">Pending</span></td>
+                            <td><span class="status pending"><?= $order->order_status ?></span></td>
                             <td>
                                 <form action="{{ route('staff.queue.approve', $order) }}" method="POST" style="display:inline">
                                     @csrf

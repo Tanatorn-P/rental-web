@@ -32,12 +32,20 @@ class CustomerRegisterController extends Controller
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        $validated['customer_id'] = $this->generateCustomerId();
 
-        $customer = Customer::create($validated);
-        $customer->update(['customer_id' => 'CUS'.str_pad((string) $customer->id, 4, '0', STR_PAD_LEFT)]);
+        Customer::create($validated);
 
         return redirect()
             ->route('customer.login')
             ->with('success', 'สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบ');
+    }
+
+    private function generateCustomerId(): string
+    {
+        $lastId = Customer::query()->orderByDesc('customer_id')->value('customer_id');
+        $nextNumber = $lastId ? ((int) substr($lastId, 1)) + 1 : 1;
+
+        return 'C'.str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
     }
 }
