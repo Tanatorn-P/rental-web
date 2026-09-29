@@ -12,11 +12,11 @@ class StaffDashboardController extends Controller
     {
         $today = now()->toDateString();
 
-        $pickupToday = Order::whereDate('pickup_date', $today)->where('status', 'approved')->count();
-        $returnToday = Order::whereDate('return_date', $today)->where('status', 'rented')->count();
-        $pendingApproval = Order::where('status', 'pending')->count();
+        $pickupToday = Order::whereDate('pickup_date', $today)->where('order_status', 'อนุมัติแล้ว')->count();
+        $returnToday = Order::whereDate('return_date', $today)->where('order_status', 'กำลังเช่า')->count();
+        $pendingApproval = Order::where('order_status', 'รอดำเนินการ')->count();
         $notReady = Product::where('status', 'not_ready')->count();
-        $overdue = Order::whereDate('return_date', '<', $today)->where('status', 'rented')->count();
+        $overdue = Order::whereDate('return_date', '<', $today)->where('order_status', 'กำลังเช่า')->count();
 
         $todaySchedule = Order::with('customer')
             ->where(function ($query) use ($today) {
@@ -29,15 +29,15 @@ class StaffDashboardController extends Controller
                 return [
                     'type' => $isPickup ? 'Pickup' : 'Return',
                     'time' => $isPickup ? $order->pickup_time : $order->return_time,
-                    'order_id' => $order->id,
+                    'order_id' => $order->order_id,
                     'customer_name' => $order->customer->fullname ?? '-',
                 ];
             })
             ->sortBy('time')
             ->values();
 
-        $pendingList = Order::with('customer')->where('status', 'pending')->orderBy('event_date')->take(5)->get();
-        $overdueList = Order::with('customer')->whereDate('return_date', '<', $today)->where('status', 'rented')->get();
+        $pendingList = Order::with('customer')->where('order_status', 'รอดำเนินการ')->orderBy('event_date')->take(5)->get();
+        $overdueList = Order::with('customer')->whereDate('return_date', '<', $today)->where('order_status', 'กำลังเช่า')->get();
 
         return view('staff.dashboard', compact(
             'pickupToday', 'returnToday', 'pendingApproval', 'notReady', 'overdue',

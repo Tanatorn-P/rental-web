@@ -12,7 +12,7 @@ return new class extends Migration
             $table->string('product_id')->primary();
             $table->string('product_name');
             $table->string('category');
-            $table->string('size')->nullable();
+            $table->string('size');
             $table->text('description')->nullable();
             $table->decimal('rental_fee', 8, 2);
             $table->decimal('deposit', 8, 2);

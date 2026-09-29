@@ -15,9 +15,9 @@ return new class extends Migration
             $table->json('item');
             $table->date('event_date');
             $table->date('pickup_date');
-            $table->time('pickup_time')->nullable();
+            $table->time('pickup_time');
             $table->date('return_date');
-            $table->time('return_time')->nullable();
+            $table->time('return_time');
             $table->decimal('total_price', 10, 2)->nullable();
             $table->decimal('deposit_prices', 10, 2)->nullable();
             $table->decimal('damage_price', 10, 2)->default(0);

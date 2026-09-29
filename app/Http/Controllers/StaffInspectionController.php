@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -11,8 +12,19 @@ class StaffInspectionController extends Controller
 {
     public function index(): View
     {
-        // ใช้ order.status = 'returned' เป็นตัวกรองแทน (เดิม whereHas('product') ใช้ไม่ได้แล้วเพราะไม่มี relation ตรง)
-        $orders = Order::with('customer')->where('status', 'returned')->get();
+        $inspectionProductIds = Product::where('status', 'inspection')->pluck('product_id');
+
+        if ($inspectionProductIds->isEmpty()) {
+            return view('staff.inspection', ['orders' => collect()]);
+        }
+
+        $orders = Order::with('customer')
+            ->where(function ($query) use ($inspectionProductIds) {
+                foreach ($inspectionProductIds as $productId) {
+                    $query->orWhere('item', 'like', '%"product_id":"'.$productId.'"%');
+                }
+            })
+            ->get();
 
         return view('staff.inspection', compact('orders'));
     }
@@ -20,22 +32,21 @@ class StaffInspectionController extends Controller
     public function store(Request $request, Order $order): RedirectResponse
     {
         $validated = $request->validate([
-            'order_status' => ['required', 'boolean'],
-            'reject_reason' => ['required_if:order_status,0', 'nullable', 'string', 'max:500'],
+            'is_ready' => ['required', 'boolean'],
+            'reject_reason' => ['required_if:is_ready,0', 'nullable', 'string', 'max:500'],
         ]);
 
         $order->update([
-            'status' => 'completed',
-            'order_status' => $validated['order_status'],
+            'order_status' => $validated['is_ready'] ? 'คืนแล้ว' : 'เสียหาย',
             'reject_reason' => $validated['reject_reason'] ?? null,
         ]);
 
         foreach ($order->orderItems() as $item) {
             $item['product']?->update([
-                'status' => $validated['order_status'] ? 'available' : 'not_ready',
+                'status' => $validated['is_ready'] ? 'available' : 'not_ready',
             ]);
         }
 
-        return redirect()->route('staff.inspection.index')->with('success', 'บันทึกผลตรวจสภาพ #'.$order->id.' แล้ว');
+        return redirect()->route('staff.inspection.index')->with('success', 'บันทึกผลตรวจสภาพ #'.$order->order_id.' แล้ว');
     }
 }

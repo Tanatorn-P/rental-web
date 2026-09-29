@@ -11,13 +11,12 @@ class StaffMaintenanceController extends Controller
 {
     public function index(): View
     {
-        // ไม่มี relation ตรงแล้ว จึงค้นหา order ล่าสุดที่ item JSON มี product_id นี้ และผลตรวจคือ "ไม่พร้อม"
         $products = Product::where('status', 'not_ready')
             ->get()
             ->map(function (Product $product) {
-                $order = Order::where('order_status', false)
-                    ->where('item', 'like', '%"product_id":"'.$product->id.'"%')
-                    ->latest('id')
+                $order = Order::where('order_status', 'เสียหาย')
+                    ->where('item', 'like', '%"product_id":"'.$product->product_id.'"%')
+                    ->latest('order_id')
                     ->first();
 
                 return [

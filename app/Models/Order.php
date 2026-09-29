@@ -10,19 +10,25 @@ class Order extends Model
 {
     protected $table = 'orders';
 
+    protected $primaryKey = 'order_id';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+
     protected $fillable = [
-        'customer_id', 'item', 'status',
-        'order_status', 'reject_reason',
+        'order_id', 'customer_id', 'item',
         'event_date', 'pickup_date', 'pickup_time',
         'return_date', 'return_time',
-        'total_price', 'security_price', 'damage_price',
+        'total_price', 'deposit_prices', 'damage_price',
+        'reject_reason', 'order_status',
+        'slip_image', 'tracking_number',
     ];
 
     protected $casts = [
         'event_date' => 'date',
         'pickup_date' => 'date',
         'return_date' => 'date',
-        'order_status' => 'boolean',
         'item' => 'array',
     ];
 
@@ -31,7 +37,7 @@ class Order extends Model
      */
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class, 'customer_id');
+        return $this->belongsTo(Customer::class, 'customer_id', 'customer_id');
     }
 
     /**
@@ -43,7 +49,7 @@ class Order extends Model
     {
         $entries = collect($this->item ?? []);
         $productIds = $entries->pluck('product_id')->filter()->all();
-        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        $products = Product::whereIn('product_id', $productIds)->get()->keyBy('product_id');
 
         return $entries
             ->values()
