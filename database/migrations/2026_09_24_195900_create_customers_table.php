@@ -6,13 +6,10 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('customers', function (Blueprint $table) {
-            $table->string('customer_id')->unique()->nullable();
+            $table->string('customer_id')->primary();
             $table->string('username')->unique();
             $table->string('password');
             $table->string('fullname');
@@ -23,13 +20,11 @@ return new class extends Migration
             $table->float('shoulder')->nullable();
             $table->float('waist')->nullable();
             $table->float('hips')->nullable();
+            $table->string('line_user_id')->nullable();
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('customers');

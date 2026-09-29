@@ -11,24 +11,24 @@ class StaffQueueController extends Controller
 {
     public function index(): View
     {
-        $orders = Order::with('customer')->where('status', 'pending')->orderBy('event_date')->get();
+        $orders = Order::with('customer')->where('order_status', 'รอดำเนินการ')->orderBy('event_date')->get();
 
         return view('staff.queue', compact('orders'));
     }
 
     public function approve(Order $order): RedirectResponse
     {
-        if ($order->status !== 'pending') {
+        if ($order->order_status !== 'รอดำเนินการ') {
             return redirect()->route('staff.queue.index')->with('error', 'คำขอนี้ถูกดำเนินการไปแล้ว');
         }
 
-        $order->update(['status' => 'approved']);
+        $order->update(['order_status' => 'อนุมัติแล้ว']);
 
         foreach ($order->orderItems() as $item) {
             $item['product']?->update(['status' => 'preparing']);
         }
 
-        return redirect()->route('staff.queue.index')->with('success', 'อนุมัติคำขอ #'.$order->id.' แล้ว');
+        return redirect()->route('staff.queue.index')->with('success', 'อนุมัติคำขอ #'.$order->order_id.' แล้ว');
     }
 
     public function reject(Request $request, Order $order): RedirectResponse
@@ -37,12 +37,15 @@ class StaffQueueController extends Controller
             'reject_reason' => ['required', 'string', 'max:255'],
         ]);
 
-        if ($order->status !== 'pending') {
+        if ($order->order_status !== 'รอดำเนินการ') {
             return redirect()->route('staff.queue.index')->with('error', 'คำขอนี้ถูกดำเนินการไปแล้ว');
         }
 
-        $order->update(['status' => 'rejected', 'reject_reason' => $validated['reject_reason']]);
+        $order->update([
+            'order_status' => 'ยกเลิก',
+            'reject_reason' => $validated['reject_reason'],
+        ]);
 
-        return redirect()->route('staff.queue.index')->with('success', 'ปฏิเสธคำขอ #'.$order->id.' แล้ว');
+        return redirect()->route('staff.queue.index')->with('success', 'ปฏิเสธคำขอ #'.$order->order_id.' แล้ว');
     }
 }

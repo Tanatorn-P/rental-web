@@ -30,7 +30,7 @@
                 <div class="task">
                     <span class="priority medium">MEDIUM</span>
                     <div>
-                        <strong style="font-size:13px">Pending Approval · #<?= $order->id ?></strong>
+                        <strong style="font-size:13px">Pending Approval · #<?= $order->order_id ?></strong>
                         <p><?= htmlspecialchars($order->customer->fullname ?? '-', ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars($itemNames ?: '-', ENT_QUOTES, 'UTF-8') ?></p>
                     </div>
                     <a href="{{ route('staff.queue.index') }}" class="btn btn-secondary btn-sm">ตรวจสอบ</a>
@@ -41,10 +41,10 @@
                 <div class="task">
                     <span class="priority high">HIGH</span>
                     <div>
-                        <strong style="font-size:13px">Overdue Return · #<?= $order->id ?></strong>
-                        <p>เกินกำหนด <?= now()->diffInDays($order->return_date) ?> วัน</p>
+                        <strong style="font-size:13px">Overdue Return · #<?= $order->order_id ?></strong>
+                        <p>เกินกำหนด <?= (int) $order->return_date->diffInDays(now()) ?> วัน</p>
                     </div>
-                    <a href="{{ route('staff.return.index') }}?order_id=<?= $order->id ?>" class="btn btn-secondary btn-sm">จัดการ</a>
+                    <a href="{{ route('staff.return.index') }}?order_id=<?= $order->order_id ?>" class="btn btn-secondary btn-sm">จัดการ</a>
                 </div>
             <?php } ?>
 
@@ -55,16 +55,19 @@
 
         <section class="card card-pad">
             <h3 class="section-title">Today's Schedule</h3>
-            <?php foreach ($todaySchedule as $item) { ?>
-                <div class="schedule-item">
-                    <span class="schedule-time"><?= htmlspecialchars($item['time'] ?? '-', ENT_QUOTES, 'UTF-8') ?></span>
-                    <div>
-                        <strong style="font-size:13px"><?= $item['type'] ?> · #<?= $item['order_id'] ?></strong>
-                        <p class="muted" style="font-size:12px;margin:2px 0 0"><?= htmlspecialchars($item['customer_name'], ENT_QUOTES, 'UTF-8') ?></p>
+            <?php if ($todaySchedule->isNotEmpty()) { ?>
+                <?php foreach ($todaySchedule as $item) { ?>
+                    <div class="schedule-item">
+                        <span class="schedule-time"><?= htmlspecialchars($item['time'] ?? '-', ENT_QUOTES, 'UTF-8') ?></span>
+                        <div>
+                            <strong style="font-size:13px"><?= $item['type'] ?> · #<?= $item['order_id'] ?></strong>
+                            <p class="muted" style="font-size:12px;margin:2px 0 0"><?= htmlspecialchars($item['customer_name'], ENT_QUOTES, 'UTF-8') ?></p>
+                        </div>
                     </div>
-                </div>
+                <?php } ?>
+            <?php } else { ?>
+                <p class="muted">วันนี้ไม่มีนัดรับ-คืน</p>
             <?php } ?>
-            <?php if ($todaySchedule->isEmpty()) { ?><p class="muted">วันนี้ไม่มีนัดรับ-คืน</p><?php } ?>
         </section>
     </div>
 

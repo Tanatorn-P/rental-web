@@ -4,24 +4,28 @@
 @section('nav-pickup', 'active')
 
 @section('content')
-    <div class="page-head"><div><p class="eyebrow">Pickup management</p><h2 class="page-title">ยืนยันการส่งมอบชุด</h2></div></div>
+    <div class="page-head">
+        <div><p class="eyebrow">Pickup management</p><h2 class="page-title">ยืนยันการส่งมอบชุด</h2></div>
+    </div>
 
     <div class="card card-pad" style="margin-bottom:18px">
         <form action="{{ route('staff.pickup.index') }}" method="GET" class="field" style="display:flex;gap:10px;align-items:end">
-            <div style="flex:1"><label for="order_id">ค้นหาด้วย Order ID</label>
-                <input type="text" id="order_id" name="order_id" value="<?= htmlspecialchars($orderId ?? '', ENT_QUOTES, 'UTF-8') ?>"></div>
+            <div style="flex:1">
+                <label for="order_id">ค้นหาด้วย Order ID</label>
+                <input type="text" id="order_id" name="order_id" value="<?= htmlspecialchars($orderId ?? '', ENT_QUOTES, 'UTF-8') ?>">
+            </div>
             <button type="submit" class="btn btn-secondary">ค้นหา</button>
         </form>
     </div>
 
     <?php if ($orderId !== null && $order === null) { ?>
-        <div class="card card-pad"><p class="muted">ไม่พบคำสั่งซื้อที่พร้อมส่งมอบ (ต้องเป็นสถานะ approved)</p></div>
+        <div class="card card-pad"><p class="muted">ไม่พบคำสั่งซื้อที่พร้อมส่งมอบ (ต้องเป็นสถานะ อนุมัติแล้ว)</p></div>
     <?php } ?>
 
     <?php if ($order !== null) { ?>
         <div class="card card-pad">
-            <span class="status approved">Ready for Pickup</span>
-            <h3 style="margin:10px 0 2px">Order #<?= $order->id ?></h3>
+            <span class="status approved"><?= $order->order_status ?></span>
+            <h3 style="margin:10px 0 2px">Order #<?= $order->order_id ?></h3>
             <p class="muted" style="font-size:13px"><?= htmlspecialchars($order->customer->fullname ?? '-', ENT_QUOTES, 'UTF-8') ?></p>
 
             <?php foreach ($order->orderItems() as $item) { ?>
