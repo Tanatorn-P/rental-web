@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Order;
+use App\Models\Customer;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class CustomerReservationController extends Controller
+{
+    public function index()
+    {
+        $customer = Auth::guard('customer')->user() ?? Customer::first();
+        $customerId = $customer ? $customer->id : null;
+
+        $reservations = Order::where('customer_id', $customerId)
+            ->whereIn('status', ['pending', 'approved'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('customer.reservations.index', compact('reservations'));
+    }
+}

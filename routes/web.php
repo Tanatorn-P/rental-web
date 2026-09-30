@@ -11,6 +11,7 @@ use App\Http\Controllers\StaffPickupController;
 use App\Http\Controllers\StaffQueueController;
 use App\Http\Controllers\StaffReturnController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CustomerHomeController;
 
 Route::get('/', function () {
     return view('auth.role-select');
@@ -66,7 +67,5 @@ Route::middleware('guest:customer')->group(function () {
 Route::middleware('auth:customer')->group(function () {
     Route::post('/customer/logout', [CustomerLoginController::class, 'destroy'])->name('customer.logout');
 });
-
-Route::get('/customer/dashboard', function () {
-    return 'Customer Dashboard (ยังไม่สร้างหน้าจริง)';
-})->middleware('auth:customer')->name('customer.dashboard');
+                                                                        //->middleware('auth:customer')
+Route::get('/customer/dashboard', [CustomerHomeController::class, 'index'])->name('customer.dashboard');
