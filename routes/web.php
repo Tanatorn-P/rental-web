@@ -11,13 +11,24 @@ use App\Http\Controllers\StaffPickupController;
 use App\Http\Controllers\StaffQueueController;
 use App\Http\Controllers\StaffReturnController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+
 
 Route::get('/', function () {
     return view('auth.role-select');
 });
-Route::get('/dresses/find', function () {
-    return view('dress.find');
-});
+Route::get('/dress/find', [ProductController::class, 'find'])
+    ->name('dress.find');
+
+Route::get('/dress/category/{category}', [ProductController::class, 'category'])
+    ->name('dress.category');
+
+Route::get('/dress/product/{product_id}', [ProductController::class, 'show'])
+    ->name('dress.product');
+Route::get('/dress/product/{product_id}/availability',
+    [ProductController::class, 'availability'])->name('dress.availability');
+
+
 
 // ---------- Auth: Staff/Admin (guard: web) ----------
 Route::middleware('guest:web')->group(function () {
