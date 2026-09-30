@@ -10,8 +10,8 @@
         <p class="page-subtitle">ยินดีต้อนรับสู่ระบบเช่าชุด DressDay</p>
     </div>
     <div style="display: flex; gap: 10px;">
-        <a href="{{ route('customer.reservations.index') }}" class="btn btn-secondary">ดูการจองของฉัน</a>
-        <a href="{{ route('customer.dresses.find') }}" class="btn btn-primary">ค้นหาชุดสำหรับงานของฉัน</a>
+        <a href="{{ Route::has('reservations.index') ? route('reservations.index') : '#' }}" class="btn btn-secondary">ดูการจองของฉัน</a>
+        <a href="{{ Route::has('dresses.find') ? route('dresses.find') : '#' }}" class="btn btn-primary">ค้นหาชุดสำหรับงานของฉัน</a>
     </div>
 </div>
 
@@ -21,19 +21,21 @@
         <h2 class="section-title" style="margin-bottom: 16px;">การเช่าของฉัน</h2>
         @if($activeRental)
             @php
-                $item = collect($activeRental->orderItems())->first();
-                $product = $item['product'] ?? null;
+                // ดึงรายการสินค้าผ่าน hasMany Relationship (orderItems)
+                $firstItem = $activeRental->orderItems->first();
+                $product = $firstItem ? $firstItem->product : null;
+                $imgUrl = is_array($product?->image) ? ($product->image[0] ?? null) : $product?->image;
             @endphp
             <div style="display: flex; gap: 18px; align-items: center;">
-                <img src="{{ isset($product->image[0]) ? asset($product->image[0]) : 'https://via.placeholder.com/120x150' }}" 
+                <img src="{{ $imgUrl ? asset($imgUrl) : 'https://via.placeholder.com/120x150' }}" 
                      alt="Dress" style="width: 110px; height: 140px; object-fit: cover; border-radius: 10px;">
                 <div style="flex: 1;">
-                    <span class="status {{ $activeRental->status }}">{{ strtoupper($activeRental->status) }}</span>
+                    <span class="status {{ $activeRental->order_status }}">{{ strtoupper($activeRental->order_status) }}</span>
                     <h3 style="font-size: 18px; margin: 8px 0 4px;">{{ $product->product_name ?? 'ชุดเช่า' }}</h3>
                     <p class="muted" style="font-size: 12px; margin-bottom: 12px;">
                         ระยะเวลา: {{ optional($activeRental->pickup_date)->format('d M') }} - {{ optional($activeRental->return_date)->format('d M Y') }}
                     </p>
-                    <a href="{{ route('customer.rentals.show', $activeRental->id) }}" class="btn btn-secondary btn-sm">ติดตามสถานะ</a>
+                    <a href="{{ Route::has('rentals.show') ? route('rentals.show', $activeRental->order_id) : '#' }}" class="btn btn-secondary btn-sm">ติดตามสถานะ</a>
                 </div>
             </div>
         @else
@@ -50,7 +52,7 @@
             @endphp
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line);">
                 <div>
-                    <strong>{{ $event->item[0]['occasion'] ?? 'งานเลี้ยง' }}</strong>
+                    <strong>{{ $event->occasion ?? 'งานเลี้ยง' }}</strong>
                     <p class="muted" style="font-size: 11px; margin: 0;">{{ optional($event->event_date)->format('d M Y') }}</p>
                 </div>
                 <div style="font-weight: 700; color: var(--mauve); font-size: 16px;">
@@ -67,11 +69,11 @@
 <div class="card card-pad" style="margin-bottom: 24px;">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
         <h2 class="section-title">คุณกำลังหาชุดสำหรับอะไร?</h2>
-        <a href="{{ route('dresses.occasions') }}" style="font-size: 12px; color: var(--mauve); text-decoration: none; font-weight: 700;">ดูทั้งหมด</a>
+        <a href="{{ Route::has('dresses.occasions') ? route('dresses.occasions') : '#' }}" style="font-size: 12px; color: var(--mauve); text-decoration: none; font-weight: 700;">ดูทั้งหมด</a>
     </div>
     <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;">
         @foreach(['Wedding' => '💒', 'Graduation' => '🎓', 'Party' => '🎉', 'Formal' => '👠', 'Photoshoot' => '📸', 'Costume' => '🎭'] as $occ => $icon)
-            <a href="{{ route('dresses.occasions', ['category' => $occ]) }}" class="card" style="padding: 14px; text-align: center; text-decoration: none; color: var(--charcoal);">
+            <a href="{{ Route::has('dresses.occasions') ? route('dresses.occasions', ['category' => $occ]) : '#' }}" class="card" style="padding: 14px; text-align: center; text-decoration: none; color: var(--charcoal);">
                 <div style="font-size: 24px;">{{ $icon }}</div>
                 <div style="font-size: 12px; font-weight: 700; margin-top: 6px;">{{ $occ }}</div>
             </a>
@@ -83,15 +85,15 @@
 <div class="card card-pad">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
         <h2 class="section-title">แจ้งเตือนล่าสุด</h2>
-        <a href="{{ route('customer.notifications.index') }}" style="font-size: 12px; color: var(--mauve); text-decoration: none; font-weight: 700;">ดูทั้งหมด</a>
+        <a href="{{ Route::has('notifications.index') ? route('notifications.index') : '#' }}" style="font-size: 12px; color: var(--mauve); text-decoration: none; font-weight: 700;">ดูทั้งหมด</a>
     </div>
     @forelse($notifications as $noti)
         <div class="task">
             <div>
-                <strong>การจอง #{{ $noti->id }}</strong>
-                <p>{{ $noti->reject_reason ? 'คำขอจองถูกปฏิเสธ: '.$noti->reject_reason : 'สถานะการจองเปลี่ยนเป็น '.strtoupper($noti->status) }}</p>
+                <strong>การจอง #ORD{{ str_pad($noti->order_id, 6, '0', STR_PAD_LEFT) }}</strong>
+                <p>{{ $noti->reject_reason ? 'คำขอจองถูกปฏิเสธ: '.$noti->reject_reason : 'สถานะการจองเปลี่ยนเป็น '.strtoupper($noti->order_status) }}</p>
             </div>
-            <span class="muted" style="font-size: 11px;">{{ $noti->updated_at->diffForHumans() }}</span>
+            <span class="muted" style="font-size: 11px;">{{ $noti->updated_at ? $noti->updated_at->diffForHumans() : '-' }}</span>
         </div>
     @empty
         <p class="muted" style="font-size: 12px;">ไม่มีการแจ้งเตือนใหม่</p>

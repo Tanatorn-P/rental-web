@@ -8,9 +8,10 @@ use App\Http\Controllers\CustomerHistoryController;
 use App\Http\Controllers\CustomerNotificationController;
 use App\Http\Controllers\CustomerProfileController;
 
-Route::middleware(['web'])->group(function () {
-    // 1. Dashboard / Home
+Route::middleware(['web'])->prefix('customer')->group(function () {
+    // 1. Dashboard / Home (เพิ่ม name customer.dashboard ให้เรียกใช้ได้ทั้งคู่)
     Route::get('/dashboard', [CustomerHomeController::class, 'index'])->name('home');
+    Route::get('/dashboard', [CustomerHomeController::class, 'index'])->name('customer.dashboard');
 
     // 2. My Reservations
     Route::get('/my-reservations', [CustomerReservationController::class, 'index'])->name('reservations.index');

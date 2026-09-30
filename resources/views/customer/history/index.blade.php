@@ -25,17 +25,17 @@
         <tbody>
             @forelse($historyList as $item)
                 @php
-                    $first = collect($item->orderItems())->first();
-                    $productName = $first['product']->product_name ?? 'ชุดเช่า';
+                    $firstItem = $item->orderItems->first();
+                    $productName = $firstItem?->product?->product_name ?? 'ชุดเช่า';
                 @endphp
                 <tr>
-                    <td><strong>ORD{{ str_pad($item->id, 6, '0', STR_PAD_LEFT) }}</strong></td>
+                    <td><strong>ORD{{ str_pad($item->order_id, 6, '0', STR_PAD_LEFT) }}</strong></td>
                     <td>{{ $productName }}</td>
-                    <td>{{ $item->item[0]['occasion'] ?? 'งานทั่วไป' }}</td>
+                    <td>{{ $item->occasion ?? 'งานทั่วไป' }}</td>
                     <td>{{ optional($item->pickup_date)->format('d M') }} - {{ optional($item->return_date)->format('d M Y') }}</td>
                     <td>
-                        <span class="status {{ $item->status }}">
-                            {{ strtoupper($item->status) }}
+                        <span class="status {{ $item->order_status }}">
+                            {{ strtoupper($item->order_status) }}
                         </span>
                     </td>
                 </tr>

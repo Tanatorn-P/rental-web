@@ -18,12 +18,12 @@
             {{ mb_substr($customer->fullname ?? 'US', 0, 2) }}
         </div>
         <h2 style="font-size: 18px; margin: 0 0 4px;">{{ $customer->fullname ?? 'ผู้ใช้งาน' }}</h2>
-        <p class="muted" style="font-size: 12px; margin: 0;">รหัสลูกค้า: CUST-{{ $customer->id ?? '001' }}</p>
+        <p class="muted" style="font-size: 12px; margin: 0;">รหัสลูกค้า: CUST-{{ str_pad($customer->customer_id ?? 1, 4, '0', STR_PAD_LEFT) }}</p>
     </div>
 
     <!-- Profile Form -->
     <div class="card card-pad">
-        <form action="{{ route('profile.update') }}" method="POST">
+        <form action="{{ Route::has('profile.update') ? route('profile.update') : '#' }}" method="POST">
             @csrf
             @method('PUT')
 

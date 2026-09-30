@@ -12,10 +12,12 @@ class CustomerHistoryController extends Controller
     public function index()
     {
         $customer = Auth::guard('customer')->user() ?? Customer::first();
-        $customerId = $customer ? $customer->id : null;
+        $customerId = $customer ? $customer->customer_id : null;
 
+        // ดึง Orders ผ่าน Relation หรือ Query ตรงโดยระบุ customer_id และ order_status
         $historyList = Order::where('customer_id', $customerId)
-            ->whereIn('status', ['returned', 'completed', 'rejected'])
+            ->whereIn('order_status', ['returned', 'completed', 'rejected', 'คืนแล้ว', 'สำเร็จ'])
+            ->with(['orderItems.product']) // Eager loading Relationship
             ->orderBy('updated_at', 'desc')
             ->get();
 

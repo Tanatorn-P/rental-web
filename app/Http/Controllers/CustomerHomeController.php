@@ -12,11 +12,12 @@ class CustomerHomeController extends Controller
     public function index()
     {
         $customer = Auth::guard('customer')->user() ?? Customer::first();
-        $customerId = $customer ? $customer->id : null;
+        $customerId = $customer ? $customer->customer_id : null;
 
-        // ดึงรายการเช่าปัจจุบัน (Active Order)
+        // ดึงรายการเช่าปัจจุบัน (Active Order) พร้อม Relationship
         $activeRental = Order::where('customer_id', $customerId)
-            ->whereIn('status', ['approved', 'preparing', 'rented'])
+            ->whereIn('order_status', ['approved', 'preparing', 'rented', 'อนุมัติแล้ว', 'รอรับชุด'])
+            ->with(['orderItems.product'])
             ->latest()
             ->first();
 
@@ -28,8 +29,10 @@ class CustomerHomeController extends Controller
 
         // ดึงข้อมูลการแจ้งเตือนล่าสุด
         $notifications = Order::where('customer_id', $customerId)
-            ->whereNotNull('reject_reason')
-            ->orWhereIn('status', ['approved', 'preparing'])
+            ->where(function($query) {
+                $query->whereNotNull('reject_reason')
+                      ->orWhereIn('order_status', ['approved', 'preparing', 'อนุมัติแล้ว']);
+            })
             ->latest()
             ->take(3)
             ->get();

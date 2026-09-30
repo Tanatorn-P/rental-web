@@ -9,7 +9,7 @@
         <h1 class="page-title">การจองของฉัน</h1>
         <p class="page-subtitle">ติดตามและตรวจสอบสถานะการจองชุดทั้งหมด</p>
     </div>
-    <a href="{{ route('dresses.find') }}" class="btn btn-primary">ค้นหาชุด</a>
+    <a href="{{ Route::has('dresses.find') ? route('dresses.find') : '#' }}" class="btn btn-primary">ค้นหาชุด</a>
 </div>
 
 <div class="card table-wrap">
@@ -26,20 +26,20 @@
         <tbody>
             @forelse($reservations as $res)
                 @php
-                    $firstItem = collect($res->orderItems())->first();
-                    $productName = $firstItem['product']->product_name ?? 'ชุดเช่า';
+                    $firstItem = $res->orderItems->first();
+                    $productName = $firstItem?->product?->product_name ?? 'ชุดเช่า';
                 @endphp
                 <tr>
-                    <td><strong>ORD{{ str_pad($res->id, 6, '0', STR_PAD_LEFT) }}</strong></td>
+                    <td><strong>ORD{{ str_pad($res->order_id, 6, '0', STR_PAD_LEFT) }}</strong></td>
                     <td>{{ $productName }}</td>
                     <td>{{ optional($res->pickup_date)->format('d M') }} - {{ optional($res->return_date)->format('d M Y') }}</td>
                     <td>
-                        <span class="status {{ $res->status }}">
-                            {{ strtoupper($res->status) }}
+                        <span class="status {{ $res->order_status }}">
+                            {{ strtoupper($res->order_status) }}
                         </span>
                     </td>
                     <td>
-                        <a href="{{ route('customer.rentals.show', $res->id) }}" class="btn btn-secondary btn-sm">ดูรายละเอียด</a>
+                        <a href="{{ Route::has('rentals.show') ? route('rentals.show', $res->order_id) : '#' }}" class="btn btn-secondary btn-sm">ดูรายละเอียด</a>
                     </td>
                 </tr>
             @empty

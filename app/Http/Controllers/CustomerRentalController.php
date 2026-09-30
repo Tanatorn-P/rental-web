@@ -12,14 +12,14 @@ class CustomerRentalController extends Controller
     public function show($id = null)
     {
         $customer = Auth::guard('customer')->user() ?? Customer::first();
-        $customerId = $customer ? $customer->id : null;
+        $customerId = $customer ? $customer->customer_id : null;
 
-        $query = Order::where('customer_id', $customerId);
+        $query = Order::where('customer_id', $customerId)->with(['orderItems.product']);
 
         if ($id) {
-            $rental = $query->where('id', $id)->firstOrFail();
+            $rental = $query->where('order_id', $id)->firstOrFail();
         } else {
-            $rental = $query->whereIn('status', ['approved', 'preparing', 'rented'])
+            $rental = $query->whereIn('order_status', ['approved', 'preparing', 'rented', 'อนุมัติแล้ว'])
                 ->latest()
                 ->first();
         }

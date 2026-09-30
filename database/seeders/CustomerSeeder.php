@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash; //  1. เพิ่ม Facade Hash
 
 class CustomerSeeder extends Seeder
 {
@@ -13,7 +14,7 @@ class CustomerSeeder extends Seeder
             [
                 'customer_id' => 'C0001',
                 'username' => 'kamonchanok_s',
-                'password' => 'nan1234',
+                'password' => Hash::make('nan1234'), //  2. ครอบด้วย Hash::make()
                 'fullname' => 'กมลชนก แสงทอง',
                 'phone' => '0812345671',
                 'address' => '12/5 หมู่ 3 ต.บางพลี อ.บางพลี จ.สมุทรปราการ 10540',
@@ -29,7 +30,7 @@ class CustomerSeeder extends Seeder
             [
                 'customer_id' => 'C0002',
                 'username' => 'thanya_ms',
-                'password' => 'thanya99',
+                'password' => Hash::make('thanya99'),
                 'fullname' => 'ธัญญาลักษณ์ มีสุข',
                 'phone' => '0823456782',
                 'address' => '45 ถ.สุขุมวิท ต.ปากน้ำ อ.เมือง จ.สมุทรปราการ 10270',
@@ -45,7 +46,7 @@ class CustomerSeeder extends Seeder
             [
                 'customer_id' => 'C0003',
                 'username' => 'benja_ik',
-                'password' => 'benja2026',
+                'password' => Hash::make('benja2026'),
                 'fullname' => 'เบญจวรรณ อินทร์แก้ว',
                 'phone' => '0834567893',
                 'address' => '78 หมู่ 1 ต.บางแก้ว อ.บางพลี จ.สมุทรปราการ 10540',
@@ -61,7 +62,7 @@ class CustomerSeeder extends Seeder
             [
                 'customer_id' => 'C0004',
                 'username' => 'pawee_ch',
-                'password' => 'paweena55',
+                'password' => Hash::make('paweena55'),
                 'fullname' => 'ปวีณา ชูเกียรติ',
                 'phone' => '0845678904',
                 'address' => '23/1 ต.สำโรงเหนือ อ.เมือง จ.สมุทรปราการ 10270',
@@ -77,7 +78,7 @@ class CustomerSeeder extends Seeder
             [
                 'customer_id' => 'C0005',
                 'username' => 'pimchanok_r',
-                'password' => 'pim2026',
+                'password' => Hash::make('pim2026'),
                 'fullname' => 'พิมพ์ชนก รุ่งเรือง',
                 'phone' => '0856789015',
                 'address' => '56 ถ.เทพารักษ์ ต.เทพารักษ์ อ.เมือง จ.สมุทรปราการ 10270',
@@ -93,7 +94,7 @@ class CustomerSeeder extends Seeder
             [
                 'customer_id' => 'C0006',
                 'username' => 'rattana_bm',
-                'password' => 'rattana77',
+                'password' => Hash::make('rattana77'),
                 'fullname' => 'รัตนาภรณ์ บุญมา',
                 'phone' => '0867890126',
                 'address' => '89 หมู่ 5 ต.บางเสาธง อ.บางเสาธง จ.สมุทรปราการ 10570',
@@ -109,7 +110,7 @@ class CustomerSeeder extends Seeder
             [
                 'customer_id' => 'C0007',
                 'username' => 'wannisa_sk',
-                'password' => 'wannisa88',
+                'password' => Hash::make('wannisa88'),
                 'fullname' => 'วรรณิษา ศรีสุข',
                 'phone' => '0878901237',
                 'address' => '34 ถ.ศรีนครินทร์ ต.สำโรง อ.เมือง จ.สมุทรปราการ 10270',
@@ -125,7 +126,7 @@ class CustomerSeeder extends Seeder
             [
                 'customer_id' => 'C0008',
                 'username' => 'sasithorn_k',
-                'password' => 'sasi2026',
+                'password' => Hash::make('sasi2026'),
                 'fullname' => 'ศศิธร แก้วมณี',
                 'phone' => '0889012348',
                 'address' => '67/2 หมู่ 4 ต.บางบ่อ อ.บางบ่อ จ.สมุทรปราการ 10560',
@@ -141,7 +142,7 @@ class CustomerSeeder extends Seeder
             [
                 'customer_id' => 'C0009',
                 'username' => 'sunisa_pp',
-                'password' => 'sunisa2026',
+                'password' => Hash::make('sunisa2026'),
                 'fullname' => 'สุนิสา พงษ์ไพร',
                 'phone' => '0891234569',
                 'address' => '90 ถ.เทพารักษ์ ต.บางปลา อ.บางพลี จ.สมุทรปราการ 10540',
@@ -157,7 +158,7 @@ class CustomerSeeder extends Seeder
             [
                 'customer_id' => 'C0010',
                 'username' => 'orawan_td',
-                'password' => 'orawan1234',
+                'password' => Hash::make('orawan1234'),
                 'fullname' => 'อรวรรณ ทองดี',
                 'phone' => '0898765432',
                 'address' => '12 หมู่ 2 ต.บางปูใหม่ อ.เมือง จ.สมุทรปราการ 10280',

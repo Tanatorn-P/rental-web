@@ -12,10 +12,11 @@ class CustomerReservationController extends Controller
     public function index()
     {
         $customer = Auth::guard('customer')->user() ?? Customer::first();
-        $customerId = $customer ? $customer->id : null;
+        $customerId = $customer ? $customer->customer_id : null;
 
         $reservations = Order::where('customer_id', $customerId)
-            ->whereIn('status', ['pending', 'approved'])
+            ->whereIn('order_status', ['pending', 'approved', 'รออนุมัติ', 'อนุมัติแล้ว'])
+            ->with(['orderItems.product'])
             ->orderBy('created_at', 'desc')
             ->get();
 

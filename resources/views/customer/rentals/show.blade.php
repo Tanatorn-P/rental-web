@@ -9,7 +9,7 @@
         <h1 class="page-title">การเช่าปัจจุบัน</h1>
         <p class="page-subtitle">
             @if($rental)
-                รหัสการเช่า: ORD{{ str_pad($rental->id, 6, '0', STR_PAD_LEFT) }} • อัปเดตล่าสุด: {{ $rental->updated_at->format('d M Y H:i') }}
+                รหัสการเช่า: ORD{{ str_pad($rental->order_id, 6, '0', STR_PAD_LEFT) }} • อัปเดตล่าสุด: {{ $rental->updated_at ? \Carbon\Carbon::parse($rental->updated_at)->format('d M Y H:i') : '-' }}
             @else
                 ไม่พบรายการเช่าปัจจุบัน
             @endif
@@ -26,12 +26,15 @@
         <div style="display: flex; justify-content: space-between; position: relative; margin: 30px 0;">
             @php
                 $steps = ['pending' => 'รออนุมัติ', 'approved' => 'อนุมัติแล้ว', 'preparing' => 'เตรียมชุด', 'rented' => 'อยู่ระหว่างเช่า', 'returned' => 'คืนชุดสำเร็จ'];
-                $currentStatus = $rental->status;
+                $currentStatus = $rental->order_status;
             @endphp
 
             @foreach($steps as $key => $label)
+                @php
+                    $bgColor = ($currentStatus == $key) ? 'var(--mauve)' : 'var(--line)';
+                @endphp
                 <div style="text-align: center; z-index: 1;">
-                    <div style="width: 28px; height: 28px; border-radius: 50%; background: {{ $currentStatus == $key ? 'var(--mauve)' : 'var(--line)' }}; color: white; display: grid; place-items: center; margin: auto; font-size: 12px; font-weight: 700;">
+                    <div style="width: 28px; height: 28px; border-radius: 50%; background: {{ $bgColor }}; color: white; display: grid; place-items: center; margin: auto; font-size: 12px; font-weight: 700;">
                         ✓
                     </div>
                     <div style="font-size: 11px; margin-top: 6px; font-weight: 700;">{{ $label }}</div>
@@ -42,13 +45,13 @@
         <div style="margin-top: 24px; padding: 14px; background: #fbf7f2; border-radius: 10px;">
             <strong>คำแนะนำ:</strong>
             <p style="font-size: 12px; color: var(--gray); margin: 4px 0 0;">
-                @if($rental->status == 'pending')
+                @if($rental->order_status == 'pending')
                     ทางร้านกำลังตรวจสอบคำขอจองของคุณ กรุณารอการอนุมัติ
-                @elseif($rental->status == 'approved')
+                @elseif($rental->order_status == 'approved')
                     คำขอจองได้รับการอนุมัติแล้ว ร้านกำลังจัดเตรียมชุดให้คุณ
-                @elseif($rental->status == 'preparing')
+                @elseif($rental->order_status == 'preparing')
                     ชุดของคุณถูกทำความสะอาดและซักอบรีดเรียบร้อย พร้อมสำหรับการมารับ
-                @elseif($rental->status == 'rented')
+                @elseif($rental->order_status == 'rented')
                     ขณะนี้ชุดอยู่กับคุณ กรุณานำมาคืนภายในวันที่กำหนด
                 @else
                     รายการเช่าเสร็จสมบูรณ์เรียบร้อยแล้ว
@@ -70,7 +73,7 @@
 @else
 <div class="card card-pad" style="text-align: center; padding: 40px;">
     <p class="muted">ไม่พบข้อมูลการเช่าในขณะนี้</p>
-    <a href="{{ route('dresses.find') }}" class="btn btn-primary" style="margin-top: 10px;">ค้นหาชุดเช่า</a>
+    <a href="{{ Route::has('dresses.find') ? route('dresses.find') : '#' }}" class="btn btn-primary" style="margin-top: 10px;">ค้นหาชุดเช่า</a>
 </div>
 @endif
 @endsection

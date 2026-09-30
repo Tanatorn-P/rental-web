@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Customer extends Authenticatable
 {
@@ -21,4 +22,12 @@ class Customer extends Authenticatable
     ];
 
     protected $hidden = ['password'];
+
+    /**
+     * ความสัมพันธ์: ลูกค้า 1 คน สามารถมีได้หลาย Order
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'customer_id', 'customer_id');
+    }
 }

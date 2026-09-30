@@ -11,7 +11,6 @@ use App\Http\Controllers\StaffPickupController;
 use App\Http\Controllers\StaffQueueController;
 use App\Http\Controllers\StaffReturnController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CustomerHomeController;
 
 Route::get('/', function () {
     return view('auth.role-select');
@@ -55,7 +54,6 @@ Route::middleware('auth:web')->group(function () {
 });
 
 // ---------- Auth: Customer (guard: customer) ----------
-// เปลี่ยน path เป็น /customer/... เพื่อไม่ชนกับ /login, /register ของ starter kit เดิม
 Route::middleware('guest:customer')->group(function () {
     Route::get('/customer/login', [CustomerLoginController::class, 'create'])->name('customer.login');
     Route::post('/customer/login', [CustomerLoginController::class, 'store']);
@@ -67,5 +65,6 @@ Route::middleware('guest:customer')->group(function () {
 Route::middleware('auth:customer')->group(function () {
     Route::post('/customer/logout', [CustomerLoginController::class, 'destroy'])->name('customer.logout');
 });
-                                                                        //->middleware('auth:customer')
-Route::get('/customer/dashboard', [CustomerHomeController::class, 'index'])->name('customer.dashboard');
+
+// ดึง Route ฝั่ง Customer จาก user_panel.php เข้ามารวม
+require __DIR__.'/user_panel.php';

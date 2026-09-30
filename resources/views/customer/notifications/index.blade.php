@@ -1,52 +1,31 @@
 @extends('layouts.app')
 
-@section('crumb', 'History')
+@section('crumb', 'Notifications')
 
 @section('content')
 <div class="page-head">
     <div>
-        <div class="eyebrow">RENTAL HISTORY</div>
-        <h1 class="page-title">ประวัติการเช่า</h1>
-        <p class="page-subtitle">รายการเช่าชุดย้อนหลังทั้งหมดของคุณ</p>
+        <div class="eyebrow">NOTIFICATIONS</div>
+        <h1 class="page-title">การแจ้งเตือนทั้งหมด</h1>
+        <p class="page-subtitle">ติดตามการอัปเดตสถานะการจองและการเช่าของคุณ</p>
     </div>
 </div>
 
-<div class="card table-wrap">
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th>รหัสการเช่า</th>
-                <th>รายการชุด</th>
-                <th>งานเทศกาล</th>
-                <th>ระยะเวลาการเช่า</th>
-                <th>สถานะ</th>
-            </tr>
-        </thead>
-        <tbody>
-            @forelse($historyList as $item)
-                @php
-                    $first = collect($item->orderItems())->first();
-                    $productName = $first['product']->product_name ?? 'ชุดเช่า';
-                @endphp
-                <tr>
-                    <td><strong>ORD{{ str_pad($item->id, 6, '0', STR_PAD_LEFT) }}</strong></td>
-                    <td>{{ $productName }}</td>
-                    <td>{{ $item->item[0]['occasion'] ?? 'งานทั่วไป' }}</td>
-                    <td>{{ optional($item->pickup_date)->format('d M') }} - {{ optional($item->return_date)->format('d M Y') }}</td>
-                    <td>
-                        <span class="status {{ $item->status }}">
-                            {{ strtoupper($item->status) }}
-                        </span>
-                    </td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="5" style="text-align: center; color: var(--gray); padding: 30px;">
-                        ยังไม่มีประวัติการเช่าในระบบ
-                    </td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+<div class="card card-pad">
+    @forelse($notifications as $noti)
+        <div class="task" style="padding: 14px 0; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong>การจอง #ORD{{ str_pad($noti->order_id, 6, '0', STR_PAD_LEFT) }}</strong>
+                <p style="margin: 4px 0 0; font-size: 13px; color: var(--charcoal);">
+                    {{ $noti->reject_reason ? 'คำขอจองถูกปฏิเสธ: '.$noti->reject_reason : 'สถานะการจองเปลี่ยนเป็น '.strtoupper($noti->order_status) }}
+                </p>
+            </div>
+            <span class="muted" style="font-size: 11px;">
+                {{ $noti->updated_at ? $noti->updated_at->diffForHumans() : '-' }}
+            </span>
+        </div>
+    @empty
+        <p class="muted" style="text-align: center; padding: 20px 0;">ไม่มีการแจ้งเตือนในขณะนี้</p>
+    @endforelse
 </div>
 @endsection
