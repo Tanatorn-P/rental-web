@@ -56,7 +56,10 @@ class Order extends Model
      */
     public function orderItems(): Collection
     {
-        $rawItems = is_array($this->item) ? array_values($this->item) : [];
+        // item อาจเป็น null หรือค่าที่ไม่ใช่ array ได้ใน DB จึงอ่านเป็น mixed แล้วเช็คเอง
+        /** @var mixed $item */
+        $item = $this->item;
+        $rawItems = is_array($item) ? array_values($item) : [];
 
         // ดึง product_id ไม่ว่าจะเก็บเป็น ["G001"] หรือ [["product_id" => "G001"]]
         $productIds = collect($rawItems)->map(function (mixed $entry): mixed {
