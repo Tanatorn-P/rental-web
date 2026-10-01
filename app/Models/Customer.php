@@ -24,7 +24,7 @@ class Customer extends Authenticatable
     protected $hidden = ['password'];
 
     /**
-     * ความสัมพันธ์: ลูกค้า 1 คน สามารถมีได้หลาย Order
+     * @return HasMany<Order, $this>
      */
     public function orders(): HasMany
     {
