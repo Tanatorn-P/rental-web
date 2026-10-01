@@ -54,7 +54,6 @@ Route::middleware('auth:web')->group(function () {
 });
 
 // ---------- Auth: Customer (guard: customer) ----------
-// เปลี่ยน path เป็น /customer/... เพื่อไม่ชนกับ /login, /register ของ starter kit เดิม
 Route::middleware('guest:customer')->group(function () {
     Route::get('/customer/login', [CustomerLoginController::class, 'create'])->name('customer.login');
     Route::post('/customer/login', [CustomerLoginController::class, 'store']);
@@ -67,6 +66,5 @@ Route::middleware('auth:customer')->group(function () {
     Route::post('/customer/logout', [CustomerLoginController::class, 'destroy'])->name('customer.logout');
 });
 
-Route::get('/customer/dashboard', function () {
-    return 'Customer Dashboard (ยังไม่สร้างหน้าจริง)';
-})->middleware('auth:customer')->name('customer.dashboard');
+// ดึง Route ฝั่ง Customer จาก user_panel.php เข้ามารวม
+require __DIR__.'/user_panel.php';
