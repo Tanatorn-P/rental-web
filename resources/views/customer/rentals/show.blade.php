@@ -9,9 +9,9 @@
         <h1 class="page-title">การเช่าปัจจุบัน</h1>
         <p class="page-subtitle">
             @if($rental)
-                รหัสการเช่า: ORD{{ str_pad($rental->order_id, 6, '0', STR_PAD_LEFT) }} • อัปเดตล่าสุด: {{ $rental->updated_at ? \Carbon\Carbon::parse($rental->updated_at)->format('d M Y H:i') : '-' }}
+            รหัสการเช่า: {{ $rental->order_id }} • อัปเดตล่าสุด: {{ $rental->updated_at ? \Carbon\Carbon::parse($rental->updated_at)->format('d M Y H:i') : '-' }}
             @else
-                ไม่พบรายการเช่าปัจจุบัน
+            ไม่พบรายการเช่าปัจจุบัน
             @endif
         </p>
     </div>
@@ -22,23 +22,29 @@
     <!-- Timeline Status -->
     <div class="card card-pad">
         <h2 class="section-title" style="margin-bottom: 20px;">ติดตามสถานะ</h2>
-        
+
         <div style="display: flex; justify-content: space-between; position: relative; margin: 30px 0;">
             @php
-                $steps = ['pending' => 'รออนุมัติ', 'approved' => 'อนุมัติแล้ว', 'preparing' => 'เตรียมชุด', 'rented' => 'อยู่ระหว่างเช่า', 'returned' => 'คืนชุดสำเร็จ'];
-                $currentStatus = $rental->order_status;
+            $steps = [
+            'pending' => 'รออนุมัติ',
+            'confirmed' => 'ยืนยันแล้ว',
+            'preparing' => 'เตรียมชุด',
+            'rented' => 'อยู่ระหว่างเช่า',
+            'returned' => 'คืนชุดสำเร็จ'
+            ];
+            $currentStatus = $rental->order_status;
             @endphp
 
             @foreach($steps as $key => $label)
-                @php
-                    $bgColor = ($currentStatus == $key) ? 'var(--mauve)' : 'var(--line)';
-                @endphp
-                <div style="text-align: center; z-index: 1;">
-                    <div style="width: 28px; height: 28px; border-radius: 50%; background: {{ $bgColor }}; color: white; display: grid; place-items: center; margin: auto; font-size: 12px; font-weight: 700;">
-                        ✓
-                    </div>
-                    <div style="font-size: 11px; margin-top: 6px; font-weight: 700;">{{ $label }}</div>
+            @php
+            $bgColor = ($currentStatus == $key) ? 'var(--mauve)' : 'var(--line)';
+            @endphp
+            <div style="text-align: center; z-index: 1;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: {{ $bgColor }}; color: white; display: grid; place-items: center; margin: auto; font-size: 12px; font-weight: 700;">
+                    ✓
                 </div>
+                <div style="font-size: 11px; margin-top: 6px; font-weight: 700;">{{ $label }}</div>
+            </div>
             @endforeach
         </div>
 
@@ -46,15 +52,15 @@
             <strong>คำแนะนำ:</strong>
             <p style="font-size: 12px; color: var(--gray); margin: 4px 0 0;">
                 @if($rental->order_status == 'pending')
-                    ทางร้านกำลังตรวจสอบคำขอจองของคุณ กรุณารอการอนุมัติ
-                @elseif($rental->order_status == 'approved')
-                    คำขอจองได้รับการอนุมัติแล้ว ร้านกำลังจัดเตรียมชุดให้คุณ
+                ทางร้านกำลังตรวจสอบคำขอจองของคุณ กรุณารอการอนุมัติ
+                @elseif(in_array($rental->order_status, ['approved', 'confirmed']))
+                คำขอจองได้รับการอนุมัติแล้ว ร้านกำลังจัดเตรียมชุดให้คุณ
                 @elseif($rental->order_status == 'preparing')
-                    ชุดของคุณถูกทำความสะอาดและซักอบรีดเรียบร้อย พร้อมสำหรับการมารับ
+                ชุดของคุณถูกทำความสะอาดและซักอบรีดเรียบร้อย พร้อมสำหรับการมารับ
                 @elseif($rental->order_status == 'rented')
-                    ขณะนี้ชุดอยู่กับคุณ กรุณานำมาคืนภายในวันที่กำหนด
+                ขณะนี้ชุดอยู่กับคุณ กรุณานำมาคืนภายในวันที่กำหนด
                 @else
-                    รายการเช่าเสร็จสมบูรณ์เรียบร้อยแล้ว
+                รายการเช่าเสร็จสมบูรณ์เรียบร้อยแล้ว
                 @endif
             </p>
         </div>

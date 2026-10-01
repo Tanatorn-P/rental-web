@@ -15,8 +15,7 @@ class CustomerReservationController extends Controller
         $customerId = $customer ? $customer->customer_id : null;
 
         $reservations = Order::where('customer_id', $customerId)
-            ->whereIn('order_status', ['pending', 'approved', 'รออนุมัติ', 'อนุมัติแล้ว'])
-            ->with(['orderItems.product'])
+            ->whereIn('order_status', ['pending', 'approved', 'confirmed'])
             ->orderBy('created_at', 'desc')
             ->get();
 

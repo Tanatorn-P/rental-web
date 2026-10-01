@@ -46,21 +46,29 @@ class Order extends Model
      * @return Collection<int, array{product_id: string|null, size: string|null, product: Product|null}>
      */
     public function orderItems(): Collection
-    {
-        $entries = collect($this->item ?? []);
-        $productIds = $entries->pluck('product_id')->filter()->all();
-        $products = Product::whereIn('product_id', $productIds)->get()->keyBy('product_id');
-
-        return $entries
-            ->values()
-            ->map(function (array $entry) use ($products): array {
-                $productId = $entry['product_id'] ?? null;
-
-                return [
-                    'product_id' => is_string($productId) ? $productId : null,
-                    'size' => is_string($entry['size'] ?? null) ? $entry['size'] : null,
-                    'product' => $productId !== null ? $products->get($productId) : null,
-                ];
-            });
+{
+    $rawItems = $this->item ?? [];
+    if (is_string($rawItems)) {
+        $rawItems = json_decode($rawItems, true) ?? [];
     }
+
+    // ดึง product_id ไม่ว่าจะเก็บเป็น ["G001"] หรือ [["product_id" => "G001"]]
+    $productIds = collect($rawItems)->map(function ($entry) {
+        if (is_string($entry)) return $entry;
+        return $entry['product_id'] ?? null;
+    })->filter()->values()->all();
+
+    $products = Product::whereIn('product_id', $productIds)->get()->keyBy('product_id');
+
+    return collect($rawItems)->map(function ($entry) use ($products) {
+        $productId = is_string($entry) ? $entry : ($entry['product_id'] ?? null);
+        $size = is_array($entry) ? ($entry['size'] ?? null) : null;
+
+        return [
+            'product_id' => $productId,
+            'size'       => $size,
+            'product'    => $productId ? $products->get($productId) : null,
+        ];
+    });
+}
 }

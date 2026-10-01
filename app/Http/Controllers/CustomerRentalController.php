@@ -14,12 +14,12 @@ class CustomerRentalController extends Controller
         $customer = Auth::guard('customer')->user() ?? Customer::first();
         $customerId = $customer ? $customer->customer_id : null;
 
-        $query = Order::where('customer_id', $customerId)->with(['orderItems.product']);
+        $query = Order::where('customer_id', $customerId);
 
         if ($id) {
-            $rental = $query->where('order_id', $id)->firstOrFail();
+            $rental = $query->where('order_id', $id)->firstOrFail(); // เปลี่ยนเป็น order_id
         } else {
-            $rental = $query->whereIn('order_status', ['approved', 'preparing', 'rented', 'อนุมัติแล้ว'])
+            $rental = $query->whereIn('order_status', ['approved', 'preparing', 'rented', 'confirmed'])
                 ->latest()
                 ->first();
         }
