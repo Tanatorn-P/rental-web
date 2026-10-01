@@ -52,10 +52,11 @@ class Order extends Model
     /**
      * อ่าน item JSON แล้วดึง Product แต่ละชิ้นมาผูกให้
      *
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, array{product_id: mixed, size: mixed, product: Product|null}>
      */
     public function orderItems(): Collection
     {
+        /** @var array<int|string, mixed> $rawItems */
         $rawItems = $this->item ?? [];
         if (is_string($rawItems)) {
             $rawItems = json_decode($rawItems, true) ?? [];

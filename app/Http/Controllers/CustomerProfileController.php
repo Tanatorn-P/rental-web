@@ -17,7 +17,7 @@ class CustomerProfileController extends Controller
         return view('customer.profile.index', compact('customer'));
     }
 
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         $customer = Auth::guard('customer')->user() ?? Customer::first();
 
