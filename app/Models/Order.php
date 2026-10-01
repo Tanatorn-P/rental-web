@@ -17,12 +17,21 @@ class Order extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'order_id', 'customer_id', 'item',
-        'event_date', 'pickup_date', 'pickup_time',
-        'return_date', 'return_time',
-        'total_price', 'deposit_prices', 'damage_price',
-        'reject_reason', 'order_status',
-        'slip_image', 'tracking_number',
+        'order_id',
+        'customer_id',
+        'item',
+        'event_date',
+        'pickup_date',
+        'pickup_time',
+        'return_date',
+        'return_time',
+        'total_price',
+        'deposit_prices',
+        'damage_price',
+        'reject_reason',
+        'order_status',
+        'slip_image',
+        'tracking_number',
     ];
 
     protected $casts = [
@@ -43,7 +52,7 @@ class Order extends Model
     /**
      * อ่าน item JSON แล้วดึง Product แต่ละชิ้นมาผูกให้
      *
-     * @return Collection<int, array{product_id: string|null, size: string|null, product: Product|null}>
+     * @return Collection<int, array<string, mixed>>
      */
     public function orderItems(): Collection
     {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Customer;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,7 +39,7 @@ class CustomerProfileController extends Controller
         return redirect()->route('customer.profile.index')->with('success', 'อัปเดตข้อมูลส่วนตัวเรียบร้อยแล้ว');
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
         Auth::guard('customer')->logout();
         $request->session()->invalidate();

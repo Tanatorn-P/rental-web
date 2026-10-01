@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class CustomerRentalController extends Controller
 {
-    public function show($id = null): View
+    public function show(string|int|null $id = null): View
     {
         $customer = Auth::guard('customer')->user() ?? Customer::first();
         $customerId = $customer ? $customer->customer_id : null;
