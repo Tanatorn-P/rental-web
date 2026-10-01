@@ -56,7 +56,7 @@ class Order extends Model
      */
     public function orderItems(): Collection
     {
-        /** @var array<int, mixed> $rawItems */
+        /** @var array<mixed> $rawItems */
         $rawItems = is_array($this->item) ? array_values($this->item) : [];
 
         // ดึง product_id ไม่ว่าจะเก็บเป็น ["G001"] หรือ [["product_id" => "G001"]]
@@ -72,8 +72,11 @@ class Order extends Model
 
         /** @var Collection<int, array{product_id: mixed, size: mixed, product: Product|null}> $result */
         $result = collect($rawItems)->map(function (mixed $entry) use ($products): array {
-            $productId = is_array($entry) ? ($entry['product_id'] ?? null) : $entry;
-            $size = is_array($entry) ? ($entry['size'] ?? null) : null;
+            /** @var array<string, mixed>|string|null $entryData */
+            $entryData = $entry;
+
+            $productId = is_array($entryData) ? ($entryData['product_id'] ?? null) : $entryData;
+            $size = is_array($entryData) ? ($entryData['size'] ?? null) : null;
 
             return [
                 'product_id' => $productId,
