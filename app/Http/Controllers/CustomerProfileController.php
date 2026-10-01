@@ -11,6 +11,7 @@ class CustomerProfileController extends Controller
     public function index()
     {
         $customer = Auth::guard('customer')->user() ?? Customer::first();
+
         return view('customer.profile.index', compact('customer'));
     }
 
@@ -19,14 +20,14 @@ class CustomerProfileController extends Controller
         $customer = Auth::guard('customer')->user() ?? Customer::first();
 
         $validated = $request->validate([
-            'fullname'     => 'required|string|max:255',
-            'phone'        => 'nullable|string|max:20',
-            'address'      => 'nullable|string',
+            'fullname' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string',
             'bank_account' => 'nullable|string|max:100',
-            'bust'         => 'nullable|numeric',
-            'shoulder'     => 'nullable|numeric',
-            'waist'        => 'nullable|numeric',
-            'hips'         => 'nullable|numeric',
+            'bust' => 'nullable|numeric',
+            'shoulder' => 'nullable|numeric',
+            'waist' => 'nullable|numeric',
+            'hips' => 'nullable|numeric',
         ]);
 
         if ($customer) {

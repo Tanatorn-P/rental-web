@@ -46,29 +46,32 @@ class Order extends Model
      * @return Collection<int, array{product_id: string|null, size: string|null, product: Product|null}>
      */
     public function orderItems(): Collection
-{
-    $rawItems = $this->item ?? [];
-    if (is_string($rawItems)) {
-        $rawItems = json_decode($rawItems, true) ?? [];
+    {
+        $rawItems = $this->item ?? [];
+        if (is_string($rawItems)) {
+            $rawItems = json_decode($rawItems, true) ?? [];
+        }
+
+        // ดึง product_id ไม่ว่าจะเก็บเป็น ["G001"] หรือ [["product_id" => "G001"]]
+        $productIds = collect($rawItems)->map(function ($entry) {
+            if (is_string($entry)) {
+                return $entry;
+            }
+
+            return $entry['product_id'] ?? null;
+        })->filter()->values()->all();
+
+        $products = Product::whereIn('product_id', $productIds)->get()->keyBy('product_id');
+
+        return collect($rawItems)->map(function ($entry) use ($products) {
+            $productId = is_string($entry) ? $entry : ($entry['product_id'] ?? null);
+            $size = is_array($entry) ? ($entry['size'] ?? null) : null;
+
+            return [
+                'product_id' => $productId,
+                'size' => $size,
+                'product' => $productId ? $products->get($productId) : null,
+            ];
+        });
     }
-
-    // ดึง product_id ไม่ว่าจะเก็บเป็น ["G001"] หรือ [["product_id" => "G001"]]
-    $productIds = collect($rawItems)->map(function ($entry) {
-        if (is_string($entry)) return $entry;
-        return $entry['product_id'] ?? null;
-    })->filter()->values()->all();
-
-    $products = Product::whereIn('product_id', $productIds)->get()->keyBy('product_id');
-
-    return collect($rawItems)->map(function ($entry) use ($products) {
-        $productId = is_string($entry) ? $entry : ($entry['product_id'] ?? null);
-        $size = is_array($entry) ? ($entry['size'] ?? null) : null;
-
-        return [
-            'product_id' => $productId,
-            'size'       => $size,
-            'product'    => $productId ? $products->get($productId) : null,
-        ];
-    });
-}
 }

@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CustomerHomeController;
-use App\Http\Controllers\CustomerReservationController;
-use App\Http\Controllers\CustomerRentalController;
 use App\Http\Controllers\CustomerHistoryController;
+use App\Http\Controllers\CustomerHomeController;
 use App\Http\Controllers\CustomerNotificationController;
 use App\Http\Controllers\CustomerProfileController;
+use App\Http\Controllers\CustomerRentalController;
+use App\Http\Controllers\CustomerReservationController;
+use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web'])->prefix('customer')->group(function () {
     // 1. Dashboard / Home (เพิ่ม name customer.dashboard ให้เรียกใช้ได้ทั้งคู่)
