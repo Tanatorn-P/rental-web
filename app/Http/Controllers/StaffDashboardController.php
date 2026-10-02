@@ -17,10 +17,10 @@ class StaffDashboardController extends Controller
         $pendingApproval = Order::where('order_status', 'pending')->count();
         $overdue = Order::whereDate('return_date', '<', $today)->where('order_status', 'rented')->count();
         $notReady = Product::where('status', 'not_ready')->count();
-        
+
         $pendingList = Order::with('customer')->where('order_status', 'pending')->orderBy('event_date')->take(5)->get();
         $overdueList = Order::with('customer')->whereDate('return_date', '<', $today)->where('order_status', 'rented')->get();
-        
+
         $todaySchedule = Order::with('customer')
             ->where(function ($query) use ($today) {
                 $query->whereDate('pickup_date', $today)->orWhereDate('return_date', $today);

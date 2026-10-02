@@ -2,19 +2,21 @@
 
 use App\Concerns\ProfileValidationRules;
 /* @chisel-email-verification */
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-/* @end-chisel-email-verification */
 use Flux\Flux;
+/* @end-chisel-email-verification */
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Title('Profile settings')] class extends Component {
+new #[Title('Profile settings')] class extends Component
+{
     use ProfileValidationRules;
 
     public string $name = '';
+
     public string $email = '';
 
     /**
@@ -98,13 +100,16 @@ new #[Title('Profile settings')] class extends Component {
                         <flux:text class="mt-4">
                             {{ __('Your email address is unverified.') }}
 
-                            <flux:link class="text-sm cursor-pointer" wire:click.prevent="resendVerificationNotification">
+                            <flux:link
+                                class="cursor-pointer text-sm"
+                                wire:click.prevent="resendVerificationNotification"
+                            >
                                 {{ __('Click here to re-send the verification email.') }}
                             </flux:link>
                         </flux:text>
 
                         @if (session('status') === 'verification-link-sent')
-                            <flux:text class="mt-2 font-medium !dark:text-green-400 !text-green-600">
+                            <flux:text class="!dark:text-green-400 mt-2 font-medium !text-green-600">
                                 {{ __('A new verification link has been sent to your email address.') }}
                             </flux:text>
                         @endif
@@ -119,15 +124,14 @@ new #[Title('Profile settings')] class extends Component {
                         {{ __('Save') }}
                     </flux:button>
                 </div>
-
             </div>
         </form>
 
         {{-- @chisel-email-verification --}}
         @if ($this->showDeleteUser)
-        {{-- @end-chisel-email-verification --}}
+            {{-- @end-chisel-email-verification --}}
             <livewire:pages::settings.delete-user-form />
-        {{-- @chisel-email-verification --}}
+            {{-- @chisel-email-verification --}}
         @endif
         {{-- @end-chisel-email-verification --}}
     </x-pages::settings.layout>
