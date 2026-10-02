@@ -37,7 +37,7 @@ class StaffInspectionController extends Controller
         ]);
 
         $order->update([
-            'order_status' => $validated['is_ready'] ? 'คืนแล้ว' : 'เสียหาย',
+            'order_status' => $validated['is_ready'] ? 'returned' : 'damaged',
             'reject_reason' => $validated['reject_reason'] ?? null,
         ]);
 

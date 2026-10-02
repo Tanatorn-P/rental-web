@@ -9,12 +9,12 @@
 
         <div class="field">
             <label for="username">ชื่อผู้ใช้</label>
-            <input type="text" id="username" name="username" required autofocus>
+            <input type="text" id="username" name="username" required autofocus />
         </div>
 
         <div class="field">
             <label for="password">รหัสผ่าน</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" required />
         </div>
 
         <button type="submit" class="btn btn-primary btn-block">เข้าสู่ระบบ</button>

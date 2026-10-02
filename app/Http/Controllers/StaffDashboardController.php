@@ -12,11 +12,14 @@ class StaffDashboardController extends Controller
     {
         $today = now()->toDateString();
 
-        $pickupToday = Order::whereDate('pickup_date', $today)->where('order_status', 'อนุมัติแล้ว')->count();
-        $returnToday = Order::whereDate('return_date', $today)->where('order_status', 'กำลังเช่า')->count();
-        $pendingApproval = Order::where('order_status', 'รอดำเนินการ')->count();
+        $pickupToday = Order::whereDate('pickup_date', $today)->where('order_status', 'approved')->count();
+        $returnToday = Order::whereDate('return_date', $today)->where('order_status', 'rented')->count();
+        $pendingApproval = Order::where('order_status', 'pending')->count();
+        $overdue = Order::whereDate('return_date', '<', $today)->where('order_status', 'rented')->count();
         $notReady = Product::where('status', 'not_ready')->count();
-        $overdue = Order::whereDate('return_date', '<', $today)->where('order_status', 'กำลังเช่า')->count();
+
+        $pendingList = Order::with('customer')->where('order_status', 'pending')->orderBy('event_date')->take(5)->get();
+        $overdueList = Order::with('customer')->whereDate('return_date', '<', $today)->where('order_status', 'rented')->get();
 
         $todaySchedule = Order::with('customer')
             ->where(function ($query) use ($today) {

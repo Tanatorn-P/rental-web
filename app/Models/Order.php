@@ -52,45 +52,50 @@ class Order extends Model
     /**
      * อ่าน item JSON แล้วดึง Product แต่ละชิ้นมาผูกให้
      *
-     * @return Collection<int, array{product_id: mixed, size: mixed, product: Product|null}>
+     * รองรับทุกรูปแบบที่อาจเจอใน DB:
+     * - ["G001", "F002"]                                   (string ล้วน ไม่มี size)
+     * - [{"product_id":"G001","size":"M"}]                 (object ปกติ)
+     * - null หรือค่าที่ไม่ใช่ array เลย (กันพังถ้า data เพี้ยน)
+     *
+     * @return Collection<int, array{product_id: string|null, size: string|null, product: Product|null}>
      */
     public function orderItems(): Collection
     {
-        // item อาจเป็น null หรือค่าที่ไม่ใช่ array ได้ใน DB จึงอ่านเป็น mixed แล้วเช็คเอง
+        // item อาจเป็น null หรือค่าที่ไม่ใช่ array ได้ใน DB จึงอ่านเป็น mixed แล้วเช็คเองก่อน
         /** @var mixed $item */
         $item = $this->item;
         $rawItems = is_array($item) ? array_values($item) : [];
 
-        // ดึง product_id ไม่ว่าจะเก็บเป็น ["G001"] หรือ [["product_id" => "G001"]]
-        $productIds = collect($rawItems)->map(function (mixed $entry): mixed {
+        $entries = collect($rawItems)->map(function (mixed $entry): array {
             if (is_array($entry)) {
-                return $entry['product_id'] ?? null;
+                return [
+                    'product_id' => $entry['product_id'] ?? null,
+                    'size' => $entry['size'] ?? null,
+                ];
             }
 
-            return $entry;
-        })->filter()->values()->all();
+            // entry เป็น string ล้วน เช่น "G001" → ไม่มี size
+            return ['product_id' => $entry, 'size' => null];
+        });
+
+        $productIds = $entries
+            ->pluck('product_id')
+            ->filter(fn (mixed $id): bool => is_string($id))
+            ->all();
 
         $products = Product::whereIn('product_id', $productIds)->get()->keyBy('product_id');
 
-        /** @var Collection<int, array{product_id: mixed, size: mixed, product: Product|null}> $result */
-        $result = collect($rawItems)->map(function (mixed $entry) use ($products): array {
-            $productId = null;
-            $size = null;
-
-            if (is_array($entry)) {
+        return $entries
+            ->values()
+            ->map(function (array $entry) use ($products): array {
                 $productId = $entry['product_id'] ?? null;
-                $size = $entry['size'] ?? null;
-            } else {
-                $productId = $entry;
-            }
+                $productId = is_string($productId) ? $productId : null;
 
-            return [
-                'product_id' => $productId,
-                'size' => $size,
-                'product' => (is_string($productId) || is_int($productId)) ? $products->get((string) $productId) : null,
-            ];
-        })->values();
-
-        return $result;
+                return [
+                    'product_id' => $productId,
+                    'size' => is_string($entry['size'] ?? null) ? $entry['size'] : null,
+                    'product' => $productId !== null ? $products->get($productId) : null,
+                ];
+            });
     }
 }

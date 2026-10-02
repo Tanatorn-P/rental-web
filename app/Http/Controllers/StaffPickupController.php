@@ -15,7 +15,7 @@ class StaffPickupController extends Controller
 
         $order = null;
         if ($orderId !== null) {
-            $order = Order::with('customer')->where('order_id', $orderId)->where('order_status', 'อนุมัติแล้ว')->first();
+            $order = Order::with('customer')->where('order_id', $orderId)->where('order_status', 'approved')->first();
         }
 
         return view('staff.pickup', compact('order', 'orderId'));
@@ -23,11 +23,11 @@ class StaffPickupController extends Controller
 
     public function confirm(Order $order): RedirectResponse
     {
-        if ($order->order_status !== 'อนุมัติแล้ว') {
+        if ($order->order_status !== 'approved') {
             return redirect()->route('staff.pickup.index')->with('error', 'คำสั่งนี้ยังไม่พร้อมส่งมอบ');
         }
 
-        $order->update(['order_status' => 'กำลังเช่า']);
+        $order->update(['order_status' => 'rented']);
 
         foreach ($order->orderItems() as $item) {
             $item['product']?->update(['status' => 'rented']);

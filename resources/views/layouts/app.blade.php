@@ -1,5 +1,7 @@
-<?php 
-use Illuminate\Support\Facades\Auth; 
+<?php
+
+use Illuminate\Support\Facades\Auth;
+
 $isCustomer = Auth::guard('customer')->check();
 $customerUser = $isCustomer ? Auth::guard('customer')->user() : null;
 $staffUser = Auth::guard('web')->user();
@@ -7,11 +9,14 @@ $staffUser = Auth::guard('web')->user();
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@yield('title', 'DressDay')</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    />
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
 </head>
 <body>
     <div class="dd-app">
@@ -24,21 +29,24 @@ $staffUser = Auth::guard('web')->user();
                 </div>
             </div>
 
-            @if($isCustomer)
+            @if ($isCustomer)
                 {{-- ================= เมนูสำหรับ CUSTOMER ================= --}}
                 <p class="nav-label">Customer Operations</p>
                 <a class="nav-item @yield('nav-dashboard')" href="{{ route('customer.dashboard') }}">Dashboard</a>
                 <a class="nav-item @yield('nav-reservations')" href="{{ route('reservations.index') }}">การจองของฉัน</a>
                 <a class="nav-item @yield('nav-rentals')" href="{{ route('rentals.show') }}">ติดตามสถานะการเช่า</a>
                 <a class="nav-item @yield('nav-history')" href="{{ route('history.index') }}">ประวัติการเช่า</a>
-                <a class="nav-item @yield('nav-notifications')" href="{{ route('notifications.index') }}">การแจ้งเตือน</a>
+                <a class="nav-item @yield('nav-notifications')" href="{{ route('notifications.index') }}"
+                    >การแจ้งเตือน</a>
                 <a class="nav-item @yield('nav-profile')" href="{{ route('profile.index') }}">โปรไฟล์ของฉัน</a>
 
                 <div class="sidebar-bottom">
-                    <p class="nav-label" style="padding-top:0">{{ $customerUser->fullname ?? 'ลูกค้า' }}</p>
+                    <p class="nav-label" style="padding-top: 0">{{ $customerUser->fullname ?? 'ลูกค้า' }}</p>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
-                        <button type="submit" class="nav-item" style="width:100%; color: var(--danger);">ออกจากระบบ</button>
+                        <button type="submit" class="nav-item" style="width: 100%; color: var(--danger)">
+                            ออกจากระบบ
+                        </button>
                     </form>
                 </div>
             @else
@@ -49,13 +57,19 @@ $staffUser = Auth::guard('web')->user();
                 <a class="nav-item @yield('nav-pickup')" href="{{ route('staff.pickup.index') }}">Pickup</a>
                 <a class="nav-item @yield('nav-return')" href="{{ route('staff.return.index') }}">Return</a>
                 <a class="nav-item @yield('nav-inspection')" href="{{ route('staff.inspection.index') }}">Inspection</a>
-                <a class="nav-item @yield('nav-maintenance')" href="{{ route('staff.maintenance.index') }}">Maintenance</a>
+                <a class="nav-item @yield('nav-maintenance')" href="{{ route('staff.maintenance.index') }}"
+                    >Maintenance</a>
 
                 <div class="sidebar-bottom">
-                    <p class="nav-label" style="padding-top:0">{{ $staffUser->fullname ?? '' }}</p>
-                    <form action="{{ $staffUser && $staffUser->isAdmin() ? route('admin.logout') : route('staff.logout') }}" method="POST">
+                    <p class="nav-label" style="padding-top: 0">{{ $staffUser->fullname ?? '' }}</p>
+                    <form
+                        action="{{ $staffUser && $staffUser->isAdmin() ? route('admin.logout') : route('staff.logout') }}"
+                        method="POST"
+                    >
                         @csrf
-                        <button type="submit" class="nav-item" style="width:100%; color: var(--danger);">ออกจากระบบ</button>
+                        <button type="submit" class="nav-item" style="width: 100%; color: var(--danger)">
+                            ออกจากระบบ
+                        </button>
                     </form>
                 </div>
             @endif
@@ -64,10 +78,11 @@ $staffUser = Auth::guard('web')->user();
         <main class="main-shell">
             <header class="topbar">
                 <div class="crumb">
-                    <strong>{{ $isCustomer ? 'Customer' : 'Staff' }}</strong> / @yield('page-name', 'Dashboard')
+                    <strong>{{ $isCustomer ? 'Customer' : 'Staff' }}</strong> /
+                    @yield('page-name', 'Dashboard')
                 </div>
                 <div class="avatar">
-                    @if($isCustomer)
+                    @if ($isCustomer)
                         {{ mb_substr($customerUser->fullname ?? 'CU', 0, 2) }}
                     @else
                         ST

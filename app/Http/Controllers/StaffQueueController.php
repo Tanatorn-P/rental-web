@@ -11,18 +11,18 @@ class StaffQueueController extends Controller
 {
     public function index(): View
     {
-        $orders = Order::with('customer')->where('order_status', 'รอดำเนินการ')->orderBy('event_date')->get();
+        $orders = Order::with('customer')->where('order_status', 'pending')->orderBy('event_date')->get();
 
         return view('staff.queue', compact('orders'));
     }
 
     public function approve(Order $order): RedirectResponse
     {
-        if ($order->order_status !== 'รอดำเนินการ') {
+        if ($order->order_status !== 'pending') {
             return redirect()->route('staff.queue.index')->with('error', 'คำขอนี้ถูกดำเนินการไปแล้ว');
         }
 
-        $order->update(['order_status' => 'อนุมัติแล้ว']);
+        $order->update(['order_status' => 'approved']);
 
         foreach ($order->orderItems() as $item) {
             $item['product']?->update(['status' => 'preparing']);
@@ -37,12 +37,12 @@ class StaffQueueController extends Controller
             'reject_reason' => ['required', 'string', 'max:255'],
         ]);
 
-        if ($order->order_status !== 'รอดำเนินการ') {
+        if ($order->order_status !== 'pending') {
             return redirect()->route('staff.queue.index')->with('error', 'คำขอนี้ถูกดำเนินการไปแล้ว');
         }
 
         $order->update([
-            'order_status' => 'ยกเลิก',
+            'order_status' => 'cancelled',
             'reject_reason' => $validated['reject_reason'],
         ]);
 
