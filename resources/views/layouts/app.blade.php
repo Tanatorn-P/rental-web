@@ -1,4 +1,7 @@
-<?php use Illuminate\Support\Facades\Auth; ?>
+<?php
+use Illuminate\Support\Facades\Auth;
+use App\Helpers\OrderStatusHelper;
+?>
 <!DOCTYPE html>
 <html lang="th">
 <head>

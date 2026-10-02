@@ -14,7 +14,7 @@ class StaffMaintenanceController extends Controller
         $products = Product::where('status', 'not_ready')
             ->get()
             ->map(function (Product $product) {
-                $order = Order::where('order_status', 'เสียหาย')
+                $order = Order::where('order_status', 'damaged')
                     ->where('item', 'like', '%"product_id":"'.$product->product_id.'"%')
                     ->latest('order_id')
                     ->first();

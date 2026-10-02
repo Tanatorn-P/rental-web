@@ -24,8 +24,7 @@
 
     <?php if ($order !== null) { ?>
         <div class="card card-pad" style="max-width:520px">
-            <span class="status rented"><?= $order->order_status ?></span>
-            <h3 style="margin:10px 0 2px">Order #<?= $order->order_id ?></h3>
+        <span class="status rented"><?= OrderStatusHelper::label($order->order_status) ?></span>            <h3 style="margin:10px 0 2px">Order #<?= $order->order_id ?></h3>
             <p class="muted" style="font-size:13px"><?= htmlspecialchars($order->customer->fullname ?? '-', ENT_QUOTES, 'UTF-8') ?></p>
 
             <?php foreach ($order->orderItems() as $item) { ?>

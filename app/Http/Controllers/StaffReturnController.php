@@ -15,7 +15,7 @@ class StaffReturnController extends Controller
 
         $order = null;
         if ($orderId !== null) {
-            $order = Order::with('customer')->where('order_id', $orderId)->where('order_status', 'กำลังเช่า')->first();
+            $order = Order::with('customer')->where('order_id', $orderId)->where('order_status', 'rented')->first();
         }
 
         $lateDays = 0;
@@ -30,7 +30,7 @@ class StaffReturnController extends Controller
 
     public function confirm(Request $request, Order $order): RedirectResponse
     {
-        if ($order->order_status !== 'กำลังเช่า') {
+        if ($order->order_status !== 'rented') {
             return redirect()->route('staff.return.index')->with('error', 'คำสั่งนี้ไม่ได้อยู่ในสถานะกำลังเช่า');
         }
 
@@ -41,7 +41,7 @@ class StaffReturnController extends Controller
         $isLate = now()->gt($order->return_date);
 
         $order->update([
-            'order_status' => $isLate ? 'เลยกำหนดคืน' : 'คืนแล้ว',
+            'order_status' => $isLate ? 'overdue' : 'returned   ',
             'return_time' => $validated['return_time'],
         ]);
 
