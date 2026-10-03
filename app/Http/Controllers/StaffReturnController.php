@@ -11,21 +11,26 @@ class StaffReturnController extends Controller
 {
     public function index(Request $request): View
     {
-        $orderId = $request->query('order_id');
+        $search = $request->query('order_id');
 
-        $order = null;
-        if ($orderId !== null) {
-            $order = Order::with('customer')->where('order_id', $orderId)->where('order_status', 'rented')->first();
-        }
+        $orders = Order::with('customer')
+            ->where('order_status', 'rented')
+            ->when($search, fn ($query) => $query->where('order_id', 'like', '%'.$search.'%'))
+            ->orderBy('return_date')
+            ->get()
+            ->map(function (Order $order) {
+                $lateDays = 0;
+                $penalty = 0;
 
-        $lateDays = 0;
-        $penalty = 0;
-        if ($order !== null && now()->gt($order->return_date)) {
-            $lateDays = (int) $order->return_date->diffInDays(now());
-            $penalty = $lateDays * 100;
-        }
+                if (now()->gt($order->return_date)) {
+                    $lateDays = (int) $order->return_date->diffInDays(now());
+                    $penalty = $lateDays * 100;
+                }
 
-        return view('staff.return', compact('order', 'orderId', 'lateDays', 'penalty'));
+                return ['order' => $order, 'lateDays' => $lateDays, 'penalty' => $penalty];
+            });
+
+        return view('staff.return', compact('orders', 'search'));
     }
 
     public function confirm(Request $request, Order $order): RedirectResponse
@@ -41,7 +46,7 @@ class StaffReturnController extends Controller
         $isLate = now()->gt($order->return_date);
 
         $order->update([
-            'order_status' => $isLate ? 'overdue' : 'returned   ',
+            'order_status' => $isLate ? 'overdue' : 'returned',
             'return_time' => $validated['return_time'],
         ]);
 

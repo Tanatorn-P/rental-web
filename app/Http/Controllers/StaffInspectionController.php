@@ -10,12 +10,14 @@ use Illuminate\View\View;
 
 class StaffInspectionController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $search = $request->query('order_id');
+
         $inspectionProductIds = Product::where('status', 'inspection')->pluck('product_id');
 
         if ($inspectionProductIds->isEmpty()) {
-            return view('staff.inspection', ['orders' => collect()]);
+            return view('staff.inspection', ['orders' => collect(), 'search' => $search]);
         }
 
         $orders = Order::with('customer')
@@ -24,9 +26,10 @@ class StaffInspectionController extends Controller
                     $query->orWhere('item', 'like', '%"product_id":"'.$productId.'"%');
                 }
             })
+            ->when($search, fn ($query) => $query->where('order_id', 'like', '%'.$search.'%'))
             ->get();
 
-        return view('staff.inspection', compact('orders'));
+        return view('staff.inspection', compact('orders', 'search'));
     }
 
     public function store(Request $request, Order $order): RedirectResponse

@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\CustomerLoginController;
 use App\Http\Controllers\Auth\CustomerRegisterController;
 use App\Http\Controllers\Auth\StaffLoginController;
 use App\Http\Controllers\StaffDashboardController;
+use App\Http\Controllers\StaffHistoryController;
 use App\Http\Controllers\StaffInspectionController;
 use App\Http\Controllers\StaffMaintenanceController;
 use App\Http\Controllers\StaffPickupController;
@@ -58,6 +59,8 @@ Route::middleware('auth:web')->group(function () {
 
     Route::get('/staff/maintenance', [StaffMaintenanceController::class, 'index'])->name('staff.maintenance.index');
     Route::post('/staff/maintenance/{product}/complete', [StaffMaintenanceController::class, 'complete'])->name('staff.maintenance.complete');
+
+    Route::get('/staff/history', [StaffHistoryController::class, 'index'])->name('staff.history.index');
 
     // ชั่วคราว จนกว่าจะสร้างหน้า Admin จริง
     Route::get('/admin/dashboard', function () {

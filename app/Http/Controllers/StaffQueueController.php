@@ -9,11 +9,17 @@ use Illuminate\View\View;
 
 class StaffQueueController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
-        $orders = Order::with('customer')->where('order_status', 'pending')->orderBy('event_date')->get();
+        $search = $request->query('order_id');
 
-        return view('staff.queue', compact('orders'));
+        $orders = Order::with('customer')
+            ->where('order_status', 'pending')
+            ->when($search, fn ($query) => $query->where('order_id', 'like', '%'.$search.'%'))
+            ->orderBy('event_date')
+            ->get();
+
+        return view('staff.queue', compact('orders', 'search'));
     }
 
     public function approve(Order $order): RedirectResponse

@@ -33,6 +33,7 @@ use Illuminate\Support\Facades\Auth;
             <a class="nav-item @yield('nav-return')" href="{{ route('staff.return.index') }}">Return</a>
             <a class="nav-item @yield('nav-inspection')" href="{{ route('staff.inspection.index') }}">Inspection</a>
             <a class="nav-item @yield('nav-maintenance')" href="{{ route('staff.maintenance.index') }}">Maintenance</a>
+            <a class="nav-item @yield('nav-history')" href="{{ route('staff.history.index') }}">History</a>
 
             <div class="sidebar-bottom">
                 <?php $currentStaff = Auth::guard('web')->user(); ?>
