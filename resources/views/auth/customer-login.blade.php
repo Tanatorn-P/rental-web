@@ -21,4 +21,5 @@
     </form>
 
     <p class="switch-link">ยังไม่มีบัญชี? <a href="{{ route('customer.register') }}">สมัครสมาชิก</a></p>
+    <p class="switch-link"><a href="{{ route('home') }}">← กลับไปหน้าเลือกประเภทผู้ใช้</a></p>
 @endsection

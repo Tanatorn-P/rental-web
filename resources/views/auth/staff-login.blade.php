@@ -19,4 +19,5 @@
 
         <button type="submit" class="btn btn-primary btn-block">เข้าสู่ระบบ</button>
     </form>
+    <p class="switch-link"><a href="{{ route('home') }}">← กลับไปหน้าเลือกประเภทผู้ใช้</a></p>
 @endsection

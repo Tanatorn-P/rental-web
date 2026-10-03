@@ -11,10 +11,22 @@ use App\Http\Controllers\StaffPickupController;
 use App\Http\Controllers\StaffQueueController;
 use App\Http\Controllers\StaffReturnController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
+    if (Auth::guard('web')->check()) {
+        Auth::guard('web')->logout();
+    }
+
+    if (Auth::guard('customer')->check()) {
+        Auth::guard('customer')->logout();
+    }
+
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
     return view('auth.role-select');
-});
+})->name('home');;
 
 // ---------- Auth: Staff/Admin (guard: web) ----------
 Route::middleware('guest:web')->group(function () {
