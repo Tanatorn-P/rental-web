@@ -15,8 +15,7 @@
     <div class="grid" style="grid-template-columns: 1fr 1fr">
         <?php foreach ($orders as $order) { ?>
         <div class="card card-pad">
-            <span class="status preparing"><?= OrderStatusHelper::label($order->order_status) ?></span>
-            <h3 style="margin: 10px 0 2px">Order #<?= $order->order_id ?></h3>
+            <span class="status preparing"><?= \App\Helpers\OrderStatusHelper::label($order->order_status) ?></span>            <h3 style="margin: 10px 0 2px">Order #<?= $order->order_id ?></h3>
             <p class="muted" style="font-size: 13px">
                 <?= htmlspecialchars($order->customer->fullname ?? '-', ENT_QUOTES, 'UTF-8') ?>
             </p>

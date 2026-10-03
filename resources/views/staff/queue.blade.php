@@ -40,8 +40,8 @@
                     </td>
                     <td><?= $order->event_date->format('d M Y') ?></td>
                     <td>
-                        <span class="status pending"><?= OrderStatusHelper::label($order->order_status) ?></span>
-                    </td>
+                        <span class="status pending"><?= \App\Helpers\OrderStatusHelper::label($order->order_status) ?></span>                    </td>
+                    <td>
                     <form action="{{ route('staff.queue.approve', $order) }}" method="POST" style="display: inline">
                         @csrf
                         <button type="submit" class="btn btn-primary btn-sm">อนุมัติ</button>
