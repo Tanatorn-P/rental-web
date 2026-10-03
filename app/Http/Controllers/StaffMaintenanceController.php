@@ -5,13 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class StaffMaintenanceController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $search = $request->query('product_name');
+
         $products = Product::where('status', 'not_ready')
+            ->when($search, fn ($query) => $query->where('product_name', 'like', '%'.$search.'%'))
             ->get()
             ->map(function (Product $product) {
                 $order = Order::where('order_status', 'damaged')
@@ -25,7 +29,7 @@ class StaffMaintenanceController extends Controller
                 ];
             });
 
-        return view('staff.maintenance', compact('products'));
+        return view('staff.maintenance', compact('products', 'search'));
     }
 
     public function complete(Product $product): RedirectResponse

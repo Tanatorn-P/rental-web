@@ -11,14 +11,15 @@ class StaffPickupController extends Controller
 {
     public function index(Request $request): View
     {
-        $orderId = $request->query('order_id');
+        $search = $request->query('order_id');
 
-        $order = null;
-        if ($orderId !== null) {
-            $order = Order::with('customer')->where('order_id', $orderId)->where('order_status', 'approved')->first();
-        }
+        $orders = Order::with('customer')
+            ->where('order_status', 'approved')
+            ->when($search, fn ($query) => $query->where('order_id', 'like', '%'.$search.'%'))
+            ->orderBy('pickup_date')
+            ->get();
 
-        return view('staff.pickup', compact('order', 'orderId'));
+        return view('staff.pickup', compact('orders', 'search'));
     }
 
     public function confirm(Order $order): RedirectResponse
