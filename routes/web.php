@@ -10,8 +10,8 @@ use App\Http\Controllers\StaffMaintenanceController;
 use App\Http\Controllers\StaffPickupController;
 use App\Http\Controllers\StaffQueueController;
 use App\Http\Controllers\StaffReturnController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     if (Auth::guard('web')->check()) {
@@ -26,7 +26,7 @@ Route::get('/', function () {
     request()->session()->regenerateToken();
 
     return view('auth.role-select');
-})->name('home');;
+})->name('home');
 
 // ---------- Auth: Staff/Admin (guard: web) ----------
 Route::middleware('guest:web')->group(function () {
