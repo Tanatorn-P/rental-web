@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AdminLoginController;
 use App\Http\Controllers\Auth\CustomerLoginController;
 use App\Http\Controllers\Auth\CustomerRegisterController;
 use App\Http\Controllers\Auth\StaffLoginController;
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\StaffInspectionController;
 use App\Http\Controllers\StaffMaintenanceController;
@@ -15,6 +16,38 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('auth.role-select');
 });
+
+
+Route::get('/dress/find', [ProductController::class, 'find'])
+    ->name('dress.find');
+
+Route::get('/dress/category/{category}', [ProductController::class, 'category'])
+    ->name('dress.category');
+
+Route::get('/dress/product/{product_id}', [ProductController::class, 'show'])
+    ->name('dress.product');
+
+Route::get('/dress/product/{product_id}/availability',
+    [ProductController::class, 'availability'])
+    ->name('dress.availability');
+Route::get(
+    '/dress/product/{product_id}/booking',
+    [ProductController::class, 'bookingSummary']
+)->name('dress.booking.summary'); //ดำเนินการจอง
+Route::get(
+    '/dress/product/{product_id}/booking-information',
+    [ProductController::class, 'bookingInformation']
+)->name('dress.booking.information');
+Route::post(
+    '/dress/product/{product_id}/booking',
+    [ProductController::class, 'confirmBooking']
+)->name('dress.booking.confirm'); //กด ยืนยันการจอง เพื่อบันทึกลง orders
+Route::get('/booking/success', function () {
+    return view('dress.booking-success');
+})->name('dress.booking.success');
+Route::post('/customer/logout', [CustomerLoginController::class, 'logout'])
+    ->name('customer.logout');
+
 
 // ---------- Auth: Staff/Admin (guard: web) ----------
 Route::middleware('guest:web')->group(function () {
