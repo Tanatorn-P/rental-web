@@ -42,7 +42,7 @@ $staffUser = Auth::guard('web')->user();
 
                 <div class="sidebar-bottom">
                     <p class="nav-label" style="padding-top: 0">{{ $customerUser->fullname ?? 'ลูกค้า' }}</p>
-                    <form action="{{ route('logout') }}" method="POST">
+                    <form action="{{ route('customer.logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="nav-item" style="width: 100%; color: var(--danger)">
                             ออกจากระบบ

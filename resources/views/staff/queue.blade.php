@@ -34,7 +34,14 @@
                             <td><?= htmlspecialchars($order->customer->fullname ?? '-', ENT_QUOTES, 'UTF-8') ?></td>
                             <td>
                                 <?php foreach ($order->orderItems() as $item) { ?>
-                                    <div><?= htmlspecialchars(($item['product']->product_name ?? $item['product_id']).' ('.($item['size'] ?? '-').')', ENT_QUOTES, 'UTF-8') ?></div>
+                                    <?php $images = $item['product']->image ?? []; ?>
+                                    <div style="display:flex;gap:10px;align-items:center;margin:8px 0">
+                                        <?php if (! empty($images[0])) { ?>
+                                            <img src="<?= asset($images[0]) ?>" alt="" data-lightbox style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--line);cursor:zoom-in">                                        <?php } else { ?>
+                                            <div style="width:48px;height:48px;border-radius:8px;background:var(--beige);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gray)">ไม่มีรูป</div>
+                                        <?php } ?>
+                                        <p style="font-size:13px;margin:0"><?= htmlspecialchars(($item['product']->product_name ?? $item['product_id']).' ('.($item['size'] ?? '-').')', ENT_QUOTES, 'UTF-8') ?></p>
+                                    </div>
                                 <?php } ?>
                             </td>
                             <td><?= $order->event_date->format('d M Y') ?></td>

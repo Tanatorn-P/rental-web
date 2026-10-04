@@ -39,9 +39,6 @@ class StaffDashboardController extends Controller
             ->sortBy('time')
             ->values();
 
-        $pendingList = Order::with('customer')->where('order_status', 'รอดำเนินการ')->orderBy('event_date')->take(5)->get();
-        $overdueList = Order::with('customer')->whereDate('return_date', '<', $today)->where('order_status', 'กำลังเช่า')->get();
-
         return view('staff.dashboard', compact(
             'pickupToday', 'returnToday', 'pendingApproval', 'notReady', 'overdue',
             'todaySchedule', 'pendingList', 'overdueList'
