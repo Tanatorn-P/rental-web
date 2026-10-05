@@ -17,7 +17,6 @@ Route::get('/', function () {
     return view('auth.role-select');
 });
 
-
 Route::get('/dress/find', [ProductController::class, 'find'])
     ->name('dress.find');
 
@@ -33,7 +32,7 @@ Route::get('/dress/product/{product_id}/availability',
 Route::get(
     '/dress/product/{product_id}/booking',
     [ProductController::class, 'bookingSummary']
-)->name('dress.booking.summary'); //ดำเนินการจอง
+)->name('dress.booking.summary'); // ดำเนินการจอง
 Route::get(
     '/dress/product/{product_id}/booking-information',
     [ProductController::class, 'bookingInformation']
@@ -41,13 +40,12 @@ Route::get(
 Route::post(
     '/dress/product/{product_id}/booking',
     [ProductController::class, 'confirmBooking']
-)->name('dress.booking.confirm'); //กด ยืนยันการจอง เพื่อบันทึกลง orders
+)->name('dress.booking.confirm'); // กด ยืนยันการจอง เพื่อบันทึกลง orders
 Route::get('/booking/success', function () {
     return view('dress.booking-success');
 })->name('dress.booking.success');
 Route::post('/customer/logout', [CustomerLoginController::class, 'logout'])
     ->name('customer.logout');
-
 
 // ---------- Auth: Staff/Admin (guard: web) ----------
 Route::middleware('guest:web')->group(function () {
