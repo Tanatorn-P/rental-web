@@ -1,192 +1,16 @@
 /* =====================================================
-   DressDay - Customer CSS (cleaned)
-   1. Base          2. Layout & Sidebar   3. Topbar & Alerts
-   4. Page header   5. Filter & Categories
-   6. Products      7. Product detail     8. Availability
-   9. Responsive
+   DressDay - Customer CSS (เฉพาะหน้าเลือกชุด / จองชุด)
+   ใช้ร่วมกับ public/css/style.css ส่วนกลาง
+   (Base, Sidebar, Topbar, Alerts, Page header ใช้ของส่วนกลาง)
+   1. Filter & Categories   2. Products
+   3. Product detail        4. Availability
+   5. Responsive
    ===================================================== */
 
-
-/* ===== 1. Base ===== */
-
-:root {
-    --ivory: #F8F5F0;
-    --beige: #E9E0D5;
-    --charcoal: #292725;
-    --gray: #706C67;
-    --mauve: #9B7C83;
-    --line: #ded7cf;
-    --white: #fffdf9;
-}
-
-* { box-sizing: border-box; }
-
-body {
-    margin: 0;
-    font-family: "Noto Sans Thai", "DM Sans", sans-serif;
-    color: var(--charcoal);
-    background: var(--ivory);
-}
+html { scroll-behavior: smooth; }
 
 
-/* ===== 2. Layout & Sidebar ===== */
-
-.customer-app {
-    display: flex;
-    width: 100%;
-    min-height: 100vh;
-}
-
-.customer-sidebar {
-    width: 250px;
-    flex-shrink: 0;
-    min-height: 100vh;
-    padding: 30px 20px;
-    display: flex;
-    flex-direction: column;
-    background: #f0e9e1;
-    border-right: 1px solid var(--line);
-}
-
-.customer-brand {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 0 20px 38px;
-}
-
-.customer-brand-mark {
-    width: 48px;
-    height: 48px;
-    display: grid;
-    place-items: center;
-    border-radius: 14px;
-    background: var(--charcoal);
-    color: white;
-    font-size: 22px;
-    font-weight: 700;
-}
-
-.customer-brand h1 { margin: 0; font-size: 24px; font-weight: 700; }
-.customer-brand p  { margin: 3px 0 0; color: var(--gray); font-size: 12px; }
-
-.customer-menu-title {
-    margin: 0;
-    padding: 0 20px 16px;
-    color: #8a847e;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-}
-
-.customer-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-/* menu item (no icons) */
-.customer-nav-item {
-    display: block;
-    width: 100%;
-    padding: 12px 20px;
-    border: 0;
-    border-radius: 10px;
-    background: transparent;
-    color: var(--charcoal);
-    font-family: inherit;
-    font-size: 16px;
-    font-weight: 500;
-    text-align: left;
-    text-decoration: none;
-    cursor: pointer;
-    transition: 0.15s;
-}
-
-.customer-nav-item:hover  { background: #e5dad0; }
-.customer-nav-item.active { background: #dbc6ca; font-weight: 700; }
-
-.customer-sidebar-bottom {
-    margin-top: auto;
-    padding-top: 18px;
-    border-top: 1px solid var(--line);
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.customer-sidebar-bottom form { margin: 0; }
-
-.customer-main {
-    flex: 1;
-    min-width: 0;
-    min-height: 100vh;
-    padding: 36px 40px 50px;
-}
-
-.customer-main .product-grid { gap: 16px; }
-
-
-/* ===== 3. Topbar & Alerts ===== */
-
-.customer-topbar {
-    max-width: 1200px;
-    margin: 0 auto 10px;
-    padding: 0 30px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.customer-breadcrumb { color: var(--gray); font-size: 13px; }
-.customer-breadcrumb strong { color: var(--charcoal); }
-
-.customer-avatar {
-    width: 38px;
-    height: 38px;
-    display: grid;
-    place-items: center;
-    border-radius: 50%;
-    background: var(--mauve);
-    color: white;
-    font-size: 13px;
-    font-weight: 700;
-}
-
-.customer-alert {
-    max-width: 1200px;
-    margin: 0 auto 16px;
-    padding: 12px 16px;
-    border-radius: 10px;
-    font-size: 13px;
-}
-
-.customer-alert-success { background: #e4f2e8; color: #36784d; }
-.customer-alert-error   { background: #f8e3e3; color: #a04545; }
-
-
-/* ===== 4. Page header ===== */
-
-.page-head {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 30px 30px 25px;
-}
-
-.eyebrow {
-    margin-bottom: 6px;
-    color: var(--mauve);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-}
-
-.page-title    { margin: 0 0 6px; font-size: 28px; font-weight: 700; }
-.page-subtitle { margin: 0; color: var(--gray); font-size: 14px; }
-
-
-/* ===== 5. Filter & Categories ===== */
+/* ===== 1. Filter & Categories ===== */
 
 .filter-card {
     max-width: 1200px;
@@ -231,7 +55,7 @@ body {
 .category-section {
     max-width: 1200px;
     margin: 0 auto 40px;
-    padding: 0 30px;
+    scroll-margin-top: 20px;
 }
 
 .section-heading { margin-bottom: 16px; }
@@ -262,12 +86,12 @@ body {
 .category-arrow { color: var(--mauve); font-size: 18px; }
 
 
-/* ===== 6. Products ===== */
+/* ===== 2. Products ===== */
 
 .products-section {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 30px 50px;
+    padding: 0 0 50px;
 }
 
 .product-grid {
@@ -371,12 +195,12 @@ body {
 .detail-button:hover { opacity: 0.9; }
 
 
-/* ===== 7. Product detail ===== */
+/* ===== 3. Product detail ===== */
 
 .detail-back {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 5px 30px 20px;
+    padding: 5px 0 20px;
 }
 
 .back-link,
@@ -393,7 +217,7 @@ body {
 .detail-page {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 30px 60px;
+    padding: 0 0 60px;
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
     gap: 45px;
@@ -508,7 +332,7 @@ body {
 .availability-button:hover { opacity: 0.9; }
 
 
-/* ===== 8. Availability calendar ===== */
+/* ===== 4. Availability calendar ===== */
 
 .availability-product {
     max-width: 1200px;
@@ -529,7 +353,7 @@ body {
 .availability-layout {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 30px 60px;
+    padding: 0 0 60px;
     display: grid;
     grid-template-columns: 1.7fr 0.9fr;
     gap: 20px;
@@ -673,7 +497,7 @@ body {
 }
 
 
-/* ===== 9. Responsive ===== */
+/* ===== 5. Responsive ===== */
 
 @media (max-width: 900px) {
     .detail-page { grid-template-columns: 1fr; gap: 25px; }
@@ -682,24 +506,19 @@ body {
 }
 
 @media (max-width: 600px) {
-    .customer-sidebar { display: none; }
-    .customer-main { padding: 25px 15px; }
-
-    .detail-page { padding: 0 10px 40px; }
+    .detail-page { padding: 0 0 40px; }
     .detail-main-image { height: 400px; }
     .detail-title { font-size: 24px; }
 
     .availability-product {
-        margin: 0 10px 20px;
+        margin: 0 0 20px;
         padding: 18px;
         flex-direction: column;
         align-items: flex-start;
     }
 
-    .availability-layout { padding: 0 10px 40px; }
+    .availability-layout { padding: 0 0 40px; }
     .calendar-card,
     .summary-card { padding: 18px; }
     .calendar-day { min-height: 42px; }
 }
-html { scroll-behavior: smooth; }
-.category-section { scroll-margin-top: 20px; }

@@ -30,35 +30,36 @@ Route::get('/', function () {
     return view('auth.role-select');
 })->name('home');
 
-Route::get('/dress/find', [ProductController::class, 'find'])
-    ->name('dress.find');
+// ---------- Dress catalog & booking (ต้องล็อกอินลูกค้า, guard: customer) ----------
+Route::middleware('auth:customer')->group(function () {
+    Route::get('/dress/find', [ProductController::class, 'find'])
+        ->name('dress.find');
 
-Route::get('/dress/category/{category}', [ProductController::class, 'category'])
-    ->name('dress.category');
+    Route::get('/dress/category/{category}', [ProductController::class, 'category'])
+        ->name('dress.category');
 
-Route::get('/dress/product/{product_id}', [ProductController::class, 'show'])
-    ->name('dress.product');
+    Route::get('/dress/product/{product_id}', [ProductController::class, 'show'])
+        ->name('dress.product');
 
-Route::get('/dress/product/{product_id}/availability',
-    [ProductController::class, 'availability'])
-    ->name('dress.availability');
-Route::get(
-    '/dress/product/{product_id}/booking',
-    [ProductController::class, 'bookingSummary']
-)->name('dress.booking.summary'); // ดำเนินการจอง
-Route::get(
-    '/dress/product/{product_id}/booking-information',
-    [ProductController::class, 'bookingInformation']
-)->name('dress.booking.information');
-Route::post(
-    '/dress/product/{product_id}/booking',
-    [ProductController::class, 'confirmBooking']
-)->name('dress.booking.confirm'); // กด ยืนยันการจอง เพื่อบันทึกลง orders
-Route::get('/booking/success', function () {
-    return view('dress.booking-success');
-})->name('dress.booking.success');
-Route::post('/customer/logout', [CustomerLoginController::class, 'logout'])
-    ->name('customer.logout');
+    Route::get('/dress/product/{product_id}/availability',
+        [ProductController::class, 'availability'])
+        ->name('dress.availability');
+    Route::get(
+        '/dress/product/{product_id}/booking',
+        [ProductController::class, 'bookingSummary']
+    )->name('dress.booking.summary'); // ดำเนินการจอง
+    Route::get(
+        '/dress/product/{product_id}/booking-information',
+        [ProductController::class, 'bookingInformation']
+    )->name('dress.booking.information');
+    Route::post(
+        '/dress/product/{product_id}/booking',
+        [ProductController::class, 'confirmBooking']
+    )->name('dress.booking.confirm'); // กด ยืนยันการจอง เพื่อบันทึกลง orders
+    Route::get('/booking/success', function () {
+        return view('dress.booking-success');
+    })->name('dress.booking.success');
+});
 
 // ---------- Auth: Staff/Admin (guard: web) ----------
 Route::middleware('guest:web')->group(function () {
