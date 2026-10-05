@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Carbon\Carbon;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
     // หน้าแรกเลือกหมวดหมู่
-    public function find()
+    public function find(): View
     {
         $categories = [
             'weding' => 'Wedding',
@@ -53,15 +55,25 @@ class ProductController extends Controller
 
         if ($pickupDate && $returnDate) {
 
-            $bookedProductIds = DB::table('orders')
+            $rows = DB::table('orders')
                 ->where('order_status', 'confirmed')
                 ->whereDate('pickup_date', '<=', $returnDate)
                 ->whereDate('return_date', '>=', $pickupDate)
-                ->pluck('item')
-                ->flatMap(function ($items) {
-                    return json_decode($items, true) ?? [];
-                })
-                ->unique();
+                ->pluck('item');
+
+            $bookedProductIds = [];
+
+            foreach ($rows as $items) {
+                $decoded = json_decode((string) $items, true);
+
+                if (is_array($decoded)) {
+                    foreach ($decoded as $id) {
+                        $bookedProductIds[] = (string) $id;
+                    }
+                }
+            }
+
+            $bookedProductIds = array_values(array_unique($bookedProductIds));
 
             $products = $products->whereNotIn(
                 'product_id',
@@ -81,7 +93,7 @@ class ProductController extends Controller
     }
 
     // หน้าที่ 2 แสดงชุดตามหมวดหมู่
-    public function category($category)
+    public function category(string $category): View
     {
         $products = Product::where('category', $category)
             ->where('status', 'available')
@@ -104,14 +116,14 @@ class ProductController extends Controller
         ));
     }
 
-    public function show($product_id)
+    public function show(string $product_id): View
     {
         $product = Product::where('product_id', $product_id)->firstOrFail();
 
         return view('dress.product', compact('product'));
     }
 
-    public function availability($product_id)
+    public function availability(string $product_id): View
     {
         $product = Product::where('product_id', $product_id)->firstOrFail();
 
@@ -148,14 +160,14 @@ class ProductController extends Controller
         ));
     }
 
-    public function bookingSummary($product_id)
+    public function bookingSummary(string $product_id): View|RedirectResponse
     {
         $product = Product::where('product_id', $product_id)->firstOrFail();
 
-        $pickupDate = request('pickup_date');
-        $returnDate = request('return_date');
+        $pickupDate = (string) request('pickup_date');
+        $returnDate = (string) request('return_date');
 
-        if (! $pickupDate || ! $returnDate || $returnDate < $pickupDate) {
+        if ($pickupDate === '' || $returnDate === '' || $returnDate < $pickupDate) {
             return redirect()
                 ->route('dress.availability', $product_id)
                 ->with('error', 'กรุณาเลือกวันรับและวันคืนให้ถูกต้อง');
@@ -168,12 +180,12 @@ class ProductController extends Controller
         ));
     }
 
-    public function bookingInformation($product_id)
+    public function bookingInformation(string $product_id): View
     {
         $product = Product::where('product_id', $product_id)->firstOrFail();
 
-        $pickupDate = request('pickup_date');
-        $returnDate = request('return_date');
+        $pickupDate = (string) request('pickup_date');
+        $returnDate = (string) request('return_date');
         $price = $this->calculateRental($product, $pickupDate, $returnDate);
 
         return view('dress.booking-information', compact(
@@ -182,16 +194,16 @@ class ProductController extends Controller
 
     }
 
-    public function confirmBooking($product_id)
+    public function confirmBooking(string $product_id): RedirectResponse
     {
         $product = Product::where('product_id', $product_id)->firstOrFail();
         $fullname = request('fullname');
         $phone = request('phone');
         $bankAccount = request('bank_account');
         $address = request('address');
-        $pickupDate = request('pickup_date');
-        $returnDate = request('return_date');
-        if (! $pickupDate || ! $returnDate || $returnDate < $pickupDate) {
+        $pickupDate = (string) request('pickup_date');
+        $returnDate = (string) request('return_date');
+        if ($pickupDate === '' || $returnDate === '' || $returnDate < $pickupDate) {
             return redirect()
                 ->route('dress.availability', $product_id)
                 ->with('error', 'กรุณาเลือกวันรับและวันคืนให้ถูกต้อง');
@@ -235,7 +247,7 @@ class ProductController extends Controller
 
         DB::table('orders')->insert([
             'order_id' => 'O'.str_pad(
-                DB::table('orders')->count() + 1,
+                (string) (DB::table('orders')->count() + 1),
                 4,
                 '0',
                 STR_PAD_LEFT
@@ -279,11 +291,14 @@ class ProductController extends Controller
         return redirect()->route('dress.booking.success');
     }
 
-    private function calculateRental($product, $pickupDate, $returnDate): array
+    /**
+     * @return array{days: int, baseDays: int, extraDays: int, extraFee: float, extraCost: float, total: float}
+     */
+    private function calculateRental(Product $product, string $pickupDate, string $returnDate): array
     {
-        $days = Carbon::parse($pickupDate)->diffInDays(Carbon::parse($returnDate)) + 1;
-        $baseDays = $product->rental_days ?? 3;
-        $extraFee = $product->extra_day_fee ?? 200;
+        $days = (int) Carbon::parse($pickupDate)->diffInDays(Carbon::parse($returnDate)) + 1;
+        $baseDays = (int) ($product->rental_days ?? 3);
+        $extraFee = (float) ($product->extra_day_fee ?? 200);
         $extraDays = max(0, $days - $baseDays);
 
         return [
@@ -292,7 +307,7 @@ class ProductController extends Controller
             'extraDays' => $extraDays,
             'extraFee' => $extraFee,
             'extraCost' => $extraDays * $extraFee,
-            'total' => $product->rental_fee + ($extraDays * $extraFee),
+            'total' => (float) $product->rental_fee + ($extraDays * $extraFee),
         ];
     }
 }
