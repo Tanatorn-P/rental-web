@@ -21,7 +21,7 @@ class CustomerRegisterController extends Controller
         $validated = $request->validate([
             'username' => ['required', 'string', 'max:50', 'unique:customers,username'],
             'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'phone' => ['required', 'regex:/^08[0-9]{8}$/'],
+            'phone' => ['required', 'regex:/^0[689][0-9]{8}$/'],
             'fullname' => ['required', 'string', 'max:100'],
             'address' => ['nullable', 'string', 'max:255'],
             'bank_account' => ['nullable', 'string', 'max:50'],

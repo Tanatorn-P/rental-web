@@ -25,6 +25,20 @@ return Application::configure(basePath: dirname(__DIR__))
 
             return '/';
         });
+
+        // กำหนดทิศทางเมื่อผู้ใช้ที่ยังไม่ได้ล็อกอิน พยายามเข้าหน้าที่ต้อง auth
+        $middleware->redirectGuestsTo(function (Request $request) {
+            if ($request->is('admin/*')) {
+                return route('admin.login');
+            }
+
+            if ($request->is('staff/*')) {
+                return route('staff.login');
+            }
+
+            // customer/*, dress/*, booking/* ให้ไปหน้าล็อกอินลูกค้า
+            return route('customer.login');
+        });
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(
