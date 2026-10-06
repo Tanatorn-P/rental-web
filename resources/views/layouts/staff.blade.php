@@ -6,16 +6,17 @@ use Illuminate\Support\Facades\Auth;
 ?>
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@yield('title', 'DressDay')</title>
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    />
+        rel="stylesheet" />
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
 </head>
+
 <body>
     <div class="dd-app">
         <aside class="sidebar">
@@ -42,8 +43,7 @@ use Illuminate\Support\Facades\Auth;
                 </p>
                 <form
                     action="{{ $currentStaff && $currentStaff->isAdmin() ? route('admin.logout') : route('staff.logout') }}"
-                    method="POST"
-                >
+                    method="POST">
                     @csrf
                     <button type="submit" class="nav-item" style="width: 100%">ออกจากระบบ</button>
                 </form>
@@ -68,5 +68,19 @@ use Illuminate\Support\Facades\Auth;
             </div>
         </main>
     </div>
+    <div id="lightbox-overlay"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:999;align-items:center;justify-content:center;cursor:zoom-out"
+        onclick="this.style.display='none'">
+        <img id="lightbox-img" src="" style="max-width:90%;max-height:90%;border-radius:12px">
+    </div>
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.matches('img[data-lightbox]')) {
+                document.getElementById('lightbox-img').src = e.target.src;
+                document.getElementById('lightbox-overlay').style.display = 'flex';
+            }
+        });
+    </script>
 </body>
+
 </html>

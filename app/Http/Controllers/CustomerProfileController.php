@@ -36,7 +36,7 @@ class CustomerProfileController extends Controller
             $customer->update($validated);
         }
 
-        return redirect()->route('customer.profile.index')->with('success', 'อัปเดตข้อมูลส่วนตัวเรียบร้อยแล้ว');
+        return redirect()->route('profile.index')->with('success', 'อัปเดตข้อมูลส่วนตัวเรียบร้อยแล้ว');
     }
 
     public function logout(Request $request): RedirectResponse

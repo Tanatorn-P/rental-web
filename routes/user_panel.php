@@ -8,9 +8,7 @@ use App\Http\Controllers\CustomerRentalController;
 use App\Http\Controllers\CustomerReservationController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['web'])->prefix('customer')->group(function () {
-    // 1. Dashboard / Home (เพิ่ม name customer.dashboard ให้เรียกใช้ได้ทั้งคู่)
-    Route::get('/dashboard', [CustomerHomeController::class, 'index'])->name('home');
+Route::middleware(['web', 'auth:customer'])->prefix('customer')->group(function () {    // 1. Dashboard / Home (เพิ่ม name customer.dashboard ให้เรียกใช้ได้ทั้งคู่)
     Route::get('/dashboard', [CustomerHomeController::class, 'index'])->name('customer.dashboard');
 
     // 2. My Reservations
@@ -28,5 +26,4 @@ Route::middleware(['web'])->prefix('customer')->group(function () {
     // 6. Profile & Logout
     Route::get('/profile', [CustomerProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile', [CustomerProfileController::class, 'update'])->name('profile.update');
-    Route::post('/logout', [CustomerProfileController::class, 'logout'])->name('logout');
 });

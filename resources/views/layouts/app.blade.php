@@ -17,6 +17,7 @@ $staffUser = Auth::guard('web')->user();
         rel="stylesheet"
     />
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
+    @stack('styles')
 </head>
 <body>
     <div class="dd-app">
@@ -33,19 +34,21 @@ $staffUser = Auth::guard('web')->user();
                 {{-- ================= เมนูสำหรับ CUSTOMER ================= --}}
                 <p class="nav-label">Customer Operations</p>
                 <a class="nav-item @yield('nav-dashboard')" href="{{ route('customer.dashboard') }}">Dashboard</a>
-                <a class="nav-item @yield('nav-reservations')" href="{{ route('reservations.index') }}">การจองของฉัน</a>
-                <a class="nav-item @yield('nav-rentals')" href="{{ route('rentals.show') }}">ติดตามสถานะการเช่า</a>
-                <a class="nav-item @yield('nav-history')" href="{{ route('history.index') }}">ประวัติการเช่า</a>
+                <a class="nav-item @yield('nav-find')" href="{{ route('dress.find') }}">Find a Dress</a>
+                <a class="nav-item @yield('nav-occasions')" href="{{ route('dress.find') }}#occasions">Occasions</a>
+                <a class="nav-item @yield('nav-reservations')" href="{{ route('reservations.index') }}">My Reservations</a>
+                <a class="nav-item @yield('nav-rentals')" href="{{ route('rentals.show') }}">My Rentals</a>
+                <a class="nav-item @yield('nav-history')" href="{{ route('history.index') }}">History</a>
                 <a class="nav-item @yield('nav-notifications')" href="{{ route('notifications.index') }}"
-                    >การแจ้งเตือน</a>
-                <a class="nav-item @yield('nav-profile')" href="{{ route('profile.index') }}">โปรไฟล์ของฉัน</a>
+                    >Notifications</a>
+                <a class="nav-item @yield('nav-profile')" href="{{ route('profile.index') }}">Profile</a>
 
                 <div class="sidebar-bottom">
                     <p class="nav-label" style="padding-top: 0">{{ $customerUser->fullname ?? 'ลูกค้า' }}</p>
-                    <form action="{{ route('logout') }}" method="POST">
+                    <form action="{{ route('customer.logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="nav-item" style="width: 100%; color: var(--danger)">
-                            ออกจากระบบ
+                            Logout
                         </button>
                     </form>
                 </div>
@@ -68,7 +71,7 @@ $staffUser = Auth::guard('web')->user();
                     >
                         @csrf
                         <button type="submit" class="nav-item" style="width: 100%; color: var(--danger)">
-                            ออกจากระบบ
+                            Logout
                         </button>
                     </form>
                 </div>
