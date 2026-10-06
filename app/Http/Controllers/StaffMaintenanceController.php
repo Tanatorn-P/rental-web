@@ -19,9 +19,12 @@ class StaffMaintenanceController extends Controller
             ->get()
             ->map(function (Product $product) {
                 $order = Order::where('order_status', 'damaged')
-                    ->where('item', 'like', '%"product_id":"'.$product->product_id.'"%')
-                    ->latest('order_id')
-                    ->first();
+                    ->get()
+                    ->first(function (Order $order) use ($product) {
+                        $productIds = $order->orderItems()->pluck('product_id')->all();
+
+                        return in_array($product->product_id, $productIds, true);
+                    });
 
                 return [
                     'product' => $product,
