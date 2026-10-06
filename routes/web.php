@@ -93,11 +93,6 @@ Route::middleware('auth:web')->group(function () {
     Route::post('/staff/maintenance/{product}/complete', [StaffMaintenanceController::class, 'complete'])->name('staff.maintenance.complete');
 
     Route::get('/staff/history', [StaffHistoryController::class, 'index'])->name('staff.history.index');
-
-    // ชั่วคราว จนกว่าจะสร้างหน้า Admin จริง
-    Route::get('/admin/dashboard', function () {
-        return 'Admin Dashboard (ยังไม่สร้างหน้าจริง)';
-    })->name('admin.dashboard');
 });
 
 // ---------- Auth: Customer (guard: customer) ----------
@@ -115,3 +110,6 @@ Route::middleware('auth:customer')->group(function () {
 
 // ดึง Route ฝั่ง Customer จาก user_panel.php เข้ามารวม
 require __DIR__.'/user_panel.php';
+
+// ดึง Route ฝั่ง Admin จาก admin_route.php เข้ามารวม
+require __DIR__.'/admin_route.php';
