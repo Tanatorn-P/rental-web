@@ -21,7 +21,7 @@ class StaffInspectionController extends Controller
         }
 
         $orders = Order::with('customer')
-            ->when($search, fn($query) => $query->where('order_id', 'like', '%' . $search . '%'))
+            ->when($search, fn ($query) => $query->where('order_id', 'like', '%'.$search.'%'))
             ->get()
             ->filter(function (Order $order) use ($inspectionProductIds) {
                 $orderProductIds = $order->orderItems()->pluck('product_id')->all();
@@ -51,6 +51,6 @@ class StaffInspectionController extends Controller
             ]);
         }
 
-        return redirect()->route('staff.inspection.index')->with('success', 'บันทึกผลตรวจสภาพ #' . $order->order_id . ' แล้ว');
+        return redirect()->route('staff.inspection.index')->with('success', 'บันทึกผลตรวจสภาพ #'.$order->order_id.' แล้ว');
     }
 }

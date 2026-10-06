@@ -15,7 +15,7 @@ class StaffMaintenanceController extends Controller
         $search = $request->query('product_name');
 
         $products = Product::where('status', 'not_ready')
-            ->when($search, fn($query) => $query->where('product_name', 'like', '%' . $search . '%'))
+            ->when($search, fn ($query) => $query->where('product_name', 'like', '%'.$search.'%'))
             ->get()
             ->map(function (Product $product) {
                 $order = Order::where('order_status', 'damaged')
@@ -39,6 +39,6 @@ class StaffMaintenanceController extends Controller
     {
         $product->update(['status' => 'available']);
 
-        return redirect()->route('staff.maintenance.index')->with('success', 'ปิดงานสำหรับชุด ' . $product->product_name . ' แล้ว');
+        return redirect()->route('staff.maintenance.index')->with('success', 'ปิดงานสำหรับชุด '.$product->product_name.' แล้ว');
     }
 }
