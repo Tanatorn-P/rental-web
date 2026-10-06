@@ -58,7 +58,7 @@
             <h2 class="section-title" style="margin-bottom: 16px">งานเทศกาลที่กำลังจะถึง</h2>
             @forelse ($upcomingEvents as $event)
                 @php
-                    $daysLeft = now()->diffInDays($event->event_date, false);
+                    $daysLeft = (int) now()->startOfDay()->diffInDays($event->event_date, false);
                     $firstItem = collect($event->orderItems())->first();
                     $productCategory = $firstItem['product']->category ?? 'งานเลี้ยง';
                 @endphp

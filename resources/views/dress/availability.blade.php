@@ -10,7 +10,7 @@
         <div>
             <div class="eyebrow">AVAILABILITY CALENDAR</div>
             <h1 class="page-title">ตรวจสอบวันว่าง</h1>
-            <p class="page-subtitle">เลือกวันที่รับชุดและวันที่คืนชุด</p>
+            <p class="page-subtitle">เลือกวันที่รับชุด ระบบจะกำหนดวันคืนให้ตามระยะเวลาเช่าของชุด</p>
         </div>
     </div>
 
@@ -21,6 +21,7 @@
             <div class="eyebrow">SELECTED DRESS</div>
             <h2>{{ $product->product_name }}</h2>
             <p>รหัสสินค้า: {{ $product->product_id }}</p>
+            <p>ระยะเวลาเช่า {{ $rentalDays }} วัน (ต่อวันเช่าได้ วันละ {{ number_format($extraFee) }} บาท)</p>
         </div>
 
         <a href="{{ route('dress.product', $product->product_id) }}" class="availability-back">
@@ -86,7 +87,7 @@
 
             <div class="summary-row">
                 <div>
-                    <span class="summary-label">ระยะเวลาใช้งาน</span>
+                    <span class="summary-label">ระยะเวลาเช่า</span>
                     <strong id="usageDisplay">-</strong>
                 </div>
             </div>
@@ -99,7 +100,7 @@
             </div>
 
             <div class="status-box">
-                <div id="statusMessage">กรุณาเลือกวันที่รับและคืนชุด</div>
+                <div id="statusMessage">กรุณาเลือกวันที่รับชุด</div>
             </div>
 
             <form method="GET">
@@ -127,6 +128,8 @@
         const bookedRanges = @json($bookedRanges);
         const bookingBaseUrl = "{{ route('dress.booking.summary', $product->product_id) }}";
         const serverSaysBooked = @json($isBooked);
+        const rentalDays = {{ $rentalDays }};
+        const extraDayFee = {{ (int) $extraFee }};
 
 
         /* ===== ตัวแปรปฏิทิน ===== */
@@ -155,11 +158,18 @@
             return new Date(y, m - 1, d);
         }
 
-        // นับจำนวนวันแบบรวมวันรับและวันคืน (11 -> 14 = 4 วัน)
+        // บวกวันให้วันที่ (YYYY-MM-DD -> YYYY-MM-DD)
+        function addDays(dateString, days) {
+            const date = parseDate(dateString);
+            date.setDate(date.getDate() + days);
+            return formatDate(date);
+        }
+
+        // นับจำนวนวันจากวันรับถึงวันคืน (รับ 6 -> คืน 10 = 4 วัน)
         function countDays(pickup, ret) {
             const a = Date.UTC(...pickup.split('-').map((v, i) => i === 1 ? Number(v) - 1 : Number(v)));
             const b = Date.UTC(...ret.split('-').map((v, i) => i === 1 ? Number(v) - 1 : Number(v)));
-            return Math.round((b - a) / 86400000) + 1;
+            return Math.round((b - a) / 86400000);
         }
 
         // วันที่นี้ถูกจองหรือไม่
@@ -269,38 +279,40 @@
 
         /* ===== เลือกวันที่ ===== */
 
+        // เริ่มช่วงใหม่: วันคืน = วันรับ + จำนวนวันเช่าของชุด
+        function startRange(dateString) {
+            selectedPickup = dateString;
+            selectedReturn = addDays(dateString, rentalDays);
+        }
+
         function selectDate(dateString) {
 
             warningMessage = '';
 
-            // ยังไม่มีวันรับ หรือเลือกครบแล้ว -> เริ่มช่วงใหม่
-            if (!selectedPickup || selectedReturn) {
+            const hasRange = selectedPickup && selectedReturn;
+            const rangeOk = hasRange && !hasReservedBetween(selectedPickup, selectedReturn);
+            const standardReturn = hasRange ? addDays(selectedPickup, rentalDays) : '';
 
-                selectedPickup = dateString;
-                selectedReturn = '';
+            // มีช่วงเช่าที่ใช้ได้อยู่แล้ว และคลิกวันที่ไม่ก่อนวันคืนมาตรฐาน -> ปรับ/ต่อวันคืน
+            if (rangeOk && dateString >= standardReturn) {
 
-            }
-
-            // มีวันรับแล้ว กำลังเลือกวันคืน
-            else {
-
-                if (dateString < selectedPickup) {
-
-                    // เลือกก่อนวันรับ -> ใช้เป็นวันรับใหม่
-                    selectedPickup = dateString;
-
-                } else if (hasReservedBetween(selectedPickup, dateString)) {
+                if (hasReservedBetween(selectedPickup, dateString)) {
 
                     // มีวันที่ถูกจองคั่นกลาง -> เริ่มใหม่
                     warningMessage = 'ช่วงที่เลือกมีวันที่ถูกจองแล้ว กรุณาเลือกใหม่';
-                    selectedPickup = dateString;
-                    selectedReturn = '';
+                    startRange(dateString);
 
                 } else {
 
                     selectedReturn = dateString;
 
                 }
+
+            } else {
+
+                // คลิกวันรับใหม่ (หรือคลิกก่อนวันคืนมาตรฐาน) -> เริ่มช่วงใหม่
+                startRange(dateString);
+
             }
 
             updateSummary();
@@ -330,9 +342,12 @@
             const hasRange = selectedPickup && selectedReturn;
             const conflict = hasRange && hasReservedBetween(selectedPickup, selectedReturn);
 
-            // ระยะเวลาใช้งาน (นับรวมวันรับและวันคืน)
+            // ระยะเวลาเช่า (นับจากวันรับถึงวันคืน) และจำนวนวันที่ต่อเพิ่ม
+            const days = hasRange ? countDays(selectedPickup, selectedReturn) : 0;
+            const extraDays = Math.max(0, days - rentalDays);
+
             usageDisplay.textContent = hasRange
-                ? `${countDays(selectedPickup, selectedReturn)} วัน`
+                ? (extraDays > 0 ? `${days} วัน (ต่อเพิ่ม ${extraDays} วัน)` : `${days} วัน`)
                 : '-';
 
             // ปุ่มและข้อความสถานะ
@@ -349,12 +364,17 @@
 
             } else if (hasRange) {
 
+                const extraNote = extraDays > 0
+                    ? `ต่อวันเช่าเพิ่ม ${extraDays} วัน (วันละ ${extraDayFee} บาท)`
+                    : `คลิกวันที่หลังวันคืนหากต้องการต่อวันเช่า (วันละ ${extraDayFee} บาท)`;
+
                 statusMessage.innerHTML =
-                    '<span class="status-available">เลือกช่วงวันที่เรียบร้อยแล้ว</span>';
+                    '<span class="status-available">เช่า ' + days + ' วัน คืนชุดวันที่ ' + selectedReturn + '</span><br>' +
+                    extraNote;
 
             } else {
 
-                statusMessage.textContent = 'กรุณาเลือกวันที่รับและคืนชุด';
+                statusMessage.textContent = 'กรุณาเลือกวันที่รับชุด';
 
             }
         }
@@ -392,6 +412,11 @@
 
 
         /* ===== เริ่มต้น ===== */
+
+        // มีแต่วันรับ (ไม่มีวันคืน) -> คำนวณวันคืนให้ตามจำนวนวันเช่าของชุด
+        if (selectedPickup && !selectedReturn) {
+            selectedReturn = addDays(selectedPickup, rentalDays);
+        }
 
         if (selectedPickup) {
             const initialDate = parseDate(selectedPickup);

@@ -130,6 +130,10 @@ class ProductController extends Controller
         $pickupDate = request('pickup_date');
         $returnDate = request('return_date');
 
+        // จำนวนวันเช่าของชุด และค่าเช่าเพิ่มต่อวัน (ปฏิทินใช้คำนวณวันคืน)
+        $rentalDays = (int) $product->rental_duration_days;
+        $extraFee = $this->extraDayFee($product);
+
         // ตรวจสอบว่าช่วงวันที่ที่เลือกมีการจองหรือไม่
         $isBooked = false;
 
@@ -156,7 +160,9 @@ class ProductController extends Controller
             'pickupDate',
             'returnDate',
             'isBooked',
-            'bookedRanges'
+            'bookedRanges',
+            'rentalDays',
+            'extraFee'
         ));
     }
 
@@ -167,10 +173,12 @@ class ProductController extends Controller
         $pickupDate = (string) request('pickup_date');
         $returnDate = (string) request('return_date');
 
-        if ($pickupDate === '' || $returnDate === '' || $returnDate < $pickupDate) {
+        $error = $this->rangeError($product, $pickupDate, $returnDate);
+
+        if ($error !== null) {
             return redirect()
                 ->route('dress.availability', $product_id)
-                ->with('error', 'กรุณาเลือกวันรับและวันคืนให้ถูกต้อง');
+                ->with('error', $error);
         }
 
         $price = $this->calculateRental($product, $pickupDate, $returnDate);
@@ -203,10 +211,13 @@ class ProductController extends Controller
         $address = request('address');
         $pickupDate = (string) request('pickup_date');
         $returnDate = (string) request('return_date');
-        if ($pickupDate === '' || $returnDate === '' || $returnDate < $pickupDate) {
+
+        $error = $this->rangeError($product, $pickupDate, $returnDate);
+
+        if ($error !== null) {
             return redirect()
                 ->route('dress.availability', $product_id)
-                ->with('error', 'กรุณาเลือกวันรับและวันคืนให้ถูกต้อง');
+                ->with('error', $error);
         }
 
         // กันจองซ้อน (กรณีมีคนจองตัดหน้าระหว่างที่ลูกค้ากรอกข้อมูล)
@@ -292,13 +303,49 @@ class ProductController extends Controller
     }
 
     /**
+     * ตรวจช่วงวันที่เลือก: ต้องครบ, วันคืนไม่ก่อนวันรับ และเช่าไม่น้อยกว่าจำนวนวันของชุด
+     * คืนข้อความ error หรือ null ถ้าถูกต้อง
+     */
+    private function rangeError(Product $product, string $pickupDate, string $returnDate): ?string
+    {
+        if ($pickupDate === '' || $returnDate === '' || $returnDate < $pickupDate) {
+            return 'กรุณาเลือกวันรับและวันคืนให้ถูกต้อง';
+        }
+
+        $baseDays = (int) $product->rental_duration_days;
+
+        if ($this->countRentalDays($pickupDate, $returnDate) < $baseDays) {
+            return 'ชุดนี้ต้องเช่าอย่างน้อย '.$baseDays.' วัน';
+        }
+
+        return null;
+    }
+
+    /**
+     * นับจำนวนวันจากวันรับถึงวันคืน (รับ 6 -> คืน 10 = 4 วัน)
+     * ตรงกับข้อมูล orders: return_date = pickup_date + rental_duration_days
+     */
+    private function countRentalDays(string $pickupDate, string $returnDate): int
+    {
+        $days = Carbon::parse($pickupDate)->startOfDay()
+            ->diffInDays(Carbon::parse($returnDate)->startOfDay());
+
+        return max(0, (int) round($days));
+    }
+
+    private function extraDayFee(Product $product): float
+    {
+        return (float) ($product->extra_day_fee ?? 200);
+    }
+
+    /**
      * @return array{days: int, baseDays: int, extraDays: int, extraFee: float, extraCost: float, total: float}
      */
     private function calculateRental(Product $product, string $pickupDate, string $returnDate): array
     {
-        $days = (int) Carbon::parse($pickupDate)->diffInDays(Carbon::parse($returnDate)) + 1;
-        $baseDays = (int) ($product->rental_days ?? 3);
-        $extraFee = (float) ($product->extra_day_fee ?? 200);
+        $days = $this->countRentalDays($pickupDate, $returnDate);
+        $baseDays = (int) $product->rental_duration_days;
+        $extraFee = $this->extraDayFee($product);
         $extraDays = max(0, $days - $baseDays);
 
         return [
