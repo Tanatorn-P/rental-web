@@ -13,22 +13,22 @@
     </div>
 
     {{-- Filter Bar --}}
-    <div class="card card-pad" style="margin-bottom: 18px">
+    <div class="card card-pad" style="margin-bottom: 9px">
         <form method="GET" action="{{ route('admin.products.index') }}" style="display: flex; gap: 12px; flex-wrap: wrap;">
             <input type="text" name="search" placeholder="ค้นหาชื่อชุด/รหัสสินค้า..." value="{{ request('search') }}" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; flex: 1; min-width: 200px;" />
             
             <select name="category" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc;">
                 <option value="">-- ทุกหมวดหมู่ --</option>
-                <option value="ชุดราตรี" {{ request('category') == 'ชุดราตรี' ? 'selected' : '' }}>ชุดราตรี</option>
-                <option value="ชุดไทย" {{ request('category') == 'ชุดไทย' ? 'selected' : '' }}>ชุดไทย</option>
-                <option value="สูท" {{ request('category') == 'สูท' ? 'selected' : '' }}>สูท</option>
+                @foreach($categories = $products->pluck('category')->unique() as $category)
+                    <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>{{ $category }}</option>
+                @endforeach
             </select>
 
             <select name="status" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc;">
                 <option value="">-- ทุกสถานะ --</option>
-                <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>พร้อมเช่า</option>
-                <option value="rented" {{ request('status') == 'rented' ? 'selected' : '' }}>ถูกเช่าอยู่</option>
-                <option value="maintenance" {{ request('status') == 'maintenance' ? 'selected' : '' }}>ซ่อมบำรุง/ส่งซัก</option>
+                @foreach($statuses = $products->pluck('status')->unique() as $status) 
+                    <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
+                @endforeach
             </select>
 
             <button type="submit" class="btn btn-secondary">ค้นหา</button>
@@ -45,7 +45,6 @@
                     <th style="padding: 10px;">ชื่อสินค้า / รหัส</th>
                     <th style="padding: 10px;">หมวดหมู่</th>
                     <th style="padding: 10px;">ราคาเช่า/วัน</th>
-                    <th style="padding: 10px;">จำนวนสต็อก</th>
                     <th style="padding: 10px;">สถานะ</th>
                     <th style="padding: 10px; text-align: right;">จัดการ</th>
                 </tr>
@@ -54,22 +53,20 @@
                 @forelse($products as $product)
                     <tr style="border-bottom: 1px solid #edf2f7;">
                         <td style="padding: 10px;">
-                            <img src="{{ asset($product->image_url ?? 'images/placeholder.jpg') }}" style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px;" />
+                            <img src="{{ asset($product->image[0] ?? 'images/placeholder.jpg') }}" 
+                                style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px;" />
                         </td>
                         <td style="padding: 10px;">
                             <strong>{{ $product->product_name }}</strong>
                             <p class="muted" style="margin: 0; font-size: 12px;">#{{ $product->product_id }}</p>
                         </td>
                         <td style="padding: 10px;">{{ $product->category }}</td>
-                        <td style="padding: 10px;">฿{{ number_format($product->rental_price) }}</td>
-                        <td style="padding: 10px;">
-                            <strong style="font-size: 15px;">{{ $product->stock_quantity }}</strong> ตัว
-                        </td>
+                        <td style="padding: 10px;">฿{{ number_format($product->rental_fee) }}</td>
                         <td style="padding: 10px;">
                             <span class="status {{ $product->status }}">{{ strtoupper($product->status) }}</span>
                         </td>
                         <td style="padding: 10px; text-align: right;">
-                            <a href="{{ route('admin.products.edit', $product->product_id) }}" class="btn btn-secondary btn-sm">แก้ไข / ปรับสต็อก</a>
+                            <a href="{{ route('admin.products.edit', $product->product_id) }}" class="btn btn-secondary btn-sm">แก้ไข</a>
                         </td>
                     </tr>
                 @empty

@@ -16,20 +16,20 @@
                 <div class="brand-mark">D</div>
                 <div>
                     <h1>DressDay</h1>
-                    <p>Admin Management</p>
+                    <p>จัดการระบบ</p>
                 </div>
             </div>
-            <p class="nav-label">Admin Executive</p>
-            <a class="nav-item @yield('nav-dashboard')" href="{{ route('admin.dashboard') }}">Dashboard & Analytics</a>
-            <a class="nav-item @yield('nav-products')" href="{{ route('admin.products.index') }}">Product Catalog</a>
-            <a class="nav-item @yield('nav-product-create')" href="{{ route('admin.products.create') }}">+ Add New Product</a>
+            <p class="nav-label">รายการ</p>
+            <a class="nav-item @yield('nav-dashboard')" href="{{ route('admin.dashboard') }}">สถิติรวม</a>
+            <a class="nav-item @yield('nav-products')" href="{{ route('admin.products.index') }}">รายชื่อสินค้า</a>
+            <a class="nav-item @yield('nav-product-create')" href="{{ route('admin.products.create') }}">+ เพิ่มสินค้าใหม่</a>
 
             <div class="sidebar-bottom">
                 @php $currentAdmin = Auth::guard('web')->user(); @endphp
                 <p class="nav-label" style="padding-top: 0">
                     {{ $currentAdmin->fullname ?? 'Admin Staff' }}
                 </p>
-                <form action="{{ route('admin.logout') }}" method="POST">
+                <form action="{{ route('home') }}" method="GET" style="width: 100%">
                     @csrf
                     <button type="submit" class="nav-item" style="width: 100%">ออกจากระบบ</button>
                 </form>
@@ -39,7 +39,7 @@
         <main class="main-shell">
             <header class="topbar">
                 <div class="crumb">
-                    <strong>Admin</strong> / @yield('page-name', 'Dashboard')
+                    <strong>แอดมิน</strong> / @yield('page-name', 'สถิติรวม')
                 </div>
                 <div class="avatar" style="background: #1e293b; color: #fff;">AD</div>
             </header>
