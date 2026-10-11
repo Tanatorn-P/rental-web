@@ -11,6 +11,14 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    /**
+     * สถานะออเดอร์ที่ถือว่าชุดไม่ว่างในช่วงวันที่นั้น
+     * (pending = รอพนักงานยืนยัน ก็ต้องกันวันไว้ ไม่ให้คนอื่นจองซ้อน)
+     *
+     * @var list<string>
+     */
+    private const BLOCKING_STATUSES = ['pending', 'approved', 'confirmed', 'rented', 'overdue'];
+
     // หน้าแรกเลือกหมวดหมู่
     public function find(): View
     {
@@ -56,7 +64,7 @@ class ProductController extends Controller
         if ($pickupDate && $returnDate) {
 
             $rows = DB::table('orders')
-                ->where('order_status', 'confirmed')
+                ->whereIn('order_status', self::BLOCKING_STATUSES)
                 ->whereDate('pickup_date', '<=', $returnDate)
                 ->whereDate('return_date', '>=', $pickupDate)
                 ->pluck('item');
@@ -140,7 +148,7 @@ class ProductController extends Controller
         if ($pickupDate && $returnDate) {
             $isBooked = DB::table('orders')
                 ->whereJsonContains('item', $product_id)
-                ->where('order_status', 'confirmed')
+                ->whereIn('order_status', self::BLOCKING_STATUSES)
                 ->whereDate('pickup_date', '<=', $returnDate)
                 ->whereDate('return_date', '>=', $pickupDate)
                 ->exists();
@@ -149,7 +157,7 @@ class ProductController extends Controller
         // ดึงช่วงวันที่มีการจองของชุดนี้
         $bookedRanges = DB::table('orders')
             ->whereJsonContains('item', $product_id)
-            ->where('order_status', 'confirmed')
+            ->whereIn('order_status', self::BLOCKING_STATUSES)
             ->get([
                 'pickup_date',
                 'return_date',
@@ -223,7 +231,7 @@ class ProductController extends Controller
         // กันจองซ้อน (กรณีมีคนจองตัดหน้าระหว่างที่ลูกค้ากรอกข้อมูล)
         $alreadyBooked = DB::table('orders')
             ->whereJsonContains('item', $product_id)
-            ->where('order_status', 'confirmed')
+            ->whereIn('order_status', self::BLOCKING_STATUSES)
             ->whereDate('pickup_date', '<=', $returnDate)
             ->whereDate('return_date', '>=', $pickupDate)
             ->exists();
@@ -288,7 +296,8 @@ class ProductController extends Controller
 
             'reject_reason' => null,
 
-            'order_status' => 'confirmed',
+            // รอพนักงานตรวจสลิปและอนุมัติ (Reservation Queue) -> approved
+            'order_status' => 'pending',
 
             'slip_image' => $slipPath,
 
