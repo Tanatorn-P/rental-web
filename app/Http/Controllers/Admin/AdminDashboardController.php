@@ -13,7 +13,7 @@ class AdminDashboardController extends Controller
 {
     public function index(): View
     {
-        $customers = customer::all();
+        $customers = Customer::all();
         $staff = Staff::all();
         $products = Product::all();
         $orders = Order::all();
