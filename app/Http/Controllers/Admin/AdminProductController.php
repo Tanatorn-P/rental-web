@@ -28,26 +28,26 @@ class AdminProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Product created successfully.');
     }
 
-    public function edit($id): View
+    public function edit(string $id): View
     {
         $products = Product::findOrFail($id);
 
         return view('admin.products.edit', compact('products'));
     }
 
-    public function update(Request $request, $id): RedirectResponse
+    public function update(Request $request, string $id): RedirectResponse
     {
         // Logic to update the product
         return redirect()->route('admin.products.index')->with('success', 'Product updated successfully.');
     }
 
-    public function updateStock(Request $request, $id): RedirectResponse
+    public function updateStock(Request $request, string $id): RedirectResponse
     {
         // Logic to update the stock of the product
         return redirect()->route('admin.products.index')->with('success', 'Product stock updated successfully.');
     }
 
-    public function destroy($id): RedirectResponse
+    public function destroy(string $id): RedirectResponse
     {
         // Logic to delete the product
         return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully.');
