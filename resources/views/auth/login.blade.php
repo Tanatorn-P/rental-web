@@ -3,31 +3,35 @@
 
 @section('content')
 
-{{-- Tab สำหรับเลือก Role แบบไม่รีเฟรชหน้า (ใช้ JavaScript) --}}
+{{-- Tab สำหรับเลือก Role --}}
 <div style="display: flex; justify-content: center; margin-bottom: 24px;">
     <div class="login-tabs" style="display: inline-flex; background-color: #f2eee9; padding: 4px; border-radius: 12px; gap: 4px;">
         <button type="button" onclick="switchRole('customer')" id="tab-customer" 
-           style="border: none; cursor: pointer; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: {{ ($role ?? 'customer') === 'customer' ? '600' : '500' }}; color: {{ ($role ?? 'customer') === 'customer' ? '#111' : '#777' }}; background-color: {{ ($role ?? 'customer') === 'customer' ? '#fff' : 'transparent' }}; box-shadow: {{ ($role ?? 'customer') === 'customer' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none' }}; transition: all 0.2s ease;">
-           Customer
+            style="border: none; cursor: pointer; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: {{ ($role ?? 'customer') === 'customer' ? '600' : '500' }}; color: {{ ($role ?? 'customer') === 'customer' ? '#111' : '#777' }}; background-color: {{ ($role ?? 'customer') === 'customer' ? '#fff' : 'transparent' }}; box-shadow: {{ ($role ?? 'customer') === 'customer' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none' }}; transition: all 0.2s ease;">
+            Customer
         </button>
         <button type="button" onclick="switchRole('staff')" id="tab-staff" 
-           style="border: none; cursor: pointer; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: {{ ($role ?? 'customer') === 'staff' ? '600' : '500' }}; color: {{ ($role ?? 'customer') === 'staff' ? '#111' : '#777' }}; background-color: {{ ($role ?? 'customer') === 'staff' ? '#fff' : 'transparent' }}; box-shadow: {{ ($role ?? 'customer') === 'staff' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none' }}; transition: all 0.2s ease;">
-           Staff
+            style="border: none; cursor: pointer; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: {{ ($role ?? 'customer') === 'staff' ? '600' : '500' }}; color: {{ ($role ?? 'customer') === 'staff' ? '#111' : '#777' }}; background-color: {{ ($role ?? 'customer') === 'staff' ? '#fff' : 'transparent' }}; box-shadow: {{ ($role ?? 'customer') === 'staff' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none' }}; transition: all 0.2s ease;">
+            Staff
         </button>
         <button type="button" onclick="switchRole('admin')" id="tab-admin" 
-           style="border: none; cursor: pointer; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: {{ ($role ?? 'customer') === 'admin' ? '600' : '500' }}; color: {{ ($role ?? 'customer') === 'admin' ? '#111' : '#777' }}; background-color: {{ ($role ?? 'customer') === 'admin' ? '#fff' : 'transparent' }}; box-shadow: {{ ($role ?? 'customer') === 'admin' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none' }}; transition: all 0.2s ease;">
-           Admin
+            style="border: none; cursor: pointer; padding: 6px 16px; border-radius: 8px; font-size: 13px; font-weight: {{ ($role ?? 'customer') === 'admin' ? '600' : '500' }}; color: {{ ($role ?? 'customer') === 'admin' ? '#111' : '#777' }}; background-color: {{ ($role ?? 'customer') === 'admin' ? '#fff' : 'transparent' }}; box-shadow: {{ ($role ?? 'customer') === 'admin' ? '0 1px 4px rgba(0,0,0,0.06)' : 'none' }}; transition: all 0.2s ease;">
+            Admin
         </button>
     </div>
 </div>
 
     @if(session('error'))
-        <div class="alert alert-danger" style="color: red; margin-bottom: 16px; text-align: center;">
-            {{ session('error') }}
-        </div>
+    <?php if (session('error')) { ?>
+        <div class="alert alert-error"><?= htmlspecialchars(session('error'), ENT_QUOTES, 'UTF-8') ?></div>
+    <?php } ?>
     @endif
 
+
     {{-- ฟอร์ม Login หลัก --}}
+    <?php if (session('success')) { ?>
+        <div class="alert alert-success"><?= htmlspecialchars(session('success'), ENT_QUOTES, 'UTF-8') ?></div>
+    <?php } ?>
     <form action="{{ route('login') }}" method="POST">
         @csrf
         <input type="hidden" name="role" id="role-input" value="{{ $role ?? 'customer' }}">

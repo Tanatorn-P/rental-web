@@ -18,13 +18,6 @@
                 <h1>DressDay</h1>
             </div>
 
-            <?php if (session('success')) { ?>
-            <div class="alert alert-success"><?= htmlspecialchars(session('success'), ENT_QUOTES, 'UTF-8') ?></div>
-            <?php } ?>
-            <?php if (session('error')) { ?>
-            <div class="alert alert-error"><?= htmlspecialchars(session('error'), ENT_QUOTES, 'UTF-8') ?></div>
-            <?php } ?>
-
             @yield('content')
         </div>
     </div>
