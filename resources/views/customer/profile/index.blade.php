@@ -59,7 +59,7 @@
                     />
                 </div>
 
-                <h3 style="font-size: 14px; font-weight: 700; margin: 20px 0 10px">ข้อมูลสัดส่วน (นิ้ว)</h3>
+                <h3 style="font-size: 14px; font-weight: 700; margin: 20px 0 10px">ข้อมูลสัดส่วน (เซนติเมตร)</h3>
                 <div class="form-grid" style="grid-template-columns: repeat(4, 1fr)">
                     <div class="field">
                         <label>รอบอก (Bust)</label>

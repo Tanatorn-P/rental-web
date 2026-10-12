@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
@@ -37,8 +38,28 @@ class ProductController extends Controller
 
         $size = request('size');
         $price = request('price');
+        $sort = request('sort'); // price_asc | price_desc
         $pickupDate = request('pickup_date');
         $returnDate = request('return_date');
+
+        // ไซส์ที่แนะนำจากขนาดตัวของลูกค้า (ถ้ามีข้อมูลในโปรไฟล์)
+        $customer = Auth::guard('customer')->user();
+        $bodyMeasurements = null;
+        $recommendedSize = null;
+
+        if ($customer instanceof Customer) {
+            $bodyMeasurements = [
+                'bust' => $this->measurement($customer->bust),
+                'waist' => $this->measurement($customer->waist),
+                'hips' => $this->measurement($customer->hips),
+            ];
+
+            $recommendedSize = $this->recommendSize(
+                $bodyMeasurements['bust'],
+                $bodyMeasurements['waist'],
+                $bodyMeasurements['hips'],
+            );
+        }
 
         $products = Product::where('status', 'available')
             ->when($size, function ($query) use ($size) {
@@ -58,6 +79,12 @@ class ProductController extends Controller
                     $query->where('rental_fee', '>', 1000);
                 }
 
+            })
+            ->when($sort === 'price_asc', function ($query) {
+                $query->orderBy('rental_fee')->orderBy('product_id');
+            })
+            ->when($sort === 'price_desc', function ($query) {
+                $query->orderByDesc('rental_fee')->orderBy('product_id');
             })
             ->get();
 
@@ -95,6 +122,9 @@ class ProductController extends Controller
             'products',
             'size',
             'price',
+            'sort',
+            'recommendedSize',
+            'bodyMeasurements',
             'pickupDate',
             'returnDate'
         ));
@@ -309,6 +339,34 @@ class ProductController extends Controller
         ]);
 
         return redirect()->route('dress.booking.success');
+    }
+
+    /**
+     * แปลงค่าขนาดตัวจากโปรไฟล์เป็นตัวเลข (ว่าง/ไม่ใช่ตัวเลข/0 = ไม่มีข้อมูล)
+     */
+    private function measurement(mixed $value): ?float
+    {
+        return is_numeric($value) && (float) $value > 0 ? (float) $value : null;
+    }
+
+    private function recommendSize(?float $bust, ?float $waist, ?float $hips): ?string
+    {
+        $measurements = array_filter([$bust, $waist, $hips], static fn ($value) => $value !== null);
+
+        if ($measurements === []) {
+            return null;
+        }
+
+        $largestMeasurement = max($measurements);
+
+        return match (true) {
+            $largestMeasurement <= 80 => 'XS',
+            $largestMeasurement <= 86 => 'S',
+            $largestMeasurement <= 92 => 'M',
+            $largestMeasurement <= 100 => 'L',
+            $largestMeasurement <= 108 => 'XL',
+            default => 'XXL',
+        };
     }
 
     /**
