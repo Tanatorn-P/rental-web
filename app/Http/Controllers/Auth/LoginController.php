@@ -22,7 +22,19 @@ class LoginController extends Controller
     // จัดการการเข้าสู่ระบบแยกตาม Role ที่ส่งมา
     public function store(Request $request): RedirectResponse
     {
-        $role = $request->input('role', 'customer');
+        // 1. ดึง role จาก input ถ้าไม่มี ให้เช็กจาก URL Path (รองรับการทดสอบ Test ที่ยิงตรงผ่าน /staff/login หรือ /admin/login)
+        $role = $request->input('role');
+
+        if (! $role) {
+            $path = $request->path();
+            if (str_contains($path, 'staff')) {
+                $role = 'staff';
+            } elseif (str_contains($path, 'admin')) {
+                $role = 'admin';
+            } else {
+                $role = 'customer';
+            }
+        }
 
         if ($role === 'customer') {
             $credentials = $request->validate([
@@ -51,7 +63,6 @@ class LoginController extends Controller
 
             $user = Auth::guard('web')->user();
 
-            // ตรวจสอบว่าตรงกับ role ที่เลือกผ่าน Tab หรือไม่
             if ($user->role !== $role) {
                 Auth::guard('web')->logout();
 
