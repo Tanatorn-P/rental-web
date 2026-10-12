@@ -1,9 +1,7 @@
 <?php
 
-use App\Http\Controllers\Auth\AdminLoginController;
-use App\Http\Controllers\Auth\CustomerLoginController;
 use App\Http\Controllers\Auth\CustomerRegisterController;
-use App\Http\Controllers\Auth\StaffLoginController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StaffDashboardController;
 use App\Http\Controllers\StaffHistoryController;
@@ -14,7 +12,6 @@ use App\Http\Controllers\StaffQueueController;
 use App\Http\Controllers\StaffReturnController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
 
 Route::get('/', function () {
     if (Auth::guard('web')->check()) {
@@ -86,7 +83,7 @@ Route::middleware('guest')->group(function () {
 // ---------- Logout Routes (รองรับทั้งเว็บและลูกค้า พร้อมผูกชื่อเดิมไว้) ----------
 Route::middleware(['auth:web,customer'])->group(function () {
     Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
-    
+
     // Alias Logout (คงชื่อเดิมไว้ทั้งหมด)
     Route::post('/staff/logout', [LoginController::class, 'destroy'])->name('staff.logout');
     Route::post('/admin/logout', [LoginController::class, 'destroy'])->name('admin.logout');

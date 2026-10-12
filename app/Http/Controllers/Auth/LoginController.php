@@ -15,6 +15,7 @@ class LoginController extends Controller
     {
         // รับค่า role จาก query string เช่น ?role=customer (ค่าเริ่มต้นเป็น customer)
         $role = $request->query('role', 'customer');
+
         return view('auth.login', compact('role'));
     }
 
@@ -29,11 +30,12 @@ class LoginController extends Controller
                 'password' => ['required', 'string'],
             ]);
 
-            if (!Auth::guard('customer')->attempt($credentials)) {
+            if (! Auth::guard('customer')->attempt($credentials)) {
                 return back()->with('error', 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง')->withInput();
             }
 
             $request->session()->regenerate();
+
             return redirect()->route('customer.dashboard');
 
         } else {
@@ -43,7 +45,7 @@ class LoginController extends Controller
                 'password' => ['required', 'string'],
             ]);
 
-            if (!Auth::guard('web')->attempt($credentials)) {
+            if (! Auth::guard('web')->attempt($credentials)) {
                 return back()->with('error', 'ชื่อหรือรหัสผ่านไม่ถูกต้อง')->withInput();
             }
 
@@ -52,7 +54,8 @@ class LoginController extends Controller
             // ตรวจสอบว่าตรงกับ role ที่เลือกผ่าน Tab หรือไม่
             if ($user->role !== $role) {
                 Auth::guard('web')->logout();
-                return back()->with('error', 'บัญชีนี้ไม่มีสิทธิ์เข้าสู่ระบบในฐานะ ' . ucfirst($role))->withInput();
+
+                return back()->with('error', 'บัญชีนี้ไม่มีสิทธิ์เข้าสู่ระบบในฐานะ '.ucfirst($role))->withInput();
             }
 
             $request->session()->regenerate();
@@ -70,7 +73,7 @@ class LoginController extends Controller
     {
         Auth::guard('web')->logout();
         Auth::guard('customer')->logout();
-        
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
