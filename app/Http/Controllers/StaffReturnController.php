@@ -24,7 +24,7 @@ class StaffReturnController extends Controller
 
                 if (now()->startOfDay()->gt($order->return_date->copy()->startOfDay())) {
                     $lateDays = (int) $order->return_date->diffInDays(now());
-                    $penalty = $lateDays * 100;
+                    $penalty = $lateDays * 200;
                 }
 
                 return ['order' => $order, 'lateDays' => $lateDays, 'penalty' => $penalty];

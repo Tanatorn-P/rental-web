@@ -23,26 +23,27 @@ $autoPageName = $customerPageNames[$routeName]
     ?? (str_starts_with($routeName, 'dress.') ? 'Find a Dress' : 'Dashboard');
 
 // คืนค่า 'active' ถ้า route ปัจจุบันตรงกับรูปแบบที่ระบุ
-$navActive = fn (string ...$patterns): string => request()->routeIs(...$patterns) ? 'active' : '';
+$navActive = fn(string ...$patterns): string => request()->routeIs(...$patterns) ? 'active' : '';
 ?>
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@yield('title', 'DressDay')</title>
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
-        rel="stylesheet"
-    />
+        rel="stylesheet" />
     <link href="{{ asset('css/style.css') }}" rel="stylesheet" />
     @stack('styles')
 </head>
+
 <body>
     <div class="dd-app">
         <aside class="sidebar">
             <div class="brand">
-                <div class="brand-mark">D</div>
+                <img src="{{ asset('/logo/logo.jpeg') }}" alt="Logo" class="brand-logo-img">
                 <div>
                     <h1>DressDay</h1>
                     <p>{{ $isCustomer ? 'Customer Portal' : 'Rental Management' }}</p>
@@ -52,14 +53,21 @@ $navActive = fn (string ...$patterns): string => request()->routeIs(...$patterns
             @if ($isCustomer)
                 {{-- ================= เมนูสำหรับ CUSTOMER ================= --}}
                 <p class="nav-label">Customer Operations</p>
-                <a class="nav-item @yield('nav-dashboard', $navActive('customer.dashboard'))" href="{{ route('customer.dashboard') }}">Dashboard</a>
-                <a class="nav-item @yield('nav-find', $navActive('dress.*'))" href="{{ route('dress.find') }}">Find a Dress</a>
-                <a class="nav-item @yield('nav-reservations', $navActive('reservations.index'))" href="{{ route('reservations.index') }}">My Reservations</a>
-                <a class="nav-item @yield('nav-return', $navActive('return.index'))" href="{{ route('return.index') }}">Return</a>
-                <a class="nav-item @yield('nav-history', $navActive('history.index'))" href="{{ route('history.index') }}">History</a>
-                <a class="nav-item @yield('nav-notifications', $navActive('notifications.index'))" href="{{ route('notifications.index') }}"
-                    >Notifications</a>
-                <a class="nav-item @yield('nav-profile', $navActive('profile.index'))" href="{{ route('profile.index') }}">Profile</a>
+                <a class="nav-item @yield('nav-dashboard', $navActive('customer.dashboard'))"
+                    href="{{ route('customer.dashboard') }}">Dashboard</a>
+                <a class="nav-item @yield('nav-find', $navActive('dress.*'))" href="{{ route('dress.find') }}">Find a
+                    Dress</a>
+                <a class="nav-item @yield('nav-reservations', $navActive('reservations.index'))"
+                    href="{{ route('reservations.index') }}">My Reservations</a>
+                <a class="nav-item @yield('nav-return', $navActive('return.index'))"
+                    href="{{ route('return.index') }}">Return</a>
+                <a class="nav-item @yield('nav-history', $navActive('history.index'))"
+                    href="{{ route('history.index') }}">History</a>
+                <a class="nav-item @yield('nav-notifications', $navActive('notifications.index'))"
+                    href="{{ route('notifications.index') }}">Notifications</a>
+                <a class="nav-item @yield('nav-profile', $navActive('profile.index'))"
+                    href="{{ route('profile.index') }}">Profile</a>
+                <a class="nav-item" href="https://line.me/ti/p/-vgYjiKmbz" target="_blank">ติดต่อผู้ดูแลระบบ</a>
 
                 <div class="sidebar-bottom">
                     <p class="nav-label" style="padding-top: 0">{{ $customerUser->fullname ?? 'ลูกค้า' }}</p>
@@ -78,15 +86,12 @@ $navActive = fn (string ...$patterns): string => request()->routeIs(...$patterns
                 <a class="nav-item @yield('nav-pickup')" href="{{ route('staff.pickup.index') }}">Pickup</a>
                 <a class="nav-item @yield('nav-return')" href="{{ route('staff.return.index') }}">Return</a>
                 <a class="nav-item @yield('nav-inspection')" href="{{ route('staff.inspection.index') }}">Inspection</a>
-                <a class="nav-item @yield('nav-maintenance')" href="{{ route('staff.maintenance.index') }}"
-                    >Maintenance</a>
+                <a class="nav-item @yield('nav-maintenance')" href="{{ route('staff.maintenance.index') }}">Maintenance</a>
 
                 <div class="sidebar-bottom">
                     <p class="nav-label" style="padding-top: 0">{{ $staffUser->fullname ?? '' }}</p>
-                    <form
-                        action="{{ $staffUser && $staffUser->isAdmin() ? route('admin.logout') : route('staff.logout') }}"
-                        method="POST"
-                    >
+                    <form action="{{ $staffUser && $staffUser->isAdmin() ? route('admin.logout') : route('staff.logout') }}"
+                        method="POST">
                         @csrf
                         <button type="submit" class="nav-item" style="width: 100%; color: var(--danger)">
                             Logout
@@ -128,4 +133,5 @@ $navActive = fn (string ...$patterns): string => request()->routeIs(...$patterns
         </main>
     </div>
 </body>
+
 </html>

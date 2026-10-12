@@ -17,7 +17,12 @@ button{cursor:pointer}
 .brand-mark{width:34px;height:34px;border-radius:10px;background:var(--charcoal);display:grid;place-items:center;color:white;font-weight:700}
 .brand h1{font-size:19px;margin:0;font-weight:700}
 .brand p{font-size:11px;color:var(--gray);margin:2px 0 0}
-
+.brand-logo-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    object-fit: cover;
+}
 /* ===== Center-screen wrapper (สำหรับหน้า login/register/role-select) ===== */
 .center-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 
