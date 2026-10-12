@@ -9,7 +9,7 @@
             <h1 class="page-title">การจองของฉัน</h1>
             <p class="page-subtitle">ติดตามและตรวจสอบสถานะการจองชุดทั้งหมด</p>
         </div>
-        <a href="{{ Route::has('dresses.find') ? route('dresses.find') : '#' }}" class="btn btn-primary">ค้นหาชุด</a>
+        <a href="{{ Route::has('dress.find') ? route('dress.find') : '#' }}" class="btn btn-primary">ค้นหาชุด</a>
     </div>
 
     <div class="card table-wrap">

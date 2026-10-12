@@ -30,6 +30,7 @@
             <div class="booking-product-image">
                 @if (!empty($product->image))
                     <img
+                        id="bookingMainImage"
                         src="{{ asset($product->image[0]) }}"
                         alt="{{ $product->product_name }}"
                     >
@@ -37,6 +38,21 @@
                     <div class="booking-no-image">ไม่มีรูปภาพ</div>
                 @endif
             </div>
+
+            @if (count($product->image ?? []) > 1)
+                <div class="booking-thumbs">
+                    @foreach ($product->image as $index => $imagePath)
+                        <button
+                            type="button"
+                            class="booking-thumb {{ $index === 0 ? 'active' : '' }}"
+                            data-src="{{ asset($imagePath) }}"
+                            aria-label="รูปที่ {{ $index + 1 }}"
+                        >
+                            <img src="{{ asset($imagePath) }}" alt="">
+                        </button>
+                    @endforeach
+                </div>
+            @endif
 
             <div class="booking-product-info">
 
@@ -195,10 +211,11 @@
     overflow: hidden;
 }
 
+/* contain = เห็นทั้งภาพ ไม่โดนครอบ */
 .booking-product-image img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
     display: block;
 }
 
@@ -211,6 +228,36 @@
     color: var(--gray);
     font-size: 14px;
 }
+
+
+/* ===== Thumbnails ===== */
+
+.booking-thumbs {
+    display: flex;
+    gap: 10px;
+    padding: 14px 24px 0;
+}
+
+.booking-thumb {
+    width: 64px;
+    height: 80px;
+    padding: 0;
+    overflow: hidden;
+    border: 2px solid var(--line);
+    border-radius: 10px;
+    background: var(--beige);
+    cursor: pointer;
+}
+
+.booking-thumb.active { border-color: var(--mauve); }
+
+.booking-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
 
 .booking-product-info { padding: 24px; }
 
@@ -366,5 +413,20 @@
 }
 
 </style>
+
+<script>
+    // กดรูปย่อเพื่อสลับรูปหลัก
+    document.querySelectorAll('.booking-thumb').forEach(function (thumb) {
+        thumb.addEventListener('click', function () {
+            document.getElementById('bookingMainImage').src = thumb.dataset.src;
+
+            document.querySelectorAll('.booking-thumb').forEach(function (t) {
+                t.classList.remove('active');
+            });
+
+            thumb.classList.add('active');
+        });
+    });
+</script>
 
 @endsection
