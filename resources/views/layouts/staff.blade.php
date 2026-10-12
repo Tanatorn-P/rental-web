@@ -52,7 +52,7 @@ use Illuminate\Support\Facades\Auth;
         <main class="main-shell">
             <header class="topbar">
                 <div class="crumb">
-                    <strong>พนักงาน</strong> /
+                    <strong>Staff</strong> /
                     @yield('page-name', 'Dashboard')
                 </div>
                 <div class="avatar">ST</div>
