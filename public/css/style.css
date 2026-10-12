@@ -124,6 +124,13 @@ h2{font-size:20px;margin:0 0 18px}
     .form-grid{grid-template-columns:1fr}
 }
 
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
 /* ===== Order card ใหม่ (Inspection/Pickup/Return) ===== */
 .order-card{position:relative;padding-right:145px;min-height:230px}
 .order-card-image{position:absolute;top:20px;right:20px;width:125px;height:125px;border-radius:12px;background:var(--beige);border:1px solid var(--line);object-fit:cover}
