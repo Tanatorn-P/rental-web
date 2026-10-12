@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @property int $rent_count
  */
-
 class Product extends Model
 {
     protected $table = 'products';
