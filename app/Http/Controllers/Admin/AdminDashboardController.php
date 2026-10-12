@@ -4,15 +4,16 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Product;
+use App\Models\Customer;
 use App\Models\Order;
-use App\Models\customer;
+use App\Models\Product;
 use App\Models\Staff;
+use Illuminate\View\View;
 
 
 class AdminDashboardController extends Controller
 {
-    public function index()
+    public function index(): View
     {
         $customers = Customer::all();
         $staff = Staff::all();
