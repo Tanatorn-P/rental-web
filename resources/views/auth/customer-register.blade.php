@@ -71,5 +71,4 @@
     </form>
 
     <p class="switch-link">มีบัญชีอยู่แล้ว? <a href="{{ route('customer.login') }}">เข้าสู่ระบบ</a></p>
-    <p class="switch-link"><a href="{{ route('home') }}">← กลับไปหน้าเลือกประเภทผู้ใช้</a></p>
 @endsection
