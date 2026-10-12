@@ -6,6 +6,7 @@ use App\Http\Controllers\CustomerNotificationController;
 use App\Http\Controllers\CustomerProfileController;
 use App\Http\Controllers\CustomerRentalController;
 use App\Http\Controllers\CustomerReservationController;
+use App\Http\Controllers\CustomerReturnController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['web', 'auth:customer'])->prefix('customer')->group(function () {    // 1. Dashboard / Home (เพิ่ม name customer.dashboard ให้เรียกใช้ได้ทั้งคู่)
@@ -17,13 +18,17 @@ Route::middleware(['web', 'auth:customer'])->prefix('customer')->group(function 
     // 3. My Rentals (Rental Tracking & Timeline)
     Route::get('/my-rentals/{id?}', [CustomerRentalController::class, 'show'])->name('rentals.show');
 
-    // 4. History
+    // 4. Return (แจ้งส่งคืนชุด)
+    Route::get('/return', [CustomerReturnController::class, 'index'])->name('return.index');
+    Route::post('/return/{order}', [CustomerReturnController::class, 'confirm'])->name('return.confirm');
+
+    // 5. History
     Route::get('/history', [CustomerHistoryController::class, 'index'])->name('history.index');
 
-    // 5. Notifications
+    // 6. Notifications
     Route::get('/notifications', [CustomerNotificationController::class, 'index'])->name('notifications.index');
 
-    // 6. Profile & Logout
+    // 7. Profile & Logout
     Route::get('/profile', [CustomerProfileController::class, 'index'])->name('profile.index');
     Route::put('/profile', [CustomerProfileController::class, 'update'])->name('profile.update');
 });

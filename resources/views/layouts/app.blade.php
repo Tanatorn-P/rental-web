@@ -5,6 +5,25 @@ use Illuminate\Support\Facades\Auth;
 $isCustomer = Auth::guard('customer')->check();
 $customerUser = $isCustomer ? Auth::guard('customer')->user() : null;
 $staffUser = Auth::guard('web')->user();
+
+// --- ให้ breadcrumb และเมนูฝั่งลูกค้าตรงกับหน้าปัจจุบัน (ดูจากชื่อ route) ---
+$routeName = request()->route()?->getName() ?? '';
+
+$customerPageNames = [
+    'customer.dashboard' => 'Dashboard',
+    'reservations.index' => 'My Reservations',
+    'rentals.show' => 'Rental Tracking',
+    'return.index' => 'Return',
+    'history.index' => 'History',
+    'notifications.index' => 'Notifications',
+    'profile.index' => 'Profile',
+];
+
+$autoPageName = $customerPageNames[$routeName]
+    ?? (str_starts_with($routeName, 'dress.') ? 'Find a Dress' : 'Dashboard');
+
+// คืนค่า 'active' ถ้า route ปัจจุบันตรงกับรูปแบบที่ระบุ
+$navActive = fn (string ...$patterns): string => request()->routeIs(...$patterns) ? 'active' : '';
 ?>
 <!DOCTYPE html>
 <html lang="th">
@@ -33,15 +52,14 @@ $staffUser = Auth::guard('web')->user();
             @if ($isCustomer)
                 {{-- ================= เมนูสำหรับ CUSTOMER ================= --}}
                 <p class="nav-label">Customer Operations</p>
-                <a class="nav-item @yield('nav-dashboard')" href="{{ route('customer.dashboard') }}">Dashboard</a>
-                <a class="nav-item @yield('nav-find')" href="{{ route('dress.find') }}">Find a Dress</a>
-                <a class="nav-item @yield('nav-occasions')" href="{{ route('dress.find') }}#occasions">Occasions</a>
-                <a class="nav-item @yield('nav-reservations')" href="{{ route('reservations.index') }}">My Reservations</a>
-                <a class="nav-item @yield('nav-rentals')" href="{{ route('rentals.show') }}">My Rentals</a>
-                <a class="nav-item @yield('nav-history')" href="{{ route('history.index') }}">History</a>
-                <a class="nav-item @yield('nav-notifications')" href="{{ route('notifications.index') }}"
+                <a class="nav-item @yield('nav-dashboard', $navActive('customer.dashboard'))" href="{{ route('customer.dashboard') }}">Dashboard</a>
+                <a class="nav-item @yield('nav-find', $navActive('dress.*'))" href="{{ route('dress.find') }}">Find a Dress</a>
+                <a class="nav-item @yield('nav-reservations', $navActive('reservations.index'))" href="{{ route('reservations.index') }}">My Reservations</a>
+                <a class="nav-item @yield('nav-return', $navActive('return.index'))" href="{{ route('return.index') }}">Return</a>
+                <a class="nav-item @yield('nav-history', $navActive('history.index'))" href="{{ route('history.index') }}">History</a>
+                <a class="nav-item @yield('nav-notifications', $navActive('notifications.index'))" href="{{ route('notifications.index') }}"
                     >Notifications</a>
-                <a class="nav-item @yield('nav-profile')" href="{{ route('profile.index') }}">Profile</a>
+                <a class="nav-item @yield('nav-profile', $navActive('profile.index'))" href="{{ route('profile.index') }}">Profile</a>
 
                 <div class="sidebar-bottom">
                     <p class="nav-label" style="padding-top: 0">{{ $customerUser->fullname ?? 'ลูกค้า' }}</p>
@@ -82,7 +100,13 @@ $staffUser = Auth::guard('web')->user();
             <header class="topbar">
                 <div class="crumb">
                     <strong>{{ $isCustomer ? 'Customer' : 'Staff' }}</strong> /
-                    @yield('page-name', 'Dashboard')
+                    @hasSection('page-name')
+                        @yield('page-name')
+                    @elseif ($__env->hasSection('crumb'))
+                        @yield('crumb')
+                    @else
+                        {{ $autoPageName }}
+                    @endif
                 </div>
                 <div class="avatar">
                     @if ($isCustomer)
