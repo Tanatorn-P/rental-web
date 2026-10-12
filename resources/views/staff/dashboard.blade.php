@@ -79,7 +79,7 @@
             <?php if ($todaySchedule->isNotEmpty()) { ?>
             <?php foreach ($todaySchedule as $item) { ?>
             <div class="schedule-item">
-                <span class="schedule-time"><?= htmlspecialchars($item['time'] ?? '-', ENT_QUOTES, 'UTF-8') ?></span>
+                <!-- <span class="schedule-time"><?= htmlspecialchars($item['time'] ?? '-', ENT_QUOTES, 'UTF-8') ?></span> -->
                 <div>
                     <strong style="font-size: 13px"><?= $item['type'] ?> · #<?= $item['order_id'] ?></strong>
                     <p class="muted" style="font-size: 12px; margin: 2px 0 0">

@@ -31,17 +31,22 @@ class StaffDashboardController extends Controller
 
                 return [
                     'type' => $isPickup ? 'Pickup' : 'Return',
-                    'time' => $isPickup ? $order->pickup_time : $order->return_time,
                     'order_id' => $order->order_id,
                     'customer_name' => $order->customer->fullname ?? '-',
                 ];
             })
-            ->sortBy('time')
+            ->sortBy('type')
             ->values();
 
         return view('staff.dashboard', compact(
-            'pickupToday', 'returnToday', 'pendingApproval', 'notReady', 'overdue',
-            'todaySchedule', 'pendingList', 'overdueList'
+            'pickupToday',
+            'returnToday',
+            'pendingApproval',
+            'notReady',
+            'overdue',
+            'todaySchedule',
+            'pendingList',
+            'overdueList'
         ));
     }
 }

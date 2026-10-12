@@ -40,23 +40,29 @@
                                             <img src="<?= asset($images[0]) ?>" alt="" data-lightbox style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid var(--line);cursor:zoom-in">                                        <?php } else { ?>
                                             <div style="width:48px;height:48px;border-radius:8px;background:var(--beige);display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--gray)">ไม่มีรูป</div>
                                         <?php } ?>
-                                        <p style="font-size:13px;margin:0"><?= htmlspecialchars(($item['product']->product_name ?? $item['product_id']).' ('.($item['size'] ?? '-').')', ENT_QUOTES, 'UTF-8') ?></p>
+                                        <p style="font-size:13px;margin:0"><?= htmlspecialchars(($item['product']->product_name ?? $item['product_id']) . ' (' . ($item['size'] ?? $item['product']->size ?? '-') . ')', ENT_QUOTES, 'UTF-8') ?></p>
                                     </div>
                                 <?php } ?>
                             </td>
                             <td><?= $order->event_date->format('d M Y') ?></td>
-                            <td><span class="status pending"><?= \App\Helpers\OrderStatusHelper::label($order->order_status) ?></span></td>
                             <td>
-                                <form action="{{ route('staff.queue.approve', $order) }}" method="POST" style="display:inline">
-                                    @csrf
-                                    <button type="submit" class="btn btn-primary btn-sm">อนุมัติ</button>
-                                </form>
-                                <form action="{{ route('staff.queue.reject', $order) }}" method="POST" style="display:inline-flex;gap:6px;align-items:center;margin-left:6px">
-                                    @csrf
-                                    <input type="text" name="reject_reason" placeholder="เหตุผล" required style="border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-size:12px">
-                                    <button type="submit" class="btn btn-danger btn-sm">ปฏิเสธ</button>
-                                </form>
-                            </td>
+    <span class="status pending"><?= \App\Helpers\OrderStatusHelper::label($order->order_status) ?></span>
+</td>
+<td>
+    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+        <form action="{{ route('staff.queue.approve', $order) }}" method="POST" style="margin: 0;">
+            @csrf
+            <button type="submit" class="btn btn-primary btn-sm">อนุมัติ</button>
+        </form>
+
+        <form action="{{ route('staff.queue.reject', $order) }}" method="POST" style="display: flex; gap: 6px; align-items: center; margin: 0;">
+            @csrf
+            <input type="text" name="reject_reason" placeholder="ระบุเหตุผลที่ปฏิเสธ" required 
+                style="border: 1px solid var(--line); border-radius: 7px; padding: 5px 10px; font-size: 12px; background: var(--white); color: var(--charcoal); width: 160px; outline: none;">
+            <button type="submit" class="btn btn-danger btn-sm">ปฏิเสธ</button>
+        </form>
+    </div>
+</td>
                         </tr>
                     <?php } ?>
                 </tbody>

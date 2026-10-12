@@ -45,7 +45,7 @@ use Illuminate\Support\Facades\Auth;
                     action="{{ $currentStaff && $currentStaff->isAdmin() ? route('admin.logout') : route('staff.logout') }}"
                     method="POST">
                     @csrf
-                    <button type="submit" class="nav-item" style="width: 100%">ออกจากระบบ</button>
+                    <button type="submit" class="nav-item" style="width: 100%">Logout</button>
                 </form>
             </div>
         </aside>
