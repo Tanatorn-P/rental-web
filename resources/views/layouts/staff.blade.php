@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@yield('title', 'DressDay')</title>
+    <!-- เหมือนเป็นเท็มแพลตไว้รับเวลาเลือกหน้า จะป้อนมาเอง -->
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+Thai:wght@400;500;600;700&display=swap"
         rel="stylesheet" />
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Auth;
     <div class="dd-app">
         <aside class="sidebar">
             <div class="brand">
-                <div class="brand-mark">D</div>
+                <img src="{{ asset('/logo/logo.jpeg') }}" alt="Logo" class="brand-logo-img">
                 <div>
                     <h1>DressDay</h1>
                     <p>ระบบจัดการเช่าชุด</p>
@@ -35,7 +36,7 @@ use Illuminate\Support\Facades\Auth;
             <a class="nav-item @yield('nav-inspection')" href="{{ route('staff.inspection.index') }}">ตรวจสอบชุด</a>
             <a class="nav-item @yield('nav-maintenance')" href="{{ route('staff.maintenance.index') }}">จัดการชุดชำรุด / ซ่อมแซม</a>
             <a class="nav-item @yield('nav-history')" href="{{ route('staff.history.index') }}">ประวัติการทำรายการ</a>
-
+            <a class="nav-item" href="https://line.me/ti/p/-vgYjiKmbz" target="_blank">ติดต่อผู้ดูแลระบบ</a>
             <div class="sidebar-bottom">
                 <?php $currentStaff = Auth::guard('web')->user(); ?>
                 <p class="nav-label" style="padding-top: 0">
