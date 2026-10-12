@@ -69,6 +69,21 @@
                 </div>
             </div>
 
+            <!-- คำอธิบายวิธีนับวันเช่า -->
+            <div
+                class="rental-note"
+                style="margin-top: 18px; padding: 14px 16px; border-radius: 10px; background: #f5f1f1; color: var(--gray); font-size: 12px; line-height: 1.8"
+            >
+                <strong style="color: var(--charcoal)">วิธีนับวันเช่า</strong><br>
+                ชุดนี้เช่า <strong>{{ $rentalDays }} วัน</strong>
+                นับจากวันรับชุดไปอีก {{ $rentalDays }} วันจะเป็นวันคืนชุด
+                ปฏิทินจึงไฮไลต์ <strong>{{ $rentalDays + 1 }} ช่อง</strong>
+                (วันรับชุด + {{ $rentalDays }} วัน = วันคืนชุด)<br>
+                ตัวอย่าง: รับชุดวันที่ 13 → คืนชุดวันที่ {{ 13 + $rentalDays }}<br>
+                ต้องการใช้ชุดนานขึ้น ให้คลิกวันที่หลังวันคืน จะคิดเพิ่มวันละ {{ number_format($extraFee) }} บาท
+                (วันที่มีคนจองแล้วจะเลือกไม่ได้)
+            </div>
+
         </div>
 
 

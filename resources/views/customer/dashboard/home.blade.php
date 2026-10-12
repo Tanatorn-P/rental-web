@@ -14,7 +14,7 @@
                 href="{{ Route::has('reservations.index') ? route('reservations.index') : '#' }}"
                 class="btn btn-secondary"
             >ดูการจองของฉัน</a>
-            <a href="{{ Route::has('dresses.find') ? route('dresses.find') : '#' }}" class="btn btn-primary"
+            <a href="{{ Route::has('dress.find') ? route('dress.find') : '#' }}" class="btn btn-primary"
                 >ค้นหาชุดสำหรับงานของฉัน</a>
         </div>
     </div>
@@ -88,18 +88,29 @@
     </div>
 
     <!-- ทางลัดหมวดหมู่ -->
+    @php
+        // คีย์ = ค่า category ในตาราง products (หมวดแต่งงานในฐานข้อมูลสะกดว่า weding)
+        $occasions = [
+            'weding' => ['Wedding', '💒'],
+            'graduation' => ['Graduation', '🎓'],
+            'party' => ['Party', '🎉'],
+            'formal' => ['Formal', '👠'],
+            'photoshoot' => ['Photoshoot', '📸'],
+            'costume' => ['Costume', '🎭'],
+        ];
+    @endphp
     <div class="card card-pad" style="margin-bottom: 24px">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px">
             <h2 class="section-title">คุณกำลังหาชุดสำหรับอะไร?</h2>
             <a
-                href="{{ Route::has('dresses.occasions') ? route('dresses.occasions') : '#' }}"
+                href="{{ Route::has('dress.find') ? route('dress.find') . '#occasions' : '#' }}"
                 style="font-size: 12px; color: var(--mauve); text-decoration: none; font-weight: 700"
             >ดูทั้งหมด</a>
         </div>
         <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px">
-            @foreach (['Wedding' => '💒', 'Graduation' => '🎓', 'Party' => '🎉', 'Formal' => '👠', 'Photoshoot' => '📸', 'Costume' => '🎭'] as $occ => $icon)
+            @foreach ($occasions as $slug => [$occ, $icon])
                 <a
-                    href="{{ Route::has('dresses.occasions') ? route('dresses.occasions', ['category' => strtolower($occ)]) : '#' }}"
+                    href="{{ Route::has('dress.category') ? route('dress.category', $slug) : '#' }}"
                     class="card"
                     style="padding: 14px; text-align: center; text-decoration: none; color: var(--charcoal)"
                 >

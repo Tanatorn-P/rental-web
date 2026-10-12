@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Customer;
 use App\Models\Product;
 use Carbon\Carbon;
 use Illuminate\Contracts\View\View;
@@ -11,6 +12,14 @@ use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
+    /**
+     * สถานะออเดอร์ที่ถือว่าชุดไม่ว่างในช่วงวันที่นั้น
+     * (pending = รอพนักงานยืนยัน ก็ต้องกันวันไว้ ไม่ให้คนอื่นจองซ้อน)
+     *
+     * @var list<string>
+     */
+    private const BLOCKING_STATUSES = ['pending', 'approved', 'confirmed', 'rented', 'overdue'];
+
     // หน้าแรกเลือกหมวดหมู่
     public function find(): View
     {
@@ -29,8 +38,28 @@ class ProductController extends Controller
 
         $size = request('size');
         $price = request('price');
+        $sort = request('sort'); // price_asc | price_desc
         $pickupDate = request('pickup_date');
         $returnDate = request('return_date');
+
+        // ไซส์ที่แนะนำจากขนาดตัวของลูกค้า (ถ้ามีข้อมูลในโปรไฟล์)
+        $customer = Auth::guard('customer')->user();
+        $bodyMeasurements = null;
+        $recommendedSize = null;
+
+        if ($customer instanceof Customer) {
+            $bodyMeasurements = [
+                'bust' => $this->measurement($customer->bust),
+                'waist' => $this->measurement($customer->waist),
+                'hips' => $this->measurement($customer->hips),
+            ];
+
+            $recommendedSize = $this->recommendSize(
+                $bodyMeasurements['bust'],
+                $bodyMeasurements['waist'],
+                $bodyMeasurements['hips'],
+            );
+        }
 
         $products = Product::where('status', 'available')
             ->when($size, function ($query) use ($size) {
@@ -51,12 +80,18 @@ class ProductController extends Controller
                 }
 
             })
+            ->when($sort === 'price_asc', function ($query) {
+                $query->orderBy('rental_fee')->orderBy('product_id');
+            })
+            ->when($sort === 'price_desc', function ($query) {
+                $query->orderByDesc('rental_fee')->orderBy('product_id');
+            })
             ->get();
 
         if ($pickupDate && $returnDate) {
 
             $rows = DB::table('orders')
-                ->where('order_status', 'confirmed')
+                ->whereIn('order_status', self::BLOCKING_STATUSES)
                 ->whereDate('pickup_date', '<=', $returnDate)
                 ->whereDate('return_date', '>=', $pickupDate)
                 ->pluck('item');
@@ -87,6 +122,9 @@ class ProductController extends Controller
             'products',
             'size',
             'price',
+            'sort',
+            'recommendedSize',
+            'bodyMeasurements',
             'pickupDate',
             'returnDate'
         ));
@@ -140,7 +178,7 @@ class ProductController extends Controller
         if ($pickupDate && $returnDate) {
             $isBooked = DB::table('orders')
                 ->whereJsonContains('item', $product_id)
-                ->where('order_status', 'confirmed')
+                ->whereIn('order_status', self::BLOCKING_STATUSES)
                 ->whereDate('pickup_date', '<=', $returnDate)
                 ->whereDate('return_date', '>=', $pickupDate)
                 ->exists();
@@ -149,7 +187,7 @@ class ProductController extends Controller
         // ดึงช่วงวันที่มีการจองของชุดนี้
         $bookedRanges = DB::table('orders')
             ->whereJsonContains('item', $product_id)
-            ->where('order_status', 'confirmed')
+            ->whereIn('order_status', self::BLOCKING_STATUSES)
             ->get([
                 'pickup_date',
                 'return_date',
@@ -223,7 +261,7 @@ class ProductController extends Controller
         // กันจองซ้อน (กรณีมีคนจองตัดหน้าระหว่างที่ลูกค้ากรอกข้อมูล)
         $alreadyBooked = DB::table('orders')
             ->whereJsonContains('item', $product_id)
-            ->where('order_status', 'confirmed')
+            ->whereIn('order_status', self::BLOCKING_STATUSES)
             ->whereDate('pickup_date', '<=', $returnDate)
             ->whereDate('return_date', '>=', $pickupDate)
             ->exists();
@@ -288,7 +326,8 @@ class ProductController extends Controller
 
             'reject_reason' => null,
 
-            'order_status' => 'confirmed',
+            // รอพนักงานตรวจสลิปและอนุมัติ (Reservation Queue) -> approved
+            'order_status' => 'pending',
 
             'slip_image' => $slipPath,
 
@@ -300,6 +339,34 @@ class ProductController extends Controller
         ]);
 
         return redirect()->route('dress.booking.success');
+    }
+
+    /**
+     * แปลงค่าขนาดตัวจากโปรไฟล์เป็นตัวเลข (ว่าง/ไม่ใช่ตัวเลข/0 = ไม่มีข้อมูล)
+     */
+    private function measurement(mixed $value): ?float
+    {
+        return is_numeric($value) && (float) $value > 0 ? (float) $value : null;
+    }
+
+    private function recommendSize(?float $bust, ?float $waist, ?float $hips): ?string
+    {
+        $measurements = array_filter([$bust, $waist, $hips], static fn ($value) => $value !== null);
+
+        if ($measurements === []) {
+            return null;
+        }
+
+        $largestMeasurement = max($measurements);
+
+        return match (true) {
+            $largestMeasurement <= 80 => 'XS',
+            $largestMeasurement <= 86 => 'S',
+            $largestMeasurement <= 92 => 'M',
+            $largestMeasurement <= 100 => 'L',
+            $largestMeasurement <= 108 => 'XL',
+            default => 'XXL',
+        };
     }
 
     /**
