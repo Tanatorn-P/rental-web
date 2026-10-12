@@ -22,14 +22,13 @@
             <p class="nav-label">รายการ</p>
             <a class="nav-item @yield('nav-dashboard')" href="{{ route('admin.dashboard') }}">สถิติรวม</a>
             <a class="nav-item @yield('nav-products')" href="{{ route('admin.products.index') }}">รายชื่อสินค้า</a>
-            <a class="nav-item @yield('nav-product-create')" href="{{ route('admin.products.create') }}">+ เพิ่มสินค้าใหม่</a>
-
+            <a class="nav-item @yield('nav-product-create')" href="{{ route('admin.products.create') }}">เพิ่มสินค้าใหม่</a>
             <div class="sidebar-bottom">
                 @php $currentAdmin = Auth::guard('web')->user(); @endphp
                 <p class="nav-label" style="padding-top: 0">
                     {{ $currentAdmin->fullname ?? 'Admin Staff' }}
                 </p>
-                <form action="{{ route('home') }}" method="GET" style="width: 100%">
+                <form action="{{ route('admin.logout') }}" method="POST">
                     @csrf
                     <button type="submit" class="nav-item" style="width: 100%">ออกจากระบบ</button>
                 </form>
