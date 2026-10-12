@@ -7,7 +7,7 @@
     <div class="page-head">
         <div>
             <p class="eyebrow">Today · {{ now()->format('d F Y') }}</p>
-            <h2 class="page-title">Rental Operations</h2>
+            <h2 class="page-title">ภาพรวมการดำเนินงานเช่าชุด</h2>
             <p class="page-subtitle">ภาพรวมงานปฏิบัติการที่ต้องดำเนินการวันนี้</p>
         </div>
         <a href="{{ route('staff.queue.index') }}" class="btn btn-secondary">ดูคิวการจอง</a>
@@ -16,23 +16,23 @@
     <div class="stats-grid grid">
         <div class="card stat">
             <div class="num"><?= $pickupToday ?></div>
-            <div class="label">Pickup Today</div>
+            <div class="label">รอมารับวันนี้</div>
         </div>
         <div class="card stat">
             <div class="num"><?= $returnToday ?></div>
-            <div class="label">Return Today</div>
+            <div class="label">รอคืนวันนี้</div>
         </div>
         <div class="card stat">
             <div class="num"><?= $pendingApproval ?></div>
-            <div class="label">Pending Approval</div>
+            <div class="label">รออนุมัติ</div>
         </div>
         <div class="card stat">
             <div class="num"><?= $notReady ?></div>
-            <div class="label">Not Ready</div>
+            <div class="label">ชุดไม่พร้อมใช้งาน</div>
         </div>
         <div class="card stat">
             <div class="num"><?= $overdue ?></div>
-            <div class="label">Overdue</div>
+            <div class="label">เกินกำหนดคืน</div>
         </div>
     </div>
 
@@ -43,9 +43,9 @@
             <?php foreach ($pendingList as $order) { ?>
             <?php $itemNames = $order->orderItems()->pluck('product.product_name')->filter()->implode(', '); ?>
             <div class="task">
-                <span class="priority medium">MEDIUM</span>
+                <span class="priority medium">ปานกลาง</span>
                 <div>
-                    <strong style="font-size: 13px">Pending Approval · #<?= $order->order_id ?></strong>
+                    <strong style="font-size: 13px">รออนุมัติ · #<?= $order->order_id ?></strong>
                     <p>
                         <?= htmlspecialchars($order->customer->fullname ?? '-', ENT_QUOTES, 'UTF-8') ?> ·
                         <?= htmlspecialchars($itemNames ?: '-', ENT_QUOTES, 'UTF-8') ?>
@@ -57,9 +57,9 @@
 
             <?php foreach ($overdueList as $order) { ?>
             <div class="task">
-                <span class="priority high">HIGH</span>
+                <span class="priority high">ด่วน!</span>
                 <div>
-                    <strong style="font-size: 13px">Overdue Return · #<?= $order->order_id ?></strong>
+                    <strong style="font-size: 13px">คืนเกินกำหนด · #<?= $order->order_id ?></strong>
                     <p>เกินกำหนด <?= (int) $order->return_date->diffInDays(now()) ?> วัน</p>
                 </div>
                 <a
@@ -75,7 +75,7 @@
         </section>
 
         <section class="card card-pad">
-            <h3 class="section-title">Today's Schedule</h3>
+            <h3 class="section-title">กำหนดการวันนี้</h3>
             <?php if ($todaySchedule->isNotEmpty()) { ?>
             <?php foreach ($todaySchedule as $item) { ?>
             <div class="schedule-item">
@@ -96,7 +96,7 @@
 
     <?php if ($notReady > 0) { ?>
     <div class="card card-pad" style="margin-top: 18px">
-        <span class="status not_ready">Attention</span>
+        <span class="status not_ready">รายงาน</span>
         <p style="margin: 10px 0 0; font-size: 13px">
             มีชุดไม่พร้อมใช้งาน <?= $notReady ?> รายการ — <a href="{{ route('staff.maintenance.index') }}">ดูรายการ</a>
         </p>

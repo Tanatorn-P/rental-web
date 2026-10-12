@@ -24,17 +24,17 @@ use Illuminate\Support\Facades\Auth;
                 <div class="brand-mark">D</div>
                 <div>
                     <h1>DressDay</h1>
-                    <p>Rental Management</p>
+                    <p>ระบบจัดการเช่าชุด</p>
                 </div>
             </div>
-            <p class="nav-label">Staff Operations</p>
-            <a class="nav-item @yield('nav-dashboard')" href="{{ route('staff.dashboard') }}">Dashboard</a>
-            <a class="nav-item @yield('nav-queue')" href="{{ route('staff.queue.index') }}">Reservation Queue</a>
-            <a class="nav-item @yield('nav-pickup')" href="{{ route('staff.pickup.index') }}">Pickup</a>
-            <a class="nav-item @yield('nav-return')" href="{{ route('staff.return.index') }}">Return</a>
-            <a class="nav-item @yield('nav-inspection')" href="{{ route('staff.inspection.index') }}">Inspection</a>
-            <a class="nav-item @yield('nav-maintenance')" href="{{ route('staff.maintenance.index') }}">Maintenance</a>
-            <a class="nav-item @yield('nav-history')" href="{{ route('staff.history.index') }}">History</a>
+            <p class="nav-label">เมนูพนักงาน</p>
+            <a class="nav-item @yield('nav-dashboard')" href="{{ route('staff.dashboard') }}">ภาพรวม</a>
+            <a class="nav-item @yield('nav-queue')" href="{{ route('staff.queue.index') }}">คิวการจอง</a>
+            <a class="nav-item @yield('nav-pickup')" href="{{ route('staff.pickup.index') }}">ส่งมอบชุด</a>
+            <a class="nav-item @yield('nav-return')" href="{{ route('staff.return.index') }}">รับคืนชุด</a>
+            <a class="nav-item @yield('nav-inspection')" href="{{ route('staff.inspection.index') }}">ตรวจสอบชุด</a>
+            <a class="nav-item @yield('nav-maintenance')" href="{{ route('staff.maintenance.index') }}">จัดการชุดชำรุด / ซ่อมแซม</a>
+            <a class="nav-item @yield('nav-history')" href="{{ route('staff.history.index') }}">ประวัติการทำรายการ</a>
 
             <div class="sidebar-bottom">
                 <?php $currentStaff = Auth::guard('web')->user(); ?>
@@ -45,14 +45,14 @@ use Illuminate\Support\Facades\Auth;
                     action="{{ $currentStaff && $currentStaff->isAdmin() ? route('admin.logout') : route('staff.logout') }}"
                     method="POST">
                     @csrf
-                    <button type="submit" class="nav-item" style="width: 100%">Logout</button>
+                    <button type="submit" class="nav-item" style="width: 100%">ออกจากระบบ</button>
                 </form>
             </div>
         </aside>
         <main class="main-shell">
             <header class="topbar">
                 <div class="crumb">
-                    <strong>Staff</strong> /
+                    <strong>พนักงาน</strong> /
                     @yield('page-name', 'Dashboard')
                 </div>
                 <div class="avatar">ST</div>
