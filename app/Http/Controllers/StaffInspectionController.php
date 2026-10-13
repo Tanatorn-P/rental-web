@@ -14,20 +14,21 @@ class StaffInspectionController extends Controller
     {
         $search = $request->query('order_id');
 
-        $inspectionProductIds = Product::where('status', 'inspection')->pluck('product_id');
+        $inspectionProductIds = Product::where('status', 'inspection')->pluck('product_id')->all();
 
-        if ($inspectionProductIds->isEmpty()) {
+        if (empty($inspectionProductIds)) {
             return view('staff.inspection', ['orders' => collect(), 'search' => $search]);
         }
 
         $orders = Order::with('customer')
-            ->where(function ($query) use ($inspectionProductIds) {
-                foreach ($inspectionProductIds as $productId) {
-                    $query->orWhere('item', 'like', '%"product_id":"'.$productId.'"%');
-                }
-            })
             ->when($search, fn ($query) => $query->where('order_id', 'like', '%'.$search.'%'))
-            ->get();
+            ->get()
+            ->filter(function (Order $order) use ($inspectionProductIds) {
+                $orderProductIds = $order->orderItems()->pluck('product_id')->all();
+
+                return count(array_intersect($orderProductIds, $inspectionProductIds)) > 0;
+            })
+            ->values();
 
         return view('staff.inspection', compact('orders', 'search'));
     }

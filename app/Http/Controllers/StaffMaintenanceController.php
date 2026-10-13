@@ -19,12 +19,16 @@ class StaffMaintenanceController extends Controller
             ->get()
             ->map(function (Product $product) {
                 $order = Order::where('order_status', 'damaged')
-                    ->where('item', 'like', '%"product_id":"'.$product->product_id.'"%')
-                    ->latest('order_id')
-                    ->first();
+                    ->get()
+                    ->first(function (Order $order) use ($product) {
+                        $productIds = $order->orderItems()->pluck('product_id')->all();
+
+                        return in_array($product->product_id, $productIds, true);
+                    });
 
                 return [
                     'product' => $product,
+                    'product_id' => $product->product_id, // เพิ่มบรรทัดนี้เพื่อให้เรียกใช้ง่ายขึ้น
                     'reject_reason' => $order->reject_reason ?? '-',
                 ];
             });

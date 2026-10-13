@@ -17,7 +17,12 @@ button{cursor:pointer}
 .brand-mark{width:34px;height:34px;border-radius:10px;background:var(--charcoal);display:grid;place-items:center;color:white;font-weight:700}
 .brand h1{font-size:19px;margin:0;font-weight:700}
 .brand p{font-size:11px;color:var(--gray);margin:2px 0 0}
-
+.brand-logo-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    object-fit: cover;
+}
 /* ===== Center-screen wrapper (สำหรับหน้า login/register/role-select) ===== */
 .center-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 
@@ -62,14 +67,14 @@ h2{font-size:20px;margin:0 0 18px}
 
 /* ===== Staff app shell ===== */
 .dd-app{width:100%;min-height:100vh;display:flex}
-.sidebar{width:230px;flex-shrink:0;background:#f0e9e1;border-right:1px solid var(--line);padding:24px 14px;display:flex;flex-direction:column}
+.sidebar{width:230px;background:#f0e9e1;border-right:1px solid var(--line);padding:24px 14px;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto}
 .sidebar .brand{padding:2px 10px 28px}
 .nav-label{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#8a847e;font-weight:700;padding:10px 10px 6px}
 .nav-item{display:block;border:0;background:transparent;width:100%;text-align:left;padding:10px 11px;border-radius:9px;color:#5e5954;font-size:13px;margin:2px 0;text-decoration:none}
 .nav-item:hover{background:#e5dad0}
 .nav-item.active{background:#dbc6ca;color:var(--charcoal);font-weight:700}
 .sidebar-bottom{margin-top:auto;border-top:1px solid var(--line);padding-top:12px}
-.main-shell{flex:1;min-width:0}
+.main-shell{flex:1;min-width:0;margin-left:230px}
 .topbar{height:64px;background:rgba(248,245,240,.92);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 30px}
 .crumb{font-size:13px;color:var(--gray)}
 .crumb strong{color:var(--charcoal)}
@@ -97,7 +102,7 @@ h2{font-size:20px;margin:0 0 18px}
 .status.rented{color:#46648a;background:#e7edf5}
 .status.available{color:#36724e;background:#e4f1e8}
 .status.returned,.status.completed{color:#36724e;background:#e4f1e8}
-.status.rejected,.status.not_ready{color:#934444;background:#f8e7e7}
+.status.rejected,.status.not_ready,.status.overdue,.status.cancelled,.status.damaged{color:#934444;background:#f8e7e7}
 
 /* ===== Tables ===== */
 .table-wrap{overflow:auto}
@@ -123,3 +128,21 @@ h2{font-size:20px;margin:0 0 18px}
     .stats-grid{grid-template-columns:repeat(2,1fr)}
     .form-grid{grid-template-columns:1fr}
 }
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+/* ===== Order card ใหม่ (Inspection/Pickup/Return) ===== */
+.order-card{position:relative;padding-right:145px;min-height:230px}
+.order-card-image{position:absolute;top:20px;right:20px;width:125px;height:125px;border-radius:12px;background:var(--beige);border:1px solid var(--line);object-fit:cover}
+.order-card-image-placeholder{position:absolute;top:20px;right:20px;width:125px;height:125px;border-radius:12px;background:var(--beige);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--gray)}
+.order-card-items{margin:10px 0}
+.order-card-items p{font-size:13px;margin:3px 0;color:var(--charcoal)}
+
+/* ===== Thumbnail เล็กในตาราง (Maintenance/History) ===== */
+.table-thumb{width:46px;height:46px;border-radius:8px;object-fit:cover;border:1px solid var(--line);flex-shrink:0}
+.table-thumb-placeholder{width:46px;height:46px;border-radius:8px;background:var(--beige);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--gray);flex-shrink:0}

@@ -42,7 +42,7 @@ class OrderSeeder extends Seeder
                 'deposit_prices' => 100.00,
                 'damage_price' => 0.00,
                 'reject_reason' => null,
-                'order_status' => 'confirmed',
+                'order_status' => 'rented',
                 'slip_image' => null,
                 'tracking_number' => null,
                 'created_at' => now(),
