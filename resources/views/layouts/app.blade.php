@@ -73,7 +73,7 @@ $navActive = fn(string ...$patterns): string => request()->routeIs(...$patterns)
                     <form action="{{ route('customer.logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="nav-item" style="width: 100%; color: var(--danger)">
-                            Logout
+                            ออกจากระบบ
                         </button>
                     </form>
                 </div>
