@@ -51,15 +51,21 @@ $navActive = fn (string ...$patterns): string => request()->routeIs(...$patterns
 
             @if ($isCustomer)
                 {{-- ================= เมนูสำหรับ CUSTOMER ================= --}}
-                <p class="nav-label">Customer Operations</p>
-                <a class="nav-item @yield('nav-dashboard', $navActive('customer.dashboard'))" href="{{ route('customer.dashboard') }}">Dashboard</a>
-                <a class="nav-item @yield('nav-find', $navActive('dress.*'))" href="{{ route('dress.find') }}">Find a Dress</a>
-                <a class="nav-item @yield('nav-reservations', $navActive('reservations.index'))" href="{{ route('reservations.index') }}">My Reservations</a>
-                <a class="nav-item @yield('nav-return', $navActive('return.index'))" href="{{ route('return.index') }}">Return</a>
-                <a class="nav-item @yield('nav-history', $navActive('history.index'))" href="{{ route('history.index') }}">History</a>
-                <a class="nav-item @yield('nav-notifications', $navActive('notifications.index'))" href="{{ route('notifications.index') }}"
-                    >Notifications</a>
-                <a class="nav-item @yield('nav-profile', $navActive('profile.index'))" href="{{ route('profile.index') }}">Profile</a>
+                <p class="nav-label">เมนูลูกค้า</p>
+                <a class="nav-item @yield('nav-dashboard', $navActive('customer.dashboard'))"
+                    href="{{ route('customer.dashboard') }}">หน้าหลัก</a>
+                <a class="nav-item @yield('nav-find', $navActive('dress.*'))" href="{{ route('dress.find') }}">ค้นหาเสื้อผ้า</a>
+                <a class="nav-item @yield('nav-reservations', $navActive('reservations.index'))"
+                    href="{{ route('reservations.index') }}">การจองของฉัน</a>
+                <a class="nav-item @yield('nav-return', $navActive('return.index'))"
+                    href="{{ route('return.index') }}">คืนของ</a>
+                <a class="nav-item @yield('nav-history', $navActive('history.index'))"
+                    href="{{ route('history.index') }}">ประวัติ</a>
+                <a class="nav-item @yield('nav-notifications', $navActive('notifications.index'))"
+                    href="{{ route('notifications.index') }}">การแจ้งเตือน</a>
+                <a class="nav-item @yield('nav-profile', $navActive('profile.index'))"
+                    href="{{ route('profile.index') }}">โปรไฟล์</a>
+                <a class="nav-item" href="https://line.me/ti/p/-vgYjiKmbz" target="_blank">ติดต่อผู้ดูแลระบบ</a>
 
                 <div class="sidebar-bottom">
                     <p class="nav-label" style="padding-top: 0">{{ $customerUser->fullname ?? 'ลูกค้า' }}</p>
