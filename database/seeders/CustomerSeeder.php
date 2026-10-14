@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash; //  1. เพิ่ม Facade Hash
+use Illuminate\Support\Facades\Hash;
 
 class CustomerSeeder extends Seeder
 {
@@ -14,7 +14,7 @@ class CustomerSeeder extends Seeder
             [
                 'customer_id' => 'C0001',
                 'username' => 'kamonchanok_s',
-                'password' => Hash::make('nan1234'), //  2. ครอบด้วย Hash::make()
+                'password' => Hash::make('nan1234'),
                 'fullname' => 'กมลชนก แสงทอง',
                 'phone' => '0812345671',
                 'address' => '12/5 หมู่ 3 ต.บางพลี อ.บางพลี จ.สมุทรปราการ 10540',

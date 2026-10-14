@@ -14,7 +14,7 @@ class CustomerHomeController extends Controller
         $customer = Auth::guard('customer')->user() ?? Customer::first();
         $customerId = $customer ? $customer->customer_id : null;
 
-        // ดึงรายการเช่าปัจจุบัน (เปลี่ยน status เป็น order_status)
+        // ดึงรายการเช่าปัจจุบัน
         $activeRental = Order::where('customer_id', $customerId)
             ->whereIn('order_status', ['approved', 'preparing', 'rented', 'confirmed'])
             ->latest()

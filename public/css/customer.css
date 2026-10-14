@@ -1,11 +1,11 @@
-/* =====================================================
+/*
    DressDay - Customer CSS (เฉพาะหน้าเลือกชุด / จองชุด)
    ใช้ร่วมกับ public/css/style.css ส่วนกลาง
    (Base, Sidebar, Topbar, Alerts, Page header ใช้ของส่วนกลาง)
    1. Filter & Categories   2. Products
    3. Product detail        4. Availability
    5. Responsive
-   ===================================================== */
+*/
 
 html { scroll-behavior: smooth; }
 

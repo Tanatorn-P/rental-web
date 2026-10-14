@@ -17,7 +17,7 @@ class CustomerRentalController extends Controller
         $query = Order::where('customer_id', $customerId);
 
         if ($id) {
-            $rental = $query->where('order_id', $id)->firstOrFail(); // เปลี่ยนเป็น order_id
+            $rental = $query->where('order_id', $id)->firstOrFail();
         } else {
             $rental = $query->whereIn('order_status', ['approved', 'preparing', 'rented', 'confirmed'])
                 ->latest()
