@@ -28,7 +28,7 @@ class StaffMaintenanceController extends Controller
 
                 return [
                     'product' => $product,
-                    'product_id' => $product->product_id, 
+                    'product_id' => $product->product_id,
                     'reject_reason' => $order->reject_reason ?? '-',
                 ];
             });
