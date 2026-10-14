@@ -5,17 +5,23 @@ use App\Http\Controllers\Admin\AdminProductController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:web'])->prefix('admin')->name('admin.')->group(function () {
-    // 1. หน้าสรุปรายได้และสถิติ
+    // หน้าสรุปรายได้และสถิติ
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    // 2. หน้าแสดงรายการสินค้า (พร้อมระบบ Filter)
+    // หน้าแสดงรายการสินค้า (พร้อมระบบ Filter)
     Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
 
-    // 3. หน้าจัดการสินค้า (เพิ่ม / แก้ไข / ปรับเพิ่ม-ลดสต็อก)
+    // หน้าเพิ่ม/แก้ไขสินค้า (ใช้เทมเพลตเดียวกัน)
     Route::get('/products/create', [AdminProductController::class, 'create'])->name('products.create');
-    Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
+
     Route::get('/products/{id}/edit', [AdminProductController::class, 'edit'])->name('products.edit');
-    Route::put('/products/{id}', [AdminProductController::class, 'update'])->name('products.update');
-    Route::post('/products/{id}/stock', [AdminProductController::class, 'updateStock'])->name('products.update-stock');
+
+    // ขั้นตอนยืนยันก่อนบันทึกจริง (กรอกฟอร์ม -> ดูหน้ายืนยัน -> ค่อยบันทึก)
+    //    route literal (commit/cancel) ต้องมาก่อน route ที่มี {id?} ไม่งั้นจะถูกตีความว่าเป็น id
+    Route::post('/products/confirm/commit', [AdminProductController::class, 'commit'])->name('products.confirm.commit');
+    Route::post('/products/confirm/cancel', [AdminProductController::class, 'cancelConfirm'])->name('products.confirm.cancel');
+    Route::post('/products/confirm/{id?}', [AdminProductController::class, 'confirm'])->name('products.confirm');
+
+    // ลบสินค้า (soft delete ผ่าน Eloquent)
     Route::delete('/products/{id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
 });

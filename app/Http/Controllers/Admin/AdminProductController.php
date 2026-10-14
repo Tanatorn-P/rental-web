@@ -103,7 +103,7 @@ class AdminProductController extends Controller
             'description' => ['nullable', 'string'],
             'rental_fee' => ['required', 'numeric', 'min:0'],
             'deposit' => ['required', 'numeric', 'min:0'],
-            'rental_duration_days' => ['required', 'integer', 'min:1'],
+            'rental_duration_days' => ['nullable', 'integer', 'min:1'],
             'status' => ['required', Rule::in(self::STATUSES)],
             'images' => ['nullable', 'array'],
             'images.*' => ['nullable', 'image', 'max:5120'],
@@ -116,28 +116,40 @@ class AdminProductController extends Controller
         $keptImages = array_values(array_diff($existingImages, $removeImages));
         $actuallyRemoved = array_values(array_intersect($existingImages, $removeImages));
 
+        // กำหนด product_id (ถ้าเพิ่มใหม่ สร้างจากตัวอักษรแรกของ Category)
+        $productId = $product->product_id ?? $this->generateProductId($validated['category']);
+
         $newPaths = [];
+        $sequence = count($keptImages) + 1;
+        
         foreach ($request->file('images', []) as $file) {
             if (! $file) {
                 continue;
             }
 
             $extension = $file->getClientOriginalExtension() ?: 'jpg';
-            $filename = ($id ?? 'new').'-'.now()->format('YmdHis').'-'.Str::random(6).'.'.$extension;
+            $filename = $productId . '-' . $sequence . '.' . $extension;
+
+            while (file_exists(public_path('images/' . $filename))) {
+                $sequence++;
+                $filename = $productId . '-' . $sequence . '.' . $extension;
+            }
+
             $file->move(public_path('images'), $filename);
-            $newPaths[] = 'images/'.$filename;
+            $newPaths[] = 'images/' . $filename;
+            $sequence++;
         }
 
         $pending = [
             'mode' => $product ? 'update' : 'create',
-            'product_id' => $product->product_id ?? $this->generateProductId(),
+            'product_id' => $productId,
             'product_name' => $validated['product_name'],
             'category' => $validated['category'],
             'size' => $validated['size'] ?? null,
             'description' => $validated['description'] ?? null,
             'rental_fee' => $validated['rental_fee'],
             'deposit' => $validated['deposit'],
-            'rental_duration_days' => $validated['rental_duration_days'],
+            'rental_duration_days' => $validated['rental_duration_days'] ?? 1,
             'status' => $validated['status'],
             'images' => array_values(array_merge($keptImages, $newPaths)),
             'new_uploaded_paths' => $newPaths,
