@@ -15,120 +15,127 @@
         </div>
     </div>
 
-    <!-- บัตรสรุปสถานะ 6 ช่อง (Top Stats Bar) -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; margin-bottom: 24px;">
-        <div class="card" style="padding: 16px; background: #fff; border-radius: 14px; border: 1px solid #f5f5f4;">
-            <div style="font-size: 26px; font-weight: 700; color: #1c1917;">{{ $totalProducts ?? 0 }}</div>
-            <div style="font-size: 12px; color: #78716c; margin-top: 4px;">จำนวนชุดทั้งหมด</div>
+    <!-- บัตรสรุปสถานะ 5 ช่อง (Top Stats Bar) -->
+    <div class="dashboard-stats">
+        <div class="card stat-tile"> 
+            <div class="stat-tile-value c-stone">{{ $totalProducts ?? 0 }}</div>
+            <div class="stat-tile-label">จำนวนชุดทั้งหมด</div>
         </div>
-        <div class="card" style="padding: 16px; background: #fff; border-radius: 14px; border: 1px solid #f5f5f4;">
-            <div style="font-size: 26px; font-weight: 700; color: #15803d;">{{ $availableCount ?? 0 }}</div>
-            <div style="font-size: 12px; color: #78716c; margin-top: 4px;">พร้อมใช้งาน</div>
+        <div class="card stat-tile">
+            <div class="stat-tile-value c-green">{{ $availableCount ?? 0 }}</div>
+            <div class="stat-tile-label">พร้อมใช้งาน</div>
         </div>
-        <div class="card" style="padding: 16px; background: #fff; border-radius: 14px; border: 1px solid #f5f5f4;">
-            <div style="font-size: 26px; font-weight: 700; color: #2563eb;">{{ $reservedCount ?? $totalOrders ?? 0 }}</div>
-            <div style="font-size: 12px; color: #78716c; margin-top: 4px;">อยู่ในรายการเช่า</div>
+        <div class="card stat-tile">
+            <div class="stat-tile-value c-blue">{{ $inprogressCount ?? 0 }}</div>
+            <div class="stat-tile-label">อยู่ในกระบวนการเช่า</div>
         </div>
-        <div class="card" style="padding: 16px; background: #fff; border-radius: 14px; border: 1px solid #f5f5f4;">
-            <div style="font-size: 26px; font-weight: 700; color: #b45309;">{{ $rentedCount ?? $activeRentals ?? 0 }}</div>
-            <div style="font-size: 12px; color: #78716c; margin-top: 4px;">อยู่ระหว่างเช่า</div>
+        <div class="card stat-tile">
+            <div class="stat-tile-value c-amber">{{ $withCustomerCount ?? 0 }}</div>
+            <div class="stat-tile-label">อยู่กับลูกค้า</div>
         </div>
-        <div class="card" style="padding: 16px; background: #fff; border-radius: 14px; border: 1px solid #f5f5f4;">
-            <div style="font-size: 26px; font-weight: 700; color: #dc2626;">{{ $repairCount ?? $maintenanceCount ?? 0 }}</div>
-            <div style="font-size: 12px; color: #78716c; margin-top: 4px;">ไม่พร้อมใช้งาน</div>
+        <div class="card stat-tile">
+            <div class="stat-tile-value c-red">{{ $notReadyCount ?? 0 }}</div>
+            <div class="stat-tile-label">ไม่พร้อมให้เช่า</div>
         </div>
     </div>
 
-    <!-- ส่วนกลาง: กิจกรรมการเช่า & สินค้าเช่ายอดฮิต -->
-    <div style="display: grid; grid-template-columns: 1.6fr 1fr; gap: 20px; margin-bottom: 24px;">
-        <!-- กราฟกิจกรรมการเช่า (Rental Activity) -->
-        <div class="card" style="padding: 20px; background: #fff; border-radius: 16px; border: 1px solid #f5f5f4;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <!-- ส่วนกลาง: กราฟรายได้ & สินค้าเช่ายอดฮิต -->
+    <div class="dashboard-grid-main">
+        <!-- กราฟรายได้รายสัปดาห์ของเดือนที่เลือก-->
+        <div class="card dashboard-card">
+            <div class="dashboard-card-header">
                 <div>
-                    <h3 style="font-size: 18px; font-weight: 700; margin: 0; color: #1c1917;">กิจกรรมการเช่า</h3>
-                    <p style="font-size: 13px; color: #78716c; margin: 2px 0 0 0;">จำนวนรายการเช่าที่ดำเนินการรายสัปดาห์</p>
+                    <h3 class="dashboard-card-title">รายได้</h3>
+                    <p class="dashboard-card-subtitle">รายได้รวมค่าเช่าและค่าสินค้าจากออเดอร์ทั้งหมด แบ่งเป็นรายสัปดาห์</p>
                 </div>
-                <span style="background: #e0e7ff; color: #3730a3; font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 500;">● เดือนนี้</span>
             </div>
 
-            <div style="display: flex; align-items: flex-end; justify-content: space-between; height: 180px; padding: 10px 20px 0 20px; border-bottom: 2px solid #f5f5f4;">
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1;">
-                    <div style="width: 60%; background: #e7e5e4; height: 90px; border-radius: 6px 6px 0 0;"></div>
-                    <span style="font-size: 12px; color: #a8a29e;">W1</span>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1;">
-                    <div style="width: 60%; background: #a8a29e; height: 130px; border-radius: 6px 6px 0 0;"></div>
-                    <span style="font-size: 12px; color: #a8a29e;">W2</span>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1;">
-                    <div style="width: 60%; background: #e7e5e4; height: 80px; border-radius: 6px 6px 0 0;"></div>
-                    <span style="font-size: 12px; color: #a8a29e;">W3</span>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1;">
-                    <div style="width: 60%; background: #88626c; height: 160px; border-radius: 6px 6px 0 0;"></div>
-                    <span style="font-size: 12px; color: #a8a29e;">W4</span>
-                </div>
-                <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; flex: 1;">
-                    <div style="width: 60%; background: #d6c7c8; height: 120px; border-radius: 6px 6px 0 0;"></div>
-                    <span style="font-size: 12px; color: #a8a29e;">W5</span>
-                </div>
+            <div class="month-nav">
+                <a href="{{ route('admin.dashboard', ['year' => $chart['prev']['year'], 'month' => $chart['prev']['month']]) }}" class="month-nav-btn" aria-label="เดือนก่อนหน้า">&lsaquo;</a>
+                <span class="month-nav-label">{{ $chart['month_label'] }}</span>
+                @if($chart['can_go_next'])
+                    <a href="{{ route('admin.dashboard', ['year' => $chart['next']['year'], 'month' => $chart['next']['month']]) }}" class="month-nav-btn" aria-label="เดือนถัดไป">&rsaquo;</a>
+                @else
+                    <span class="month-nav-btn is-disabled" aria-label="เดือนถัดไป">&rsaquo;</span>
+                @endif
             </div>
+
+            @php $hasRevenue = collect($chart['values'])->contains(fn ($v) => $v > 0); @endphp
+
+            @if($hasRevenue)
+                <div class="chart-bars">
+                    @foreach($chart['values'] as $i => $value)
+                        @php $pct = $chart['max_value'] > 0 ? max(4, round(($value / $chart['max_value']) * 100)) : 4; @endphp
+                        <div class="chart-bar-col">
+                            <span class="chart-bar-value">{{ $value > 0 ? '฿'.number_format($value) : '' }}</span>
+                            <div class="chart-bar-fill" style="--h: {{ $pct }}%;" title="{{ $chart['labels'][$i] }}: ฿{{ number_format($value) }}"></div>
+                        </div>
+                    @endforeach
+                </div>
+                <div class="chart-bar-labels">
+                    @foreach($chart['labels'] as $label)
+                        <span class="chart-bar-label-item">{{ $label }}</span>
+                    @endforeach
+                </div>
+            @else
+                <p class="chart-empty muted">ยังไม่มีข้อมูลรายได้ในเดือนนี้</p>
+            @endif
         </div>
 
         <!-- รายการสินค้าเช่ายอดฮิต (Popular Items) -->
-        <div class="card" style="padding: 20px; background: #fff; border-radius: 16px; border: 1px solid #f5f5f4;">
-            <h3 style="font-size: 18px; font-weight: 700; margin: 0 0 16px 0; color: #1c1917;">สินค้าที่มียอดเช่าสูงสุด</h3>
+        <div class="card dashboard-card">
+            <h3 class="dashboard-card-title dashboard-card-title-spaced">สินค้าที่มียอดเช่าสูงสุด</h3>
             @if(!empty($topProducts) && count($topProducts) > 0)
-                <div style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="popular-list">
                     @foreach($topProducts as $item)
-                        <div>
-                            <div style="display: flex; justify-content: space-between; font-size: 14px; font-weight: 600; margin-bottom: 6px; color: #292524;">
+                        <div class="popular-item">
+                            <div class="popular-item-row">
                                 <span>{{ $item->product_name }}</span>
                                 <span>{{ $item->rent_count }} ครั้ง</span>
                             </div>
-                            <div style="width: 100%; background: #f5f5f4; height: 8px; border-radius: 10px; overflow: hidden;">
-                                <div style="width: {{ min(100, ($item->rent_count ?? 1) * 15) }}%; background: #88626c; height: 100%; border-radius: 10px;"></div>
+                            <div class="popular-item-bar-bg">
+                                <div class="popular-item-bar-fill" style="--fill: {{ min(100, ($item->rent_count ?? 1) * 15) }}%;"></div>
                             </div>
                         </div>
                     @endforeach
                 </div>
             @else
-                <p class="muted" style="color: #a8a29e; font-size: 14px;">ยังไม่มีข้อมูลสถิติการเช่า</p>
+                <p class="muted">ยังไม่มีข้อมูลสถิติการเช่า</p>
             @endif
         </div>
     </div>
 
     <!-- ส่วนท้าย: ผู้ใช้งาน & รายการที่ต้องดำเนินการ -->
-    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px;">
+    <div class="dashboard-bottom-grid">
         <!-- จำนวนผู้ใช้งาน (Users) -->
-        <div class="card" style="padding: 20px; background: #fff; border-radius: 16px; border: 1px solid #f5f5f4;">
-            <h3 style="font-size: 18px; font-weight: 700; margin: 0 0 16px 0; color: #1c1917;">ผู้ใช้งานในระบบ</h3>
-            <div style="display: flex; align-items: baseline; gap: 32px;">
+        <div class="card dashboard-card">
+            <h3 class="dashboard-card-title dashboard-card-title-spaced">ผู้ใช้งานในระบบ</h3>
+            <div class="dashboard-users-row">
                 <div>
-                    <span style="font-size: 32px; font-weight: 700; color: #1c1917;">{{ $totalCustomers ?? 0 }}</span>
-                    <span style="font-size: 14px; color: #78716c; margin-left: 6px;">ลูกค้าที่ใช้งาน</span>
+                    <span class="dashboard-users-num">{{ $totalCustomers ?? 0 }}</span>
+                    <span class="dashboard-users-label">ลูกค้าที่ใช้งาน</span>
                 </div>
                 <div>
-                    <span style="font-size: 32px; font-weight: 700; color: #1c1917;">{{ $totalStaff ?? 0 }}</span>
-                    <span style="font-size: 14px; color: #78716c; margin-left: 6px;">พนักงาน</span>
+                    <span class="dashboard-users-num">{{ $totalStaff ?? 0 }}</span>
+                    <span class="dashboard-users-label">พนักงาน</span>
                 </div>
             </div>
         </div>
 
         <!-- รายการที่ต้องดำเนินการ (Operational Attention) -->
-        <div class="card" style="padding: 20px; background: #fff; border-radius: 16px; border: 1px solid #f5f5f4;">
-            <h3 style="font-size: 18px; font-weight: 700; margin: 0 0 16px 0; color: #1c1917;">คำสั่งเช่าที่ต้องดำเนินการ</h3>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                <span style="background: #fee2e2; color: #991b1b; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+        <div class="card dashboard-card">
+            <h3 class="dashboard-card-title dashboard-card-title-spaced">คำสั่งเช่าที่ต้องดำเนินการ</h3>
+            <div class="dashboard-pills">
+                <span class="pill pill-red">
                     ● {{ $overdueCount ?? 0 }} เกินกำหนด
                 </span>
-                <span style="background: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                <span class="pill pill-amber">
                     ● {{ $pendingCount ?? 0 }} รออนุมัติ
                 </span>
-                <span style="background: #fee2e2; color: #991b1b; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                <span class="pill pill-red">
                     ● {{ $inspectionCount ?? 0 }} รอตรวจรับ
                 </span>
-                <span style="background: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 600;">
+                <span class="pill pill-amber">
                     ● {{ $cleaningCount ?? 0 }} รอทำความสะอาด
                 </span>
             </div>
