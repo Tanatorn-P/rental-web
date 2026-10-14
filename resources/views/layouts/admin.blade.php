@@ -25,12 +25,12 @@
             <a class="nav-item @yield('nav-product-create')" href="{{ route('admin.products.create') }}">เพิ่มสินค้าใหม่</a>
             <div class="sidebar-bottom">
                 @php $currentAdmin = Auth::guard('web')->user(); @endphp
-                <p class="nav-label" style="padding-top: 0">
+                <p class="nav-label nav-label-tight">
                     {{ $currentAdmin->fullname ?? 'Admin Staff' }}
                 </p>
                 <form action="{{ route('admin.logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="nav-item" style="width: 100%">ออกจากระบบ</button>
+                    <button type="submit" class="nav-item btn-block">ออกจากระบบ</button>
                 </form>
             </div>
         </aside>
@@ -40,7 +40,7 @@
                 <div class="crumb">
                     <strong>แอดมิน</strong> / @yield('page-name', 'สถิติรวม')
                 </div>
-                <div class="avatar" style="background: #1e293b; color: #fff;">AD</div>
+                <div class="avatar avatar-admin">AD</div>
             </header>
 
             <div class="content">
@@ -55,6 +55,18 @@
             </div>
         </main>
     </div>
+
+    <div id="lightbox-overlay" class="lightbox-overlay" onclick="this.style.display='none'">
+        <img id="lightbox-img" src="" class="lightbox-img" />
+    </div>
+    <script>
+        document.addEventListener('click', function (e) {
+            if (e.target.matches('img[data-lightbox]')) {
+                document.getElementById('lightbox-img').src = e.target.src;
+                document.getElementById('lightbox-overlay').style.display = 'flex';
+            }
+        });
+    </script>
 </body>
 
 </html>

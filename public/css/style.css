@@ -1,4 +1,4 @@
-/* ===== Design tokens ===== */
+/* Design tokens */
 :root{
     --ivory:#F8F5F0;--beige:#E9E0D5;--charcoal:#292725;--gray:#706C67;
     --mauve:#9B7C83;--line:#ded7cf;--white:#fffdf9;
@@ -6,13 +6,13 @@
     --rented:#5A78A0;--returned:#77736E;--danger:#B05A5A;
 }
 
-/* ===== Reset ===== */
+/* Reset */
 *{box-sizing:border-box}
 body{margin:0;font-family:"Noto Sans Thai","DM Sans",sans-serif;color:var(--charcoal);background:var(--ivory)}
 button,input,select,textarea{font:inherit}
 button{cursor:pointer}
 
-/* ===== Brand (ใช้ทั้ง sidebar และหน้า login) ===== */
+/* หน้าsidebar และ login */
 .brand{display:flex;gap:11px;align-items:center}
 .brand-mark{width:34px;height:34px;border-radius:10px;background:var(--charcoal);display:grid;place-items:center;color:white;font-weight:700}
 .brand h1{font-size:19px;margin:0;font-weight:700}
@@ -28,10 +28,10 @@ button{cursor:pointer}
     object-fit: cover;
     display: block;
 }
-/* ===== Center-screen wrapper (สำหรับหน้า login/register/role-select) ===== */
+/* หน้า register */
 .center-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
 
-/* ===== Card ===== */
+/* Card */
 .card{background:var(--white);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 16px rgba(40,35,30,.05)}
 .card-pad{padding:20px}
 .section-title{font-size:16px;font-weight:700;margin:0}
@@ -40,7 +40,7 @@ button{cursor:pointer}
 .auth-card{background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:0 8px 28px rgba(40,35,30,.08);padding:32px;width:100%;max-width:460px}
 h2{font-size:20px;margin:0 0 18px}
 
-/* ===== Buttons ===== */
+/* Buttons */
 .btn{border:1px solid transparent;border-radius:9px;padding:9px 13px;font-size:13px;font-weight:700;display:inline-flex;gap:6px;align-items:center}
 .btn-primary{background:var(--mauve);color:#fff}
 .btn-secondary{background:var(--white);border-color:var(--line);color:var(--charcoal)}
@@ -48,7 +48,7 @@ h2{font-size:20px;margin:0 0 18px}
 .btn-sm{padding:6px 10px;font-size:12px}
 .btn-block{width:100%;justify-content:center}
 
-/* ===== Forms ===== */
+/* Forms */
 .field{margin-bottom:14px}
 .field label{font-size:12px;font-weight:700;display:block;margin-bottom:5px}
 .field input,.field select,.field textarea{width:100%;border:1px solid var(--line);border-radius:9px;padding:9px 10px;font-size:13px}
@@ -56,12 +56,11 @@ h2{font-size:20px;margin:0 0 18px}
 .field small{color:#a14b4b;font-size:11px}
 .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 
-/* ===== Alerts ===== */
+/* Alerts */
 .alert{padding:12px 14px;border-radius:9px;font-size:13px;margin-bottom:16px}
 .alert-success{background:#e4f1e8;color:#36724e}
 .alert-error{background:#f8e7e7;color:#934444}
 
-/* ===== Role select page ===== */
 .role-btn{display:block;width:100%;text-align:left;border:1px solid var(--line);border-radius:11px;padding:14px 16px;margin-bottom:12px;text-decoration:none;color:var(--charcoal);transition:.15s}
 .role-btn:hover{border-color:var(--mauve);background:#f6eff0}
 .role-btn strong{display:block;font-size:14px}
@@ -70,7 +69,7 @@ h2{font-size:20px;margin:0 0 18px}
 .switch-link{text-align:center;font-size:13px;color:var(--gray);margin-top:16px}
 .switch-link a{color:var(--mauve);font-weight:700;text-decoration:none}
 
-/* ===== Staff app shell ===== */
+/* Staff app shell */
 .dd-app{width:100%;min-height:100vh;display:flex}
 
 /* Sidebar: ตรึงกับที่ + เมนูเลื่อนได้ + ปุ่ม Logout ติดขอบล่างเสมอ */
