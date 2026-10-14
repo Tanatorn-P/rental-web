@@ -11,7 +11,7 @@
             <p class="page-subtitle">สถานะทรัพย์สิน ผู้ใช้ และกิจกรรม</p>
         </div>
         <div>
-            <a href="{{ route('admin.products.create') }}" class="btn btn-primary">+ เพิ่มสินค้าใหม่</a>
+            <a href="{{ route('admin.products.create') }}" class="btn btn-primary">เพิ่มสินค้าใหม่</a>
         </div>
     </div>
 
