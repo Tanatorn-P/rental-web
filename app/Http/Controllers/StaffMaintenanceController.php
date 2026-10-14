@@ -28,7 +28,7 @@ class StaffMaintenanceController extends Controller
 
                 return [
                     'product' => $product,
-                    'product_id' => $product->product_id, // เพิ่มบรรทัดนี้เพื่อให้เรียกใช้ง่ายขึ้น
+                    'product_id' => $product->product_id, 
                     'reject_reason' => $order->reject_reason ?? '-',
                 ];
             });

@@ -17,7 +17,7 @@ class StaffDashboardController extends Controller
         $pendingApproval = Order::where('order_status', 'pending')->count();
         $overdue = Order::whereDate('return_date', '<', $today)->where('order_status', 'rented')->count();
         $notReady = Product::where('status', 'not_ready')->count();
-
+        
         $pendingList = Order::with('customer')->where('order_status', 'pending')->orderBy('event_date')->take(5)->get();
         $overdueList = Order::with('customer')->whereDate('return_date', '<', $today)->where('order_status', 'rented')->get();
 
@@ -28,7 +28,6 @@ class StaffDashboardController extends Controller
             ->get()
             ->map(function (Order $order) use ($today) {
                 $isPickup = $order->pickup_date->toDateString() === $today;
-
                 return [
                     'type' => $isPickup ? 'Pickup' : 'Return',
                     'order_id' => $order->order_id,

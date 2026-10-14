@@ -78,7 +78,7 @@ $navActive = fn(string ...$patterns): string => request()->routeIs(...$patterns)
                     </form>
                 </div>
             @else
-                {{-- ================= เมนูสำหรับ STAFF ================= --}}
+                <!-- {{-- ================= เมนูสำหรับ STAFF ================= --}}
                 <p class="nav-label">Staff Operations</p>
                 <a class="nav-item @yield('nav-dashboard')" href="{{ route('staff.dashboard') }}">Dashboard</a>
                 <a class="nav-item @yield('nav-queue')" href="{{ route('staff.queue.index') }}">Reservation Queue</a>
@@ -96,7 +96,7 @@ $navActive = fn(string ...$patterns): string => request()->routeIs(...$patterns)
                             Logout
                         </button>
                     </form>
-                </div>
+                </div> -->
             @endif
         </aside>
 
