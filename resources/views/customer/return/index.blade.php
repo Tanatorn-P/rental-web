@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'ส่งคืนชุด')
+@section('title', 'DressDay')
 @section('page-name', 'Return')
 @section('nav-return', 'active')
 

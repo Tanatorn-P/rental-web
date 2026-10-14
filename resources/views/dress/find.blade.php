@@ -1,6 +1,6 @@
 @extends('layouts.customer')
 
-@section('title', 'Find a Dress')
+@section('title', 'DressDay')
 @section('nav-find', 'active')
 
 @section('content')
