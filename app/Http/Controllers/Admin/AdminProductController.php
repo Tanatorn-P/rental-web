@@ -8,7 +8,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -121,22 +120,22 @@ class AdminProductController extends Controller
 
         $newPaths = [];
         $sequence = count($keptImages) + 1;
-        
+
         foreach ($request->file('images', []) as $file) {
             if (! $file) {
                 continue;
             }
 
             $extension = $file->getClientOriginalExtension() ?: 'jpg';
-            $filename = $productId . '-' . $sequence . '.' . $extension;
+            $filename = $productId.'-'.$sequence.'.'.$extension;
 
-            while (file_exists(public_path('images/' . $filename))) {
+            while (file_exists(public_path('images/'.$filename))) {
                 $sequence++;
-                $filename = $productId . '-' . $sequence . '.' . $extension;
+                $filename = $productId.'-'.$sequence.'.'.$extension;
             }
 
             $file->move(public_path('images'), $filename);
-            $newPaths[] = 'images/' . $filename;
+            $newPaths[] = 'images/'.$filename;
             $sequence++;
         }
 

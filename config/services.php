@@ -35,4 +35,7 @@ return [
         ],
     ],
 
+    'easyslip' => [
+        'key' => env('EASYSLIP_API_KEY'),
+    ],
 ];

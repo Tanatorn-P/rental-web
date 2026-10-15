@@ -234,10 +234,17 @@ class ProductController extends Controller
         $returnDate = (string) request('return_date');
         $price = $this->calculateRental($product, $pickupDate, $returnDate);
 
-        return view('dress.booking-information', compact(
-            'product', 'pickupDate', 'returnDate', 'price'
-        ));
+        $totalAmount = $price['total'] + $product->deposit;
 
+        // ดึงเบอร์ PromptPay ของร้านหรือจากระบบ config
+        $shopPromptPay = config('services.promptpay.number', '0935168612');
+
+        // สร้าง URL PromptPay QR Code แบบไดนามิกตามยอดเงินจริง (ใช้บริการ qr.promptpay.io)
+        $qrCodeUrl = "https://promptpay.io/{$shopPromptPay}/".number_format($totalAmount, 2, '.', '');
+
+        return view('dress.booking-information', compact(
+            'product', 'pickupDate', 'returnDate', 'price', 'qrCodeUrl', 'totalAmount'
+        ));
     }
 
     public function confirmBooking(string $product_id): RedirectResponse
@@ -258,7 +265,6 @@ class ProductController extends Controller
                 ->with('error', $error);
         }
 
-        // กันจองซ้อน (กรณีมีคนจองตัดหน้าระหว่างที่ลูกค้ากรอกข้อมูล)
         $alreadyBooked = DB::table('orders')
             ->whereJsonContains('item', $product_id)
             ->whereIn('order_status', self::BLOCKING_STATUSES)
@@ -273,17 +279,58 @@ class ProductController extends Controller
         }
 
         $price = $this->calculateRental($product, $pickupDate, $returnDate);
+        $totalAmount = $price['total'] + $product->deposit;
 
         $slipImage = request()->file('slip_image');
-        $slipPath = null;
+        $qrPayload = request('qr_payload'); // รับ payload ที่อ่านมาจากหน้าบ้าน
 
-        if ($slipImage) {
-            $slipPath = $slipImage->store('slips', 'public');
+        if (! $slipImage) {
+            return back()->withErrors(['slip_image' => 'กรุณาอัปโหลดหลักฐานการชำระเงิน']);
         }
+
+        // ==========================================
+        // ตรวจสอบสลิปผ่าน EasySlip API (v2) - /verify/bank
+        // ==========================================
+        $apiKey = config('services.easyslip.key');
+        if ($apiKey) {
+            if (empty($qrPayload)) {
+                return back()->withErrors(['slip_image' => 'ไม่พบข้อมูล QR Code ในสลิป กรุณาเลือกรูปสลิปที่ชัดเจน'])->withInput();
+            }
+
+            $ch = curl_init('https://api.easyslip.com/v2/verify/bank');
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                'Authorization: Bearer '.$apiKey,
+                'Content-Type: application/json',
+            ]);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+                'payload' => $qrPayload,
+            ]));
+
+            $response = curl_exec($ch);
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+
+            $slipResult = json_decode($response, true);
+
+            // ตรวจสอบความถูกต้องตามโครงสร้าง v2
+            if ($httpCode !== 200 || empty($slipResult['success']) || $slipResult['success'] !== true) {
+                $errorMsg = $slipResult['error']['message'] ?? 'ไม่สามารถตรวจสอบสลิปได้ กรุณาตรวจสอบสลิปใหม่อีกครั้ง';
+
+                return back()->withErrors(['slip_image' => 'ตรวจสอบสลิปไม่ผ่าน: '.$errorMsg])->withInput();
+            }
+
+            // ตรวจสอบยอดเงินในสลิป (เทียบกับยอดที่ต้องชำระ)
+            $slipAmount = $slipResult['data']['rawSlip']['amount']['amount'] ?? 0;
+            if (abs($slipAmount - $totalAmount) > 1) {
+                return back()->withErrors(['slip_image' => "ยอดเงินในสลิป (฿{$slipAmount}) ไม่ตรงกับยอดที่ต้องชำระ (฿{$totalAmount})"])->withInput();
+            }
+        }
+
+        $slipPath = $slipImage->store('slips', 'public');
         $customerId = Auth::guard('customer')->id();
-        $customer = DB::table('customers')
-            ->where('customer_id', $customerId)
-            ->first();
+
         DB::table('customers')
             ->where('customer_id', $customerId)
             ->update([
@@ -301,40 +348,21 @@ class ProductController extends Controller
                 '0',
                 STR_PAD_LEFT
             ),
-
             'customer_id' => $customerId,
-
-            'item' => json_encode([
-                $product_id,
-            ]),
-
+            'item' => json_encode([$product_id]),
             'event_date' => $pickupDate,
-
             'pickup_date' => $pickupDate,
-
             'pickup_time' => '00:00:00',
-
             'return_date' => $returnDate,
-
             'return_time' => '00:00:00',
-
-            'total_price' => $price['total'] + $product->deposit,
-
+            'total_price' => $totalAmount,
             'deposit_prices' => $product->deposit,
-
             'damage_price' => 0,
-
             'reject_reason' => null,
-
-            // รอพนักงานตรวจสลิปและอนุมัติ (Reservation Queue) -> approved
             'order_status' => 'pending',
-
             'slip_image' => $slipPath,
-
             'tracking_number' => null,
-
             'created_at' => now(),
-
             'updated_at' => now(),
         ]);
 
