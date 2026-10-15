@@ -8,330 +8,199 @@
 
     <!-- Page Header -->
     <div class="booking-information-head">
-
-        <p class="booking-information-eyebrow">
-            BOOKING INFORMATION
-        </p>
-
-        <h1 class="booking-information-title">
-            ข้อมูลการจอง
-        </h1>
-
-        <p class="booking-information-subtitle">
-            กรุณากรอกข้อมูลและชำระเงินเพื่อยืนยันการจอง
-        </p>
-
+        <p class="booking-information-eyebrow">BOOKING INFORMATION</p>
+        <h1 class="booking-information-title">ข้อมูลการจอง</h1>
+        <p class="booking-information-subtitle">กรุณากรอกข้อมูลและชำระเงินเพื่อยืนยันการจอง</p>
     </div>
-
 
     <!-- Main Layout -->
     <div class="booking-information-layout">
 
-
         <!-- Left : Customer Information -->
         <div class="booking-information-card">
-
-            <h2>
-                ข้อมูลลูกค้า
-            </h2>
-
-            <p class="booking-information-card-subtitle">
-                กรุณาตรวจสอบและกรอกข้อมูลของคุณให้ครบถ้วน
-            </p>
-
+            <h2>ข้อมูลลูกค้า</h2>
+            <p class="booking-information-card-subtitle">กรุณาตรวจสอบและกรอกข้อมูลของคุณให้ครบถ้วน</p>
 
             <form
                 method="POST"
                 action="{{ route('dress.booking.confirm', $product->product_id) }}"
                 enctype="multipart/form-data"
+                id="bookingForm"
             >
-
                 @csrf
 
-
                 <!-- Hidden Booking Data -->
-                <input
-                    type="hidden"
-                    name="pickup_date"
-                    value="{{ $pickupDate }}"
-                >
-
-                <input
-                    type="hidden"
-                    name="return_date"
-                    value="{{ $returnDate }}"
-                >
-
+                <input type="hidden" name="pickup_date" value="{{ $pickupDate }}">
+                <input type="hidden" name="return_date" value="{{ $returnDate }}">
+                
+                <!-- Hidden QR Payload from Image -->
+                <input type="hidden" name="qr_payload" id="qr_payload">
 
                 <!-- Fullname -->
                 <div class="booking-form-group">
-
-                    <label for="fullname">
-                        ชื่อ-นามสกุล
-                    </label>
-
-                    <input
-                        type="text"
-                        id="fullname"
-                        name="fullname"
-                        value="{{ old('fullname', auth('customer')->user()->fullname ?? '') }}"
-                        placeholder="กรอกชื่อ-นามสกุล"
-                        required
-                    >
-
+                    <label for="fullname">ชื่อ-นามสกุล</label>
+                    <input type="text" id="fullname" name="fullname" value="{{ old('fullname', auth('customer')->user()->fullname ?? '') }}" placeholder="กรอกชื่อ-นามสกุล" required>
                 </div>
-
 
                 <!-- Phone -->
                 <div class="booking-form-group">
-
-                    <label for="phone">
-                        เบอร์โทรศัพท์
-                    </label>
-
-                    <input
-                        type="text"
-                        id="phone"
-                        name="phone"
-                        value="{{ old('phone', auth('customer')->user()->phone ?? '') }}"
-                        placeholder="กรอกเบอร์โทรศัพท์"
-                        required
-                    >
-
+                    <label for="phone">เบอร์โทรศัพท์</label>
+                    <input type="text" id="phone" name="phone" value="{{ old('phone', auth('customer')->user()->phone ?? '') }}" placeholder="กรอกเบอร์โทรศัพท์" required>
                 </div>
-
 
                 <!-- PromptPay -->
                 <div class="booking-form-group">
-
-                    <label for="bank_account">
-                        หมายเลข PromptPay
-                    </label>
-
-                    <input
-                        type="text"
-                        id="bank_account"
-                        name="bank_account"
-                        value="{{ old('bank_account', auth('customer')->user()->bank_account ?? '') }}"
-                        placeholder="กรอกหมายเลข PromptPay"
-                    >
-
-                    <small>
-                        ใช้สำหรับรับเงินคืนเงินมัดจำ
-                    </small>
-
+                    <label for="bank_account">หมายเลข PromptPay</label>
+                    <input type="text" id="bank_account" name="bank_account" value="{{ old('bank_account', auth('customer')->user()->bank_account ?? '') }}" placeholder="กรอกหมายเลข PromptPay">
+                    <small>ใช้สำหรับรับเงินคืนเงินมัดจำ</small>
                 </div>
-
 
                 <!-- Address -->
                 <div class="booking-form-group">
-
-                    <label for="address">
-                        ที่อยู่
-                    </label>
-
-                    <textarea
-                        id="address"
-                        name="address"
-                        rows="4"
-                        placeholder="กรอกที่อยู่"
-                        required
-                    >{{ old('address', auth('customer')->user()->address ?? '') }}</textarea>
-
+                    <label for="address">ที่อยู่</label>
+                    <textarea id="address" name="address" rows="4" placeholder="กรอกที่อยู่" required>{{ old('address', auth('customer')->user()->address ?? '') }}</textarea>
                 </div>
-
 
                 <!-- Payment -->
                 <div class="payment-section">
-
                     <div class="payment-section-head">
-
-                        <p class="booking-information-eyebrow">
-                            PAYMENT
-                        </p>
-
-                        <h2>
-                            ชำระเงิน
-                        </h2>
-
-                        <p>
-                            สแกน QR Code เพื่อชำระเงินตามยอดที่แสดง
-                        </p>
-
+                        <p class="booking-information-eyebrow">PAYMENT</p>
+                        <h2>ชำระเงิน</h2>
+                        <p>สแกน QR Code เพื่อชำระเงินตามยอดที่แสดง (ยอดรวม: <strong>{{ number_format($totalAmount ?? 0) }} บาท</strong>)</p>
                     </div>
 
-
-                    <!-- QR -->
+                    <!-- QR PromptPay -->
                     <div class="promptpay-box">
-
-                        <div class="promptpay-label">
-                            PromptPay
-                        </div>
-
-                        <img
-                            src="{{ asset('/payment/IMG_4108.jpg') }}"
-                            alt="PromptPay QR Code"
-                        >
-
-                        <p>
-                            กรุณาตรวจสอบชื่อบัญชีก่อนชำระเงิน
-                        </p>
-
+                        <div class="promptpay-label">PromptPay QR Code</div>
+                        <img src="{{ $qrCodeUrl }}" alt="PromptPay QR Code">
+                        <p>กรุณาตรวจสอบยอดเงินและชื่อบัญชีก่อนชำระเงิน</p>
                     </div>
-
 
                     <!-- Slip -->
                     <div class="booking-form-group slip-group">
+                        <label for="slip_image">หลักฐานการชำระเงิน</label>
+                        <input type="file" id="slip_image" name="slip_image" accept="image/*" required>
+                        <small>กรุณาอัปโหลดรูปสลิปการโอนเงิน (ระบบจะอ่าน QR Code บนสลิปและตรวจสอบอัตโนมัติ)</small>
 
-                        <label for="slip_image">
-                            หลักฐานการชำระเงิน
-                        </label>
-
-                        <input
-                            type="file"
-                            id="slip_image"
-                            name="slip_image"
-                            accept="image/*"
-                            required
-                        >
-
-                        <small>
-                            กรุณาอัปโหลดรูปสลิปการโอนเงิน
-                        </small>
-
+                        @error('slip_image')
+                            <p class="form-error" style="color: #dc3545; font-size: 13px; margin-top: 5px;">{{ $message }}</p>
+                        @enderror
                     </div>
 
-
                     <!-- Submit -->
-                    <button
-                        type="submit"
-                        id="submitBookingButton"
-                        class="submit-booking-button"
-                        disabled
-                    >
+                    <button type="submit" id="submitBookingButton" class="submit-booking-button" disabled>
                         ยืนยันการชำระเงินและจอง
                     </button>
 
-
                     <!-- Back -->
-                    <a
-                        href="{{ route('dress.booking.summary', [
-                            'product_id' => $product->product_id,
-                            'pickup_date' => $pickupDate,
-                            'return_date' => $returnDate
-                        ]) }}"
-                        class="booking-information-back"
-                    >
+                    <a href="{{ route('dress.booking.summary', ['product_id' => $product->product_id, 'pickup_date' => $pickupDate, 'return_date' => $returnDate]) }}" class="booking-information-back" id="backButton">
                         ← กลับไปดูสรุปการจอง
                     </a>
-
                 </div>
-
             </form>
-
         </div>
-
 
         <!-- Right : Booking Summary -->
         <div class="booking-information-side">
-
             <div class="booking-mini-card">
-
-                <p class="booking-information-eyebrow">
-                    YOUR BOOKING
-                </p>
-
-                <h2>
-                    {{ $product->product_name }}
-                </h2>
-
-                <p class="booking-mini-id">
-                    รหัสสินค้า: {{ $product->product_id }}
-                </p>
-
+                <p class="booking-information-eyebrow">YOUR BOOKING</p>
+                <h2>{{ $product->product_name }}</h2>
+                <p class="booking-mini-id">รหัสสินค้า: {{ $product->product_id }}</p>
 
                 <div class="booking-mini-image">
-
                     @if (!empty($product->image))
-
                         @foreach ($product->image as $image)
-
-                            <img
-                                src="{{ asset($image) }}"
-                                alt="{{ $product->product_name }}"
-                            >
-
+                            <img src="{{ asset($image) }}" alt="{{ $product->product_name }}">
                             @break
-
                         @endforeach
-
                     @else
-
-                        <span>
-                            ไม่มีรูปภาพ
-                        </span>
-
+                        <span>ไม่มีรูปภาพ</span>
                     @endif
-
                 </div>
-
 
                 <div class="booking-mini-details">
-
-                    <div>
-                        <span>วันที่รับชุด</span>
-                        <strong>{{ $pickupDate }}</strong>
-                    </div>
-
-                    <div>
-                        <span>วันที่คืนชุด</span>
-                        <strong>{{ $returnDate }}</strong>
-                    </div>
-
-                    <div>
-                        <span>ค่าเช่า</span>
-                        <strong>
-                           {{ number_format($price['total']) }} บาท
-                        </strong>
-                    </div>
-
-                    <div>
-                        <span>เงินมัดจำ</span>
-                        <strong>
-                            {{ number_format($product->deposit, 2) }} บาท
-                        </strong>
-                    </div>
-
+                    <div><span>วันที่รับชุด</span><strong>{{ $pickupDate }}</strong></div>
+                    <div><span>วันที่คืนชุด</span><strong>{{ $returnDate }}</strong></div>
+                    <div><span>ค่าเช่า</span><strong>{{ number_format($price['total'], 2) }} บาท</strong></div>
+                    <div><span>เงินมัดจำ</span><strong>{{ number_format($product->deposit, 2) }} บาท</strong></div>
                 </div>
-
 
                 <div class="booking-mini-total">
-
-                    <span>
-                        ยอดชำระทั้งหมด
-                    </span>
-                     
-                   
-                     
-                    <strong>{{ number_format($price['total'] + $product->deposit) }} บาท  </strong>
-           
-                   
-
+                    <span>ยอดชำระทั้งหมด</span>
+                    <strong>{{ number_format($totalAmount ?? ($price['total'] + $product->deposit)) }} บาท</strong>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
 </div>
 
+<!-- โหลดไลบรารี jsQR สำหรับแกะ QR Code จากรูปภาพสลิปในเบราว์เซอร์ -->
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+<script>
+const slipInput = document.getElementById('slip_image');
+const submitButton = document.getElementById('submitBookingButton');
+const bookingForm = document.getElementById('bookingForm');
+const backButton = document.getElementById('backButton');
+const qrPayloadInput = document.getElementById('qr_payload');
+
+let isConfirmed = false;
+
+// เมื่อเลือกไฟล์สลิป ให้นำมาแกะ QR Code ทันที
+slipInput.addEventListener('change', function (e) {
+    const file = e.target.files[0];
+    if (!file) {
+        submitButton.disabled = true;
+        qrPayloadInput.value = '';
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        const img = new Image();
+        img.onload = function () {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+
+            if (code) {
+                qrPayloadInput.value = code.data;
+                submitButton.disabled = false;
+            } else {
+                alert('ไม่พบ QR Code ในรูปสลิปนี้ กรุณาเลือกรูปภาพสลิปที่มี QR Code ชัดเจน');
+                slipInput.value = '';
+                qrPayloadInput.value = '';
+                submitButton.disabled = true;
+            }
+        };
+        img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+});
+
+bookingForm.addEventListener('submit', function () {
+    isConfirmed = true;
+});
+
+window.addEventListener('beforeunload', function (e) {
+    if (!isConfirmed && slipInput.files.length > 0) {
+        e.preventDefault();
+        e.returnValue = '';
+    }
+});
+
+backButton.addEventListener('click', function () {
+    isConfirmed = true;
+});
+</script>
 
 <style>
-
 /* =========================
-   Page
+    Page
 ========================= */
 
 .booking-information-page {
@@ -377,7 +246,7 @@
 
 
 /* =========================
-   Layout
+    Layout
 ========================= */
 
 .booking-information-layout {
@@ -392,7 +261,7 @@
 
 
 /* =========================
-   Main Card
+    Main Card
 ========================= */
 
 .booking-information-card {
