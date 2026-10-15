@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * @property int $rent_count
  */
 class Product extends Model
 {
+    use SoftDeletes;
+
     protected $table = 'products';
 
     protected $primaryKey = 'product_id';

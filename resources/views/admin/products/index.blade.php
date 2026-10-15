@@ -9,69 +9,80 @@
             <h2 class="page-title">รายการสินค้าทั้งหมด</h2>
             <p class="page-subtitle">จัดการ ค้นหา และตรวจสอบสถานะสินค้าในคลัง</p>
         </div>
-        <a href="{{ route('admin.products.create') }}" class="btn btn-primary">+ เพิ่มสินค้าใหม่</a>
+        <a href="{{ route('admin.products.create') }}" class="btn btn-primary">เพิ่มสินค้าใหม่</a>
     </div>
 
-    {{-- Filter Bar --}}
-    <div class="card card-pad" style="margin-bottom: 9px">
-        <form method="GET" action="{{ route('admin.products.index') }}" style="display: flex; gap: 12px; flex-wrap: wrap;">
-            <input type="text" name="search" placeholder="ค้นหาชื่อชุด/รหัสสินค้า..." value="{{ request('search') }}" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc; flex: 1; min-width: 200px;" />
-            
-            <select name="category" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc;">
-                <option value="">-- ทุกหมวดหมู่ --</option>
-                @foreach($categories = $products->pluck('category')->unique() as $category)
+    <!-- Filter Bar -->
+    <div class="card card-pad admin-filter-card" style="margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; font-size: 13px; line-height: 1.7">
+        <form method="GET" action="{{ route('admin.products.index') }}" class="filter-bar">
+            <input type="text" name="search" class="filter-input" placeholder="ค้นหาชื่อชุด/รหัสสินค้า" value="{{ request('search') }}" />
+
+            <select name="category" class="filter-select">
+                <option value="" style="font-size: 14px; color: #6c757d;">ทุกหมวดหมู่ </option>
+                @foreach($categories as $category)
                     <option value="{{ $category }}" {{ request('category') == $category ? 'selected' : '' }}>{{ $category }}</option>
                 @endforeach
             </select>
 
-            <select name="status" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc;">
-                <option value="">-- ทุกสถานะ --</option>
-                @foreach($statuses = $products->pluck('status')->unique() as $status) 
+            <select name="status" class="filter-select">
+                <option value="" style="font-size: 14px; color: #6c757d;">ทุกสถานะ</option>
+                @foreach($statuses as $status)
                     <option value="{{ $status }}" {{ request('status') == $status ? 'selected' : '' }}>{{ ucfirst($status) }}</option>
                 @endforeach
             </select>
 
             <button type="submit" class="btn btn-secondary">ค้นหา</button>
-            <a href="{{ route('admin.products.index') }}" class="btn" style="background: #e2e8f0; color: #333;">ล้างค่า</a>
+            <a href="{{ route('admin.products.index') }}" class="btn btn-secondary">ล้างค่า</a>
         </form>
     </div>
 
     {{-- Product List Table --}}
     <div class="card card-pad">
-        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+        <table class="product-table">
             <thead>
-                <tr style="border-bottom: 2px solid #edf2f7; text-align: left;">
-                    <th style="padding: 10px;">รูปภาพ</th>
-                    <th style="padding: 10px;">ชื่อสินค้า / รหัส</th>
-                    <th style="padding: 10px;">หมวดหมู่</th>
-                    <th style="padding: 10px;">ราคาเช่า/วัน</th>
-                    <th style="padding: 10px;">สถานะ</th>
-                    <th style="padding: 10px; text-align: right;">จัดการ</th>
+                <tr>
+                    <th>รูปภาพ</th>
+                    <th>ชื่อสินค้า / รหัส</th>
+                    <th>หมวดหมู่</th>
+                    <th>ราคาเช่า/วัน</th>
+                    <th>สถานะ</th>
+                    <th class="align-right">จัดการ</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($products as $product)
-                    <tr style="border-bottom: 1px solid #edf2f7;">
-                        <td style="padding: 10px;">
-                            <img src="{{ asset($product->image[0] ?? 'images/placeholder.jpg') }}" 
-                                style="width: 48px; height: 48px; object-fit: cover; border-radius: 6px;" />
+                    <tr>
+                        <td>
+                            <img src="{{ asset($product->image[0] ?? 'images/placeholder.jpg') }}"
+                                class="product-thumb" data-lightbox
+                                alt="{{ $product->product_name }}" />
                         </td>
-                        <td style="padding: 10px;">
-                            <strong>{{ $product->product_name }}</strong>
-                            <p class="muted" style="margin: 0; font-size: 12px;">#{{ $product->product_id }}</p>
+                        <td>
+                            <a href="{{ route('admin.products.edit', $product->product_id) }}" class="product-name-link">
+                                <strong>{{ $product->product_name }}</strong>
+                            </a>
+                            <p class="muted product-id-muted">#{{ $product->product_id }}</p>
                         </td>
-                        <td style="padding: 10px;">{{ $product->category }}</td>
-                        <td style="padding: 10px;">฿{{ number_format($product->rental_fee) }}</td>
-                        <td style="padding: 10px;">
+                        <td>{{ $product->category }}</td>
+                        <td>฿{{ number_format($product->rental_fee) }}</td>
+                        <td>
                             <span class="status {{ $product->status }}">{{ strtoupper($product->status) }}</span>
                         </td>
-                        <td style="padding: 10px; text-align: right;">
+                        <td class="align-right" style="white-space: nowrap;">
+                            <!-- ปุ่มแก้ไข -->
                             <a href="{{ route('admin.products.edit', $product->product_id) }}" class="btn btn-secondary btn-sm">แก้ไข</a>
+                            
+                            <!-- ปุ่มลบ (Soft Delete) สีแดง -->
+                            <form action="{{ route('admin.products.destroy', $product->product_id) }}" method="POST" style="display:inline-block; margin-left: 4px;" onsubmit="return confirm('คุณแน่ใจหรือไม่ว่าต้องการลบสินค้านี้ออกจากระบบ?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-secondary btn-sm" style="background-color: #dc3545; color: #fff; border: none; cursor: pointer;">ลบ</button>
+                            </form>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 20px;" class="muted">ไม่พบข้อมูลสินค้าตรงตามเงื่อนไข</td>
+                        <td colspan="6" class="muted empty-row-cell">ไม่พบข้อมูลสินค้าตรงตามเงื่อนไข</td>
                     </tr>
                 @endforelse
             </tbody>
