@@ -304,7 +304,7 @@ class ProductController extends Controller
                 'Authorization: Bearer '.$apiKey,
                 'Content-Type: application/json',
             ]);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode([
+            curl_setopt($ch, CURLOPT_POSTFIELDS, (string) json_encode([
                 'payload' => $qrPayload,
             ]));
 
@@ -312,11 +312,11 @@ class ProductController extends Controller
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             curl_close($ch);
 
-            $slipResult = json_decode($response, true);
+            $slipResult = is_string($response) ? json_decode($response, true) : null;
 
             // ตรวจสอบความถูกต้องตามโครงสร้าง v2
-            if ($httpCode !== 200 || empty($slipResult['success']) || $slipResult['success'] !== true) {
-                $errorMsg = $slipResult['error']['message'] ?? 'ไม่สามารถตรวจสอบสลิปได้ กรุณาตรวจสอบสลิปใหม่อีกครั้ง';
+            if ($httpCode !== 200 || ! is_array($slipResult) || empty($slipResult['success']) || $slipResult['success'] !== true) {
+                $errorMsg = is_array($slipResult) ? ($slipResult['error']['message'] ?? 'ไม่สามารถตรวจสอบสลิปได้ กรุณาตรวจสอบสลิปใหม่อีกครั้ง') : 'ไม่สามารถตรวจสอบสลิปได้ กรุณาตรวจสอบสลิปใหม่อีกครั้ง';
 
                 return back()->withErrors(['slip_image' => 'ตรวจสอบสลิปไม่ผ่าน: '.$errorMsg])->withInput();
             }

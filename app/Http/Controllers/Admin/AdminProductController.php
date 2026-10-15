@@ -122,10 +122,6 @@ class AdminProductController extends Controller
         $sequence = count($keptImages) + 1;
 
         foreach ($request->file('images', []) as $file) {
-            if (! $file) {
-                continue;
-            }
-
             $extension = $file->getClientOriginalExtension() ?: 'jpg';
             $filename = $productId.'-'.$sequence.'.'.$extension;
 
@@ -150,7 +146,7 @@ class AdminProductController extends Controller
             'deposit' => $validated['deposit'],
             'rental_duration_days' => $validated['rental_duration_days'] ?? 1,
             'status' => $validated['status'],
-            'images' => array_values(array_merge($keptImages, $newPaths)),
+            'images' => array_merge($keptImages, $newPaths),
             'new_uploaded_paths' => $newPaths,
             'removed_images' => $actuallyRemoved,
         ];
@@ -188,6 +184,7 @@ class AdminProductController extends Controller
         ];
 
         if ($pending['mode'] === 'update') {
+            /** @var Product $product */
             $product = Product::findOrFail($pending['product_id']);
             $product->update($attributes);
             $message = 'บันทึกการแก้ไขสินค้าเรียบร้อยแล้ว';
@@ -253,7 +250,7 @@ class AdminProductController extends Controller
     /**
      * สร้างรหัสสินค้าใหม่ที่ไม่ซ้ำกับของเดิม (รวมของที่ถูก soft delete ไปแล้วด้วย)
      */
-    private function generateProductId(): string
+    private function generateProductId(?string $category = null): string
     {
         $next = Product::withTrashed()->count() + 1;
         $candidate = 'P'.str_pad((string) $next, 4, '0', STR_PAD_LEFT);
@@ -280,7 +277,7 @@ class AdminProductController extends Controller
         }
 
         foreach ($relativePaths as $relativePath) {
-            if (! is_string($relativePath) || ! str_starts_with($relativePath, 'images/')) {
+            if (! str_starts_with($relativePath, 'images/')) {
                 continue;
             }
 
