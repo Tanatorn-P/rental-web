@@ -20,17 +20,17 @@ class CustomerHomeController extends Controller
             ->latest()
             ->first();
 
+        // งานที่กำลังจะถึง: เฉพาะรายการที่ยังมีผล (ไม่รวมยกเลิก/คืนแล้ว) และวันงานยังไม่ผ่าน
         $upcomingEvents = Order::where('customer_id', $customerId)
-            ->where('event_date', '>=', now())
+            ->whereIn('order_status', ['pending', 'approved', 'confirmed', 'rented'])
+            ->whereDate('event_date', '>=', today())
             ->orderBy('event_date', 'asc')
+            ->take(5)
             ->get();
 
+        // แจ้งเตือนล่าสุด: 3 ออเดอร์ที่มีการอัปเดตล่าสุด (ข้อความตามสถานะ)
         $notifications = Order::where('customer_id', $customerId)
-            ->where(function ($q) {
-                $q->whereNotNull('reject_reason')
-                    ->orWhereIn('order_status', ['approved', 'preparing', 'confirmed']);
-            })
-            ->latest()
+            ->orderByDesc('updated_at')
             ->take(3)
             ->get();
 

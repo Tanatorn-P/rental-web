@@ -26,11 +26,15 @@
                 <div>
                     <strong>การจอง #{{ $noti->order_id }}</strong>
                     <p style="margin: 4px 0 0; font-size: 13px; color: var(--charcoal)">
-                        {{ $noti->reject_reason ? 'คำขอจองถูกปฏิเสธ: '.$noti->reject_reason : 'สถานะการจองเปลี่ยนเป็น '.strtoupper($noti->order_status) }}
+                        @include('partials.notification-text', ['order' => $noti])
                     </p>
+                    <a
+                        href="{{ Route::has('rentals.show') ? route('rentals.show', $noti->order_id) : '#' }}"
+                        style="font-size: 12px; color: var(--mauve); text-decoration: none; font-weight: 700"
+                    >ดูรายละเอียด</a>
                 </div>
                 <span class="muted" style="font-size: 11px">
-                    {{ $noti->updated_at ? $noti->updated_at->diffForHumans() : '-' }}
+                    {{ $noti->updated_at ? $noti->updated_at->locale('th')->diffForHumans() : '-' }}
                 </span>
             </div>
         @empty

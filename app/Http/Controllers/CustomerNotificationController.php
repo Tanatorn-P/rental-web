@@ -15,7 +15,7 @@ class CustomerNotificationController extends Controller
         $customerId = $customer ? $customer->customer_id : null;
 
         $notifications = Order::where('customer_id', $customerId)
-            ->latest()
+            ->orderByDesc('updated_at')
             ->get();
 
         return view('customer.notifications.index', compact('notifications'));

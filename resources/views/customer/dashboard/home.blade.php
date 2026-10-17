@@ -56,11 +56,25 @@
         <!-- ส่วนนับถอยหลังวันงาน -->
         <div class="card card-pad">
             <h2 class="section-title" style="margin-bottom: 16px">งานเทศกาลที่กำลังจะถึง</h2>
+            @php
+                // ชื่อหมวดสำหรับแสดงผล
+                $categoryNames = [
+                    'weding' => 'Wedding',
+                    'graduation' => 'Graduation',
+                    'party' => 'Party',
+                    'formal' => 'Formal',
+                    'photoshoot' => 'Photoshoot',
+                    'costume' => 'Costume',
+                ];
+            @endphp
             @forelse ($upcomingEvents as $event)
                 @php
                     $daysLeft = (int) now()->startOfDay()->diffInDays($event->event_date, false);
                     $firstItem = collect($event->orderItems())->first();
-                    $productCategory = $firstItem['product']->category ?? 'งานเลี้ยง';
+                    $productCategory = $firstItem['product']->category ?? null;
+                    $categoryLabel = $productCategory
+                        ? ($categoryNames[$productCategory] ?? ucfirst($productCategory))
+                        : 'งานเลี้ยง';
                 @endphp
                 <div
                     style="
@@ -72,13 +86,19 @@
                     "
                 >
                     <div>
-                        <strong>{{ ucfirst($productCategory) }}</strong>
+                        <strong>{{ $categoryLabel }}</strong>
                         <p class="muted" style="font-size: 11px; margin: 0">
                             {{ optional($event->event_date)->format('d M Y') }}
                         </p>
                     </div>
                     <div style="font-weight: 700; color: var(--mauve); font-size: 16px">
-                        {{ $daysLeft >= 0 ? $daysLeft . ' วัน' : 'ผ่านไปแล้ว' }}
+                        @if ($daysLeft > 0)
+                            {{ $daysLeft }} วัน
+                        @elseif ($daysLeft === 0)
+                            วันนี้
+                        @else
+                            ผ่านไปแล้ว
+                        @endif
                     </div>
                 </div>
             @empty
@@ -89,7 +109,7 @@
 
     <!-- ทางลัดหมวดหมู่ -->
     @php
-        // คีย์ = ค่า category ในตาราง products (หมวดแต่งงานในฐานข้อมูลสะกดว่า weding)
+        // คีย์ = ค่า category ในตาราง products
         $occasions = [
             'weding' => ['Wedding', '💒'],
             'graduation' => ['Graduation', '🎓'],
@@ -131,17 +151,15 @@
             >ดูทั้งหมด</a>
         </div>
         @forelse ($notifications as $noti)
-            <div class="task">
+            <div class="task" style="grid-template-columns: 1fr auto">
                 <div>
                     <strong>การจอง #{{ $noti->order_id }}</strong>
-                    <p>
-                        {{ $noti->reject_reason ? 'คำขอจองถูกปฏิเสธ: '.$noti->reject_reason : 'สถานะการจองเปลี่ยนเป็น '.strtoupper($noti->order_status) }}
-                    </p>
+                    <p>@include('partials.notification-text', ['order' => $noti])</p>
                 </div>
                 <span
                     class="muted"
                     style="font-size: 11px"
-                >{{ $noti->updated_at ? $noti->updated_at->diffForHumans() : '-' }}</span>
+                >{{ $noti->updated_at ? $noti->updated_at->locale('th')->diffForHumans() : '-' }}</span>
             </div>
         @empty
             <p class="muted" style="font-size: 12px">ไม่มีการแจ้งเตือนใหม่</p>
